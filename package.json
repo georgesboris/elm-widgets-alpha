@@ -1,0 +1,31 @@
+{
+  "name": "elm-package-template",
+  "description": "Elm implementation of the w-theme framework.",
+  "version": "1.0.0",
+  "license": "MPL-2.0",
+  "author": "Georges Boris",
+  "homepage": "https://github.com/georgesboris/elm-theme",
+  "keywords": [
+    "elm",
+    "w-theme",
+    "design",
+    "systems"
+  ],
+  "bugs": {
+    "url": "https://github.com/georgesboris/elm-theme/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgesboris/elm-theme.git"
+  },
+  "scripts": {
+    "postinstall": "elm-tooling install",
+    "test": "elm-test-rs",
+    "start": "elm-doc-preview ./"
+  },
+  "devDependencies": {
+    "elm-doc-preview": "^5.0.5",
+    "elm-tooling": "^1.14.1",
+    "w-theme": "github:georgesboris/w-theme#main"
+  }
+}

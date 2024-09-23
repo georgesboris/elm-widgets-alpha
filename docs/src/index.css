@@ -1,0 +1,775 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+ * ======================================================
+ * Utilities
+ */
+
+.w--cfg-border {
+  border: var(--w-cfg-border) solid rgb(var(--w-accent));
+}
+
+/* 
+ * ======================================================
+ * W.Box
+ *
+ * We define each variable default value inside the .w--box scope.
+ * This prevents inheritance between W.Box widgets.
+ * Each widget can then customize itself by inlining their css variables.
+ *
+ * ======================================================
+ */
+
+.w--box {
+  --w-width: auto;
+  --w-height: auto;
+  --w-radius: 0px;
+  --w-border-color: var(--w-accent);
+  --tw-shadow-color: var(--w-shadow);
+  --tw-shadow: var(--tw-shadow-colored);
+  width: var(--w-width);
+  height: var(--w-height);
+  border-radius: var(--w-radius);
+  border-color: var(--w-border-color);
+  box-sizing: border-box;
+}
+
+.w--box.w--box-padding {
+  padding: var(--w-padding);
+}
+
+.w--box.w--box-min-width {
+  min-width: var(--w-min-width);
+}
+
+.w--box.w--box-max-width {
+  max-width: var(--w-max-width);
+}
+
+.w--box.w--box-gap.w--block>*+* {
+  margin-top: var(--w-gap);
+}
+
+.w--box.w--flex>*,
+.w--box.w--inline-flex>* {
+  flex-shrink: 0;
+}
+
+.w--box.w--flex>.w--grow,
+.w--box.w--inline-flex>.w--grow {
+  flex-shrink: 1;
+}
+
+.w--box.w--flex,
+.w--box.w--inline-flex,
+.w--box.w--grid {
+  gap: var(--w-gap);
+}
+
+.w--box.w--grid {
+  --w-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: var(--w-columns);
+}
+
+
+.w--box.w--grid-span {
+  grid-column: var(--w-col-span);
+}
+
+.w--box.w--grid-start {
+  grid-column-start: var(--w-col-start);
+}
+
+.w--box.w--grid-end {
+  grid-column-end: var(--w-col-end);
+}
+
+@media (min-width: 1024px) {
+  .w--box {
+    width: var(--lg-w-width, var(--w-width));
+    height: var(--lg-w-height, var(--w-height));
+    border-radius: var(--lg-w-border-radius, var(--w-radius));
+    border-color: var(--lg-w-border-color, var(--w-border-color));
+  }
+
+  .w--box.w--flex,
+  .w--box.w--inline-flex,
+  .w--box.w--grid {
+    gap: var(--lg-w-gap, var(--w-gap));
+  }
+
+  .w--box.w-box-padding {
+    padding: var(--lg-w-padding, var(--w-padding));
+  }
+
+  .w--box.w--box-min-width {
+    min-width: var(--lg-w-min-width, var(--w-min-width));
+  }
+
+  .w--box.w--box-max-width {
+    max-width: var(--lg-w-max-width, var(--w-max-width));
+  }
+
+  .w--box.w--box-gap.w--block>*+* {
+    margin-top: var(--lg-w-gap, var(--w-gap));
+  }
+
+  .w--box.w--grid {
+    grid-template-columns: var(--w-columns);
+  }
+
+  .w--box.w--grid-span {
+    grid-column: var(--lg-w-col-span, var(--w-col-span));
+  }
+
+  .w--box.w--grid-start {
+    grid-column-start: var(--lg-w-col-start, var(--w-col-start));
+  }
+
+  .w--box.w--grid-end {
+    grid-column-end: var(--lg-w-col-end, var(--w-col-end));
+  }
+}
+
+/* 
+ * ======================================================
+ * W.Grid
+ * ======================================================
+ */
+
+.w--grid-wrapper {
+  grid-template-columns: var(--w-columns, repeat(12, minmax(0, 1fr)));
+  gap: var(--w-gap, 0);
+}
+
+.w--grid-column {
+  grid-column: var(--w-span, auto);
+}
+
+@media (min-width: 1024px) {
+  .w--grid-wrapper {
+    grid-template-columns: var(--lg-w-columns, var(--w-columns, repeat(12, minmax(0, 1fr))));
+    gap: var(--lg-w-gap, var(--w-gap, 0));
+  }
+
+  .w--grid-column {
+    grid-column: var(--lg-w-span, var(--w-span, auto));
+  }
+}
+
+/* 
+ * ======================================================
+ * W.Input* (Shared)
+ * ======================================================
+ */
+
+.w--input {
+  border: var(--w-cfg-border) solid rgb(var(--w-accent));
+
+  &:hover,
+  &:focus,
+  &:focus-within {
+    border-color: rgb(var(--w-accent-strong));
+  }
+
+  &:active {
+    border-color: rgb(var(--w-accent-subtle));
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &[readonly=""]:disabled {
+    cursor: default;
+    border-color: rgb(var(--w-accent)) !important;
+  }
+
+  input:focus {
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+.w--input:focus-visible,
+.w--input:has(input:focus-visible) {
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 1px rgb(var(--w-bg)), 0 0 0 4px rgb(var(--w-accent-subtle)) !important;
+}
+
+.w--input input:focus-visible,
+.w--input select:focus-visible,
+.w--input textarea:focus-visible {
+  outline: none;
+  border: 0;
+  box-shadow: none;
+}
+
+/* 
+ * ======================================================
+ * W.InputCheckbox
+ * ======================================================
+ */
+
+@layer components {
+  input[type="checkbox"].w--checkbox {
+    @apply w--m-0;
+    @apply w--appearance-none;
+    @apply w--shadow-none;
+    @apply w--inline-flex w--items-center w--justify-center;
+
+    @apply w--bg-tint-subtle checked:w--bg;
+
+    @apply hover:w--opacity-90 active:w--opacity-75;
+    @apply disabled:w--bg-tint;
+
+    @apply w--cursor-pointer;
+    @apply disabled:w--cursor-not-allowed;
+
+    width: var(--w-cfg-click);
+    height: var(--w-cfg-click);
+    border: var(--w-cfg-border) solid rgb(var(--w-accent));
+
+    &::before {
+      opacity: 0.0;
+      display: block;
+      content: "";
+      width: 1.5rem;
+      height: 1.5rem;
+      background-image: linear-gradient(-45deg, transparent 65%, var(--bg) 65.99%), linear-gradient(45deg, transparent 75%, var(--bg) 75.99%), linear-gradient(-45deg, var(--bg) 40%, transparent 40.99%), linear-gradient(45deg, var(--bg) 30%, var(--fg) 30.99%, var(--fg) 40%, transparent 40.99%), linear-gradient(-45deg, var(--fg) 50%, var(--bg) 50.99%);
+      transition: opacity 0.2s;
+    }
+
+    &:checked::before {
+      opacity: 1.0;
+    }
+
+    &:checked:disabled::before {
+      opacity: 0.5;
+    }
+  }
+
+  input[type="checkbox"].w--checkbox.w--small {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    &:before {
+      content: "";
+      width: 1.0rem;
+      height: 1.0rem;
+    }
+  }
+
+  input[type="checkbox"].w--checkbox.w--colorful {
+    border-color: var(--fg);
+  }
+
+  input[type="checkbox"].w--toggle {
+    @apply w--m-0;
+    @apply w--rounded w--appearance-none;
+    @apply w--p-xs w--rounded-full w--box-content;
+    @apply w--box-border;
+    @apply w--shadow-none;
+    @apply w--inline-flex w--items-center w--justify-start;
+    @apply w--transition;
+
+    @apply before:w--block before:w--content-[""];
+    @apply before:w--rounded-full before:w--shadow;
+    @apply before:w--transition before:w--ease-out before:w--duration-150;
+
+    @apply hover:w--opacity-90 active:w--opacity-75;
+
+    @apply w--bg-tint;
+    @apply checked:w--bg;
+
+    @apply before:w--translate-x-0;
+    @apply checked:before:w--translate-x-full;
+
+    @apply disabled:w--bg-tint;
+
+    width: 3.5rem;
+    height: auto;
+    border: var(--w-cfg-border) solid rgb(var(--w-accent));
+
+    &:before {
+      content: "";
+      width: 1.375rem;
+      height: 1.375rem;
+      background: var(--fg);
+    }
+
+    &.w--colorful {
+      border-color: var(--fg);
+    }
+
+    &.w--small {
+      width: 2.75rem;
+
+      &:before {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+  }
+}
+
+/* 
+ * ======================================================
+ * W.InputColor
+ * ======================================================
+ */
+
+@layer components {
+  .w--input-color {
+    display: inline-flex;
+    position: relative;
+
+    input[type="color"] {
+      box-sizing: border-box;
+      width: var(--w-cfg-click);
+      height: var(--w-cfg-click);
+      border: var(--w-cfg-border) solid rgb(var(--w-accent));
+      border-radius: var(--w-radius-md);
+      padding: 4px;
+    }
+
+    &::after {
+      display: block;
+      content: "";
+      position: absolute;
+      z-index: 1;
+      top: 3px;
+      left: 3px;
+      right: 3px;
+      bottom: 3px;
+      pointer-events: none;
+
+      border: var(--w-cfg-border) solid rgb(var(--w-bg));
+      border-radius: var(--w-radius-sm);
+      background: currentColor;
+    }
+
+    &.w--is-small {
+      input[type="color"] {
+        width: var(--w-cfg-click-small);
+        height: var(--w-cfg-click-small);
+      }
+
+      &::after {
+        border-radius: var(--w-radius-xs);
+      }
+    }
+
+    &.w--is-rounded {
+      input[type="color"] {
+        border-radius: 9999px;
+      }
+
+      &::after {
+        border-radius: 9999px;
+      }
+    }
+  }
+}
+
+/* 
+ * ======================================================
+ * W.InputRadio
+ * ======================================================
+ */
+
+@layer components {
+  input[type="radio"].w--radio {
+    @apply w--m-0;
+    @apply w--appearance-none;
+    @apply w--bg w--shadow-none;
+    @apply w--inline-flex w--items-center w--justify-center;
+    @apply w--transition;
+    @apply before:w--block before:w--content-[""];
+    @apply before:w--bg-current;
+    @apply before:w--scale-0;
+    @apply before:w--transition before:w--ease-out before:w--duration-150;
+    @apply hover:w--opacity-90 active:w--opacity-75;
+    @apply checked:before:w--scale-100 checked:w--border-accent-strong;
+    @apply disabled:w--bg-tint;
+
+    width: 1.75rem;
+    height: 1.75rem;
+    border: var(--w-cfg-border) solid rgb(var(--w-accent)/1.0);
+
+    &::before {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  input[type="radio"].w--radio.w--small {
+    width: 1.25rem;
+    height: 1.25rem;
+
+    &::before {
+      width: 0.625rem;
+      height: 0.625rem;
+    }
+  }
+}
+
+/* 
+ * ======================================================
+ * W.InputSelect
+ * ======================================================
+ */
+
+.w--input select option {
+  color: var(--theme-base-fg);
+  background-color: var(--theme-base-bg);
+}
+
+.w--input input+.w--input-icon::before,
+.w--input select+.w--input-icon::before {
+  background: rgb(var(--theme-base-aux-ch) / 0.07);
+}
+
+.w--input input:focus+.w--input-icon::before,
+.w--input select:focus+.w--input-icon::before {
+  background: var(--theme-base-bg);
+}
+
+.w--input input:disabled+.w--input-icon::before,
+.w--input select:disabled+.w--input-icon::before {
+  background: rgb(var(--theme-base-aux-ch) / 0.3);
+}
+
+.w--input input[aria-readonly]:disabled+.w--input-icon::before,
+.w--input select[aria-readonly]:disabled+.w--input-icon::before {
+  background: rgb(var(--theme-base-aux-ch) / 0.07);
+}
+
+.w--input input[aria-readonly]:read-only:focus+.w--input-icon::before,
+.w--input select[aria-readonly]:read-only:focus+.w--input-icon::before {
+  background: rgb(var(--theme-base-aux-ch) / 0.1);
+}
+
+/* 
+ * ======================================================
+ * W.InputSlider
+ * We need to reset global styles here to deal with
+ * libraries that change global styles (looking at you elm-ui)
+ * ======================================================
+ */
+
+input[type="range"].w--slider {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin: 0;
+  height: initial;
+  opacity: initial;
+  outline: initial;
+  background: transparent;
+}
+
+input[type="range"].w--slider:disabled {
+  pointer-events: none;
+}
+
+input[type="range"].w--slider::-webkit-slider-runnable-track {
+  background: initial;
+  cursor: initial;
+}
+
+input[type="range"].w--slider::-moz-range-track {
+  background: initial;
+  cursor: initial;
+}
+
+input[type="range"].w--slider::-ms-track {
+  background: initial;
+  cursor: initial;
+}
+
+input[type="range"].w--slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: currentColor;
+  border: var(--w-cfg-border) solid rgba(255, 255, 255, 1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  transition: 0.12s ease-in;
+}
+
+input[type="range"].w--slider:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 0 4px currentColor;
+}
+
+input[type="range"].w--slider:active::-webkit-slider-thumb {
+  transition: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 0 2px currentColor;
+}
+
+input[type="range"].w--slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 0 4px currentColor;
+}
+
+input[type="range"].w--slider::-moz-range-thumb {
+  appearance: none;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: currentColor;
+  border: var(--w-cfg-border) solid rgba(255, 255, 255, 1);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  transition: 0.12s ease-in;
+}
+
+input[type="range"].w--slider:hover::-moz-range-thumb {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 0 4px currentColor;
+}
+
+input[type="range"].w--slider:active::-moz-range-thumb {
+  transition: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 0 2px currentColor;
+}
+
+input[type="range"].w--slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 0 4px currentColor;
+}
+
+/* 
+ * ======================================================
+ * W.Loading
+ * ======================================================
+ */
+
+.w--loading-dots {
+  display: inline-block;
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+}
+
+.w--loading-dots div {
+  position: absolute;
+  top: calc(var(--size) * 0.4);
+  width: calc(var(--size) * 0.2);
+  height: calc(var(--size) * 0.2);
+  border-radius: calc(var(--size) * 0.2);
+  background: var(--color);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.w--loading-dots>div:nth-child(1) {
+  left: 0;
+  animation: w--loading-dots-1 0.6s infinite;
+}
+
+.w--loading-dots>div:nth-child(2) {
+  left: 0;
+  animation: w--loading-dots-2 0.6s infinite;
+}
+
+.w--loading-dots>div:nth-child(3) {
+  left: calc(var(--size) * 0.4);
+  animation: w--loading-dots-2 0.6s infinite;
+}
+
+.w--loading-dots>div:nth-child(4) {
+  left: calc(var(--size) * 0.8);
+  animation: w--loading-dots-3 0.6s infinite;
+}
+
+
+@keyframes w--loading-dots-1 {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes w--loading-dots-2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(calc(var(--size) * 0.4), 0);
+  }
+}
+
+@keyframes w--loading-dots-3 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+.w--loading-ripples {
+  display: inline-block;
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+}
+
+.w--loading-ripples>div {
+  position: absolute;
+  border: calc(var(--size) * 0.06) solid var(--color);
+  opacity: 1;
+  border-radius: 50%;
+  animation: w--loading-ripples 1.2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.w--loading-ripples>div:nth-child(2) {
+  animation-delay: -0.6s;
+}
+
+@keyframes w--loading-ripples {
+  0% {
+    top: calc(var(--size) * 0.5);
+    left: calc(var(--size) * 0.5);
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+
+  100% {
+    top: 0;
+    left: 0;
+    width: var(--size);
+    height: var(--size);
+    opacity: 0;
+  }
+}
+
+/* 
+ * ======================================================
+ * W.Menu
+ * ======================================================
+ */
+
+.w--menu-section:not(:first-child) {
+  padding-top: var(--w-menu-section-gap, var(--w-spacing-xl));
+}
+
+/* 
+ * ======================================================
+ * W.Modal
+ * ======================================================
+ */
+
+.w--modal.w--modal--is-open {
+  display: block;
+  opacity: 1;
+}
+
+.w--modal-toggle:checked+.w--modal {
+  display: block;
+  opacity: 1;
+}
+
+.w--modal.w--modal--is-open>.w--modal-content {
+  animation: 0.2s ease-out forwards w--animation-fade-slide-scale;
+}
+
+.w--modal-toggle:checked+.w--modal>.w--modal-content {
+  animation: 0.2s ease-out forwards w--animation-fade-slide-scale;
+}
+
+/* 
+ * ======================================================
+ * Popover
+ * ======================================================
+ */
+
+.w--popover-content {
+  display: none;
+}
+
+.w--popover-trigger:focus-within+.w--popover-content {
+  display: block;
+  animation: w--animation-fade 0.2s forwards;
+}
+
+.w--popover.w--is-open>.w--popover-content {
+  display: block;
+  animation: w--animation-fade 0.2s forwards;
+}
+
+.w--popover.w--is-closed .w--popover-trigger:focus-within+.w--popover-content {
+  display: none;
+}
+
+.w--popover.w--persistent:focus-within>.w--popover-content {
+  display: block;
+}
+
+.w--popover.w--show-on-hover .w--popover-trigger:hover+.w--popover-content {
+  display: block;
+  animation: w--animation-fade 0.2s forwards;
+}
+
+.w--popover.w--show-on-hover>.w--popover-content:hover {
+  display: block;
+}
+
+.w--popover-content:active {
+  display: block !important;
+}
+
+/* 
+ * ======================================================
+ * W.Tooltip
+ * ======================================================
+ */
+
+.w--tooltip::after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-style: solid;
+}
+
+.w--tooltip.w--tooltip-top::after {
+  top: 100%;
+  left: 50%;
+  margin-left: -2px;
+  border-width: 4px 4px 0 4px;
+  border-color: rgb(var(--w-solid) / 1.0) transparent transparent transparent;
+}
+
+.w--tooltip.w--tooltip-bottom::after {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -2px;
+  border-width: 0 4px 4px 4px;
+  border-color: transparent transparent rgb(var(--w-solid) / 1.0) transparent;
+}
+
+.w--tooltip.w--tooltip-left::after {
+  top: 50%;
+  left: 100%;
+  margin-top: -2px;
+  border-width: 4px 0 4px 4px;
+  border-color: transparent transparent transparent rgb(var(--w-solid) / 1.0);
+}
+
+.w--tooltip.w--tooltip-right::after {
+  top: 50%;
+  right: 100%;
+  margin-top: -2px;
+  border-width: 4px 4px 4px 0;
+  border-color: transparent rgb(var(--w-solid) / 1.0) transparent transparent;
+}
