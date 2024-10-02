@@ -1,7 +1,7 @@
 {
   "type": "package",
   "name": "georgesboris/elm-widgets-alpha",
-  "summary": "Themed, platform-focused, type-safe, mostly stateless, UI elements.",
+  "summary": "Development package for elm-widgets. Constant breaking changes.",
   "license": "MPL-2.0",
   "version": "1.0.0",
   "exposed-modules": [
