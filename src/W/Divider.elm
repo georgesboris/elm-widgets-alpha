@@ -18,6 +18,7 @@ import Html as H
 import Html.Attributes as HA
 import W.Internal.Helpers as WH
 import W.Theme
+import W.Theme.Color
 
 
 {-| -}
@@ -35,7 +36,7 @@ type alias Attributes =
 
 defaultAttrs : Attributes
 defaultAttrs =
-    { color = W.Theme.color.accent
+    { color = W.Theme.Color.accent
     , vertical = False
     , thin = False
     , margins = 0
@@ -55,7 +56,7 @@ thin =
 {-| -}
 subtle : Attribute
 subtle =
-    Attr.attr (\attrs -> { attrs | color = W.Theme.color.accentSubtle })
+    Attr.attr (\attrs -> { attrs | color = W.Theme.Color.accentSubtle })
 
 
 {-| -}

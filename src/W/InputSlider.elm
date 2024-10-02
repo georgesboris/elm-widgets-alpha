@@ -26,7 +26,7 @@ import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
 import W.Internal.Helpers as WH
-import W.Theme
+import W.Theme.Color
 
 
 
@@ -51,7 +51,7 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { disabled = False
     , readOnly = False
-    , color = W.Theme.primaryScale.solid
+    , color = W.Theme.Color.primarySolid
     , format = String.fromFloat
     , msg = Nothing
     }

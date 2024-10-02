@@ -1,5 +1,6 @@
 module W.Internal.Helpers exposing
-    ( attrIf
+    ( asVariant
+    , attrIf
     , em
     , formatFloat
     , keepIf
@@ -23,6 +24,33 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
+import W.Theme.Color
+
+
+
+-- Theme Helpers
+
+
+asVariant : W.Theme.Color.ColorVariant -> H.Attribute msg
+asVariant variant =
+    case variant of
+        W.Theme.Color.Base ->
+            W.Theme.Color.asBase
+
+        W.Theme.Color.Primary ->
+            W.Theme.Color.asPrimary
+
+        W.Theme.Color.Secondary ->
+            W.Theme.Color.asSecondary
+
+        W.Theme.Color.Success ->
+            W.Theme.Color.asSuccess
+
+        W.Theme.Color.Warning ->
+            W.Theme.Color.asWarning
+
+        W.Theme.Color.Danger ->
+            W.Theme.Color.asDanger
 
 
 

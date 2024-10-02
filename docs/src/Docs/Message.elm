@@ -5,7 +5,7 @@ import Docs.UI
 import Html as H
 import W.Box
 import W.Message
-import W.Spacing
+import W.Theme.Spacing
 import W.Theme
 
 

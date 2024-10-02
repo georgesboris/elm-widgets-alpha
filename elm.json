@@ -1,7 +1,7 @@
 {
   "type": "package",
-  "name": "georgesboris/elm-widgets",
-  "summary": "A collection of themed, platform-focused, type-safe, mostly stateless, UI elements.",
+  "name": "georgesboris/elm-widgets-alpha",
+  "summary": "Themed, platform-focused, type-safe, mostly stateless, UI elements.",
   "license": "MPL-2.0",
   "version": "1.0.0",
   "exposed-modules": [
@@ -51,6 +51,7 @@
     "elm/time": "1.0.0 <= v < 2.0.0",
     "elm/url": "1.0.0 <= v < 2.0.0",
     "georgesboris/elm-attributes": "1.0.0 <= v < 2.0.0",
+    "georgesboris/elm-theme": "1.0.0 <= v < 2.0.0",
     "justinmimbs/date": "4.1.0 <= v < 5.0.0",
     "justinmimbs/time-extra": "1.2.0 <= v < 2.0.0",
     "tesk9/palette": "3.0.0 <= v < 4.0.0"

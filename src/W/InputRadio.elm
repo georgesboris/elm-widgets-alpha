@@ -25,6 +25,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Theme
+import W.Theme.Color
 
 
 
@@ -48,7 +49,7 @@ type alias Attributes msg =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { color = W.Theme.primaryScale.solid
+    { color = W.Theme.Color.primarySolid
     , small = False
     , disabled = False
     , readOnly = False
@@ -136,7 +137,7 @@ view =
                                     , HA.classList [ ( "w--small", attrs.small ) ]
                                     , W.Theme.styleList
                                         [ if attrs.disabled then
-                                            ( "color", W.Theme.color.textSubtle )
+                                            ( "color", W.Theme.Color.textSubtle )
 
                                           else
                                             ( "color", attrs.color )

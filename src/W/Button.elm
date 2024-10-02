@@ -34,6 +34,7 @@ import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
 import W.Theme
+import W.Theme.Color
 
 
 
@@ -342,7 +343,7 @@ htmlAttrs attrs =
                     Nothing ->
                         [ ( "border-radius", "0.5em" ) ]
                 , if attrs.disabled then
-                    [ ( "color", W.Theme.color.textSubtle ) ]
+                    [ ( "color", W.Theme.Color.textSubtle ) ]
 
                   else
                     []

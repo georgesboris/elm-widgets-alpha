@@ -6,7 +6,7 @@ import Docs.UI
 import Html as H
 import W.Box
 import W.Heading
-import W.Spacing
+import W.Theme.Spacing
 
 
 view : Book.Page model Book.Msg
@@ -14,7 +14,7 @@ view =
     Book.page "Heading"
         [ W.Box.view
             [ W.Box.flex [ W.Box.vertical, W.Box.xStretch ]
-            , W.Box.gap W.Spacing.lg
+            , W.Box.gap W.Theme.Spacing.lg
             ]
             ([ ( "Extra Large", W.Heading.extraLarge )
              , ( "Large", W.Heading.large )

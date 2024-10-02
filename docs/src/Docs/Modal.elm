@@ -7,7 +7,7 @@ import W.Box
 import W.Button
 import W.Modal
 import W.Popover
-import W.Spacing
+import W.Theme.Spacing
 import W.Text
 
 
@@ -66,7 +66,7 @@ viewModalContent : H.Html msg
 viewModalContent =
     W.Box.view
         [ W.Box.widthFull
-        , W.Box.padding W.Spacing.sm
+        , W.Box.padding W.Theme.Spacing.sm
         , W.Box.height 12
         ]
         [ W.Popover.view

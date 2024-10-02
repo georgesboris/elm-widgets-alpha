@@ -38,10 +38,11 @@ import W.DataRow
 import W.Divider
 import W.Heading
 import W.Menu
-import W.Sizing
-import W.Spacing
 import W.Tag
 import W.Theme
+import W.Theme.Color
+import W.Theme.Sizing
+import W.Theme.Spacing
 
 
 
@@ -375,9 +376,9 @@ view props =
         [ W.Box.view
             [ W.Box.sticky
             , W.Box.heightScreen
-            , W.Box.widthCustom (W.Sizing.toCSS W.Sizing.full)
-            , W.Box.maxWidth W.Sizing.sm
-            , W.Box.background W.Theme.color.bg
+            , W.Box.widthCustom (W.Theme.Sizing.toCSS W.Theme.Sizing.full)
+            , W.Box.maxWidth W.Theme.Sizing.sm
+            , W.Box.background W.Theme.Color.bg
             ]
             [ H.nav
                 [ HA.class "w--absolute w--inset-0 w--overflow-x-hidden w--overflow-y-auto w--border-0 w--border-solid w--border-r w--border-accent"
@@ -398,19 +399,19 @@ view props =
             ]
             [ W.Box.view
                 [ W.Box.widthFull
-                , W.Box.maxWidth W.Sizing.xl2
-                , W.Box.padding W.Spacing.md
+                , W.Box.maxWidth W.Theme.Sizing.xl2
+                , W.Box.padding W.Theme.Spacing.md
                 ]
                 [ case routePage props.route of
                     Just p ->
                         H.div
                             []
                             [ W.Box.view
-                                [ W.Box.padding W.Spacing.md ]
+                                [ W.Box.padding W.Theme.Spacing.md ]
                                 [ W.Heading.view [] [ H.text (pageName p) ] ]
                             , W.Box.view
-                                [ W.Box.padding W.Spacing.md
-                                , W.Box.gap W.Spacing.xl
+                                [ W.Box.padding W.Theme.Spacing.md
+                                , W.Box.gap W.Theme.Spacing.xl
                                 ]
                                 (pageContent p props.model)
                             ]

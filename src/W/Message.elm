@@ -38,6 +38,7 @@ import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
 import W.Theme
+import W.Theme.Color
 
 
 
@@ -53,7 +54,7 @@ type alias Attributes msg =
     { id : Maybe String
     , icon : Maybe (List (H.Html msg))
     , footer : Maybe (List (H.Html msg))
-    , variant : W.Theme.ColorVariant
+    , variant : W.Theme.Color.ColorVariant
     , background : String
     , color : String
     , href : Maybe String
@@ -67,9 +68,9 @@ defaultAttrs =
     { id = Nothing
     , icon = Nothing
     , footer = Nothing
-    , variant = W.Theme.base
-    , background = W.Theme.color.tint
-    , color = W.Theme.color.text
+    , variant = W.Theme.Color.Base
+    , background = W.Theme.Color.tint
+    , color = W.Theme.Color.text
     , href = Nothing
     , onClick = Nothing
     , borderWidth = 6
@@ -111,7 +112,7 @@ footer v =
 
 
 {-| -}
-variant : W.Theme.ColorVariant -> Attribute msg
+variant : W.Theme.Color.ColorVariant -> Attribute msg
 variant v =
     Attr.attr (\attrs -> { attrs | variant = v })
 
@@ -144,7 +145,7 @@ view =
                 baseAttrs : List (H.Attribute msg)
                 baseAttrs =
                     [ WH.maybeAttr HA.id attrs.id
-                    , W.Theme.variant attrs.variant
+                    , WH.asVariant attrs.variant
                     , HA.class "w/tint"
                     , HA.class "w--m-0 w--box-border w--relative"
                     , HA.class "w--flex w--gap-md w--w-full"

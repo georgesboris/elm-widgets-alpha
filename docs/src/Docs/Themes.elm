@@ -23,7 +23,7 @@ demo =
         [ W.Theme.styleList
             [ ( "border-radius", W.Theme.radius.sm )
             , ( "padding", W.Theme.spacing.xl3 ++ " 0" )
-            , ( "background", W.Theme.color.bgSubtle )
+            , ( "background", W.Theme.Color.bgSubtle )
             , ( "display", "flex" )
             , ( "justify-content", "center" )
             ]
@@ -31,10 +31,10 @@ demo =
         [ H.div
             [ W.Theme.styleList
                 [ ( "padding", W.Theme.spacing.xl )
-                , ( "background", W.Theme.color.bg )
-                , ( "box-shadow", "0 2px 8px " ++ W.Theme.alpha 0.2 W.Theme.color.shadow )
+                , ( "background", W.Theme.Color.bg )
+                , ( "box-shadow", "0 2px 8px " ++ W.Theme.alpha 0.2 W.Theme.Color.shadow )
                 , ( "border-radius", W.Theme.radius.xl2 )
-                , ( "border", "1px solid " ++ W.Theme.color.accentSubtle )
+                , ( "border", "1px solid " ++ W.Theme.Color.accentSubtle )
                 , ( "width", "100%" )
                 , ( "max-width", "640px" )
                 , ( "min-width", "560px" )
@@ -56,7 +56,7 @@ demo =
                     ]
                 , H.p
                     [ W.Theme.styleList
-                        [ ( "color", W.Theme.color.textSubtle )
+                        [ ( "color", W.Theme.Color.textSubtle )
                         , ( "font-size", "1rem" )
                         ]
                     ]
@@ -75,14 +75,14 @@ demo =
                         H.article
                             [ HA.class className
                             , W.Theme.styleList
-                                [ ( "color", W.Theme.color.textSubtle )
+                                [ ( "color", W.Theme.Color.textSubtle )
                                 , ( "font-size", "1rem" )
                                 , ( "display", "flex" )
                                 , ( "flex-direction", "column" )
-                                , ( "background", W.Theme.color.bg )
-                                , ( "border", "1px solid " ++ W.Theme.color.accent )
+                                , ( "background", W.Theme.Color.bg )
+                                , ( "border", "1px solid " ++ W.Theme.Color.accent )
                                 , ( "border-radius", W.Theme.radius.md )
-                                , ( "box-shadow", "0 0 4px " ++ W.Theme.alpha 0.25 W.Theme.color.shadow )
+                                , ( "box-shadow", "0 0 4px " ++ W.Theme.alpha 0.25 W.Theme.Color.shadow )
                                 ]
                             ]
                             [ H.header
@@ -102,7 +102,7 @@ demo =
                                             , ( "line-height", "1" )
                                             , ( "letter-spacing", "0.05rem" )
                                             , ( "text-transform", "uppercase" )
-                                            , ( "color", W.Theme.color.text )
+                                            , ( "color", W.Theme.Color.text )
                                             ]
                                         ]
                                         [ H.text name ]
@@ -111,7 +111,7 @@ demo =
                                             [ ( "font-family", W.Theme.font.code )
                                             , ( "font-size", "0.8rem" )
                                             , ( "letter-spacing", "0.025rem" )
-                                            , ( "color", W.Theme.color.textSubtle )
+                                            , ( "color", W.Theme.Color.textSubtle )
                                             ]
                                         ]
                                         [ H.text name ]
@@ -142,7 +142,7 @@ demo =
                                         , W.Theme.styleList
                                             [ ( "appearance", "none" )
                                             , ( "padding", W.Theme.spacing.sm )
-                                            , ( "box-shadow", "0 1px 8px " ++ W.Theme.alpha 0.2 W.Theme.color.shadow )
+                                            , ( "box-shadow", "0 1px 8px " ++ W.Theme.alpha 0.2 W.Theme.Color.shadow )
                                             , ( "border-radius", W.Theme.radius.sm )
                                             , ( "border-width", "0" )
                                             , ( "line-height", "0.9rem" )
@@ -155,7 +155,7 @@ demo =
                                 ]
                             , H.div
                                 []
-                                ([ W.Theme.color.accentSubtle, W.Theme.color.accent, W.Theme.color.accentStrong ]
+                                ([ W.Theme.Color.accentSubtle, W.Theme.Color.accent, W.Theme.Color.accentStrong ]
                                     |> List.map
                                         (\accentColor ->
                                             H.div
@@ -177,11 +177,11 @@ demo =
                                         (\toColor ->
                                             H.div
                                                 [ W.Theme.styleList
-                                                    [ ( "border", "2px solid " ++ W.Theme.color.tint )
+                                                    [ ( "border", "2px solid " ++ W.Theme.Color.tint )
                                                     , ( "border-radius", "9999px" )
                                                     , ( "width", W.Theme.spacing.md )
                                                     , ( "height", W.Theme.spacing.md )
-                                                    , ( "background", toColor W.Theme.color )
+                                                    , ( "background", toColor W.Theme.Color )
                                                     ]
                                                 ]
                                                 []

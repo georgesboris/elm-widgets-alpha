@@ -4,8 +4,8 @@ import Book
 import Docs.UI
 import Html as H
 import W.Box
-import W.Radius
-import W.Sizing
+import W.Theme.Radius
+import W.Theme.Sizing
 import W.Spacing
 import W.Text
 
@@ -15,13 +15,13 @@ view =
     Book.page "Radius, Spacing & Sizing"
         (List.map Docs.UI.viewExample
             [ ( "Radius"
-              , [ ( "xs", W.Spacing.xs, W.Radius.xs )
-                , ( "sm", W.Spacing.sm, W.Radius.sm )
-                , ( "md", W.Spacing.md, W.Radius.md )
-                , ( "lg", W.Spacing.lg, W.Radius.lg )
-                , ( "xl", W.Spacing.xl, W.Radius.xl )
-                , ( "xl2", W.Spacing.xl2, W.Radius.xl2 )
-                , ( "xl3", W.Spacing.xl3, W.Radius.xl3 )
+              , [ ( "xs", W.Spacing.xs, W.Theme.Radius.xs )
+                , ( "sm", W.Spacing.sm, W.Theme.Radius.sm )
+                , ( "md", W.Spacing.md, W.Theme.Radius.md )
+                , ( "lg", W.Spacing.lg, W.Theme.Radius.lg )
+                , ( "xl", W.Spacing.xl, W.Theme.Radius.xl )
+                , ( "xl2", W.Spacing.xl2, W.Theme.Radius.xl2 )
+                , ( "xl3", W.Spacing.xl3, W.Theme.Radius.xl3 )
                 ]
                     |> List.map
                         (\( name, spacing, radius ) ->
@@ -76,13 +76,13 @@ view =
                         )
               )
             , ( "Sizing"
-              , [ ( "xs", W.Sizing.xs )
-                , ( "sm", W.Sizing.sm )
-                , ( "md", W.Sizing.md )
-                , ( "lg", W.Sizing.lg )
-                , ( "xl", W.Sizing.xl )
-                , ( "xl2", W.Sizing.xl2 )
-                , ( "xl3", W.Sizing.xl3 )
+              , [ ( "xs", W.Theme.Sizing.xs )
+                , ( "sm", W.Theme.Sizing.sm )
+                , ( "md", W.Theme.Sizing.md )
+                , ( "lg", W.Theme.Sizing.lg )
+                , ( "xl", W.Theme.Sizing.xl )
+                , ( "xl2", W.Theme.Sizing.xl2 )
+                , ( "xl3", W.Theme.Sizing.xl3 )
                 ]
                     |> List.map
                         (\( name, sizing ) ->
@@ -97,7 +97,7 @@ view =
                                         [ H.text name ]
                                     ]
                                 , W.Box.view
-                                    [ W.Box.widthCustom (W.Sizing.toCSS sizing)
+                                    [ W.Box.widthCustom (W.Theme.Sizing.toCSS sizing)
                                     , W.Box.height 2
                                     , W.Box.tint
                                     , W.Box.rounded

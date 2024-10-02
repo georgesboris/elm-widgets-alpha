@@ -25,6 +25,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Theme
+import W.Theme.Color
 
 
 
@@ -54,7 +55,7 @@ type Style
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { color = W.Theme.primaryScale.solid
+    { color = W.Theme.Color.primarySolid
     , small = False
     , colorful = False
     , disabled = False
@@ -124,10 +125,10 @@ baseAttrs attrs_ value =
         , ( "w--pointer-events-none", attrs.readOnly )
         ]
     , W.Theme.styleList
-        [ ( "--bg", W.Theme.color.bg )
+        [ ( "--bg", W.Theme.Color.bg )
         , ( "--fg"
           , if attrs.disabled then
-                W.Theme.color.textSubtle
+                W.Theme.Color.textSubtle
 
             else
                 attrs.color

@@ -14,7 +14,7 @@ import Html.Attributes as HA
 import W.Box
 import W.Divider
 import W.Heading
-import W.Spacing
+import W.Theme.Spacing
 import W.Text
 import W.Theme
 
@@ -49,7 +49,7 @@ viewTwoColumnsSection :
     -> H.Html msg
 viewTwoColumnsSection props =
     W.Box.view
-        [ W.Box.gap W.Spacing.lg
+        [ W.Box.gap W.Theme.Spacing.lg
         , W.Box.grid [ W.Box.columns 2 ]
         ]
         [ W.Box.view
@@ -75,14 +75,14 @@ viewDetailedExample :
 viewDetailedExample props =
     W.Box.view
         [ W.Box.base
-        , W.Box.background W.Theme.color.bg
+        , W.Box.background W.Theme.Color.bg
         , W.Box.borderSmall
         , W.Box.borderSubtle
         , W.Box.rounded
         ]
         [ -- Header
           W.Box.view
-            [ W.Box.padding W.Spacing.md ]
+            [ W.Box.padding W.Theme.Spacing.md ]
             [ W.Heading.view
                 [ W.Heading.extraSmall, W.Heading.semibold ]
                 [ H.text props.label ]
@@ -102,7 +102,7 @@ viewDetailedExample props =
 
         -- Main Content
         , W.Box.view
-            [ W.Box.padding W.Spacing.md ]
+            [ W.Box.padding W.Theme.Spacing.md ]
             props.content
 
         -- Code Example
@@ -126,9 +126,9 @@ viewExample ( label, content ) =
             , W.Box.rounded
             , W.Box.borderSubtle
             , W.Box.shadow
-            , W.Box.padding W.Spacing.sm
-            , W.Box.background W.Theme.color.bg
-            , W.Box.gap W.Spacing.sm
+            , W.Box.padding W.Theme.Spacing.sm
+            , W.Box.background W.Theme.Color.bg
+            , W.Box.gap W.Theme.Spacing.sm
             ]
             content
         ]

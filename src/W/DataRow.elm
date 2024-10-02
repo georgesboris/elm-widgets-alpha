@@ -14,7 +14,7 @@ import Attr
 import Html as H
 import Html.Attributes as HA
 import W.Box
-import W.Spacing
+import W.Theme.Spacing
 
 
 {-| -}
@@ -23,8 +23,8 @@ type alias Attribute msg =
 
 
 type alias Attributes msg =
-    { padding : W.Spacing.Spacing
-    , gap : W.Spacing.Spacing
+    { padding : W.Theme.Spacing.Spacing
+    , gap : W.Theme.Spacing.Spacing
     , href : Maybe String
     , onClick : Maybe msg
     , clickArea : ClickArea
@@ -33,8 +33,8 @@ type alias Attributes msg =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { padding = W.Spacing.md
-    , gap = W.Spacing.md
+    { padding = W.Theme.Spacing.md
+    , gap = W.Theme.Spacing.md
     , href = Nothing
     , onClick = Nothing
     , clickArea = Main
@@ -48,13 +48,13 @@ type ClickArea
 
 
 {-| -}
-padding : W.Spacing.Spacing -> Attribute msg
+padding : W.Theme.Spacing.Spacing -> Attribute msg
 padding v =
     Attr.attr (\attrs -> { attrs | padding = v })
 
 
 {-| -}
-gap : W.Spacing.Spacing -> Attribute msg
+gap : W.Theme.Spacing.Spacing -> Attribute msg
 gap v =
     Attr.attr (\attrs -> { attrs | padding = v })
 
@@ -99,8 +99,8 @@ viewExtra =
             W.Box.view
                 [ W.Box.flex []
                 , W.Box.styles
-                    [ ( "padding", W.Spacing.toCSS attrs.padding )
-                    , ( "gap", W.Spacing.toCSS attrs.gap )
+                    [ ( "padding", W.Theme.Spacing.toCSS attrs.padding )
+                    , ( "gap", W.Theme.Spacing.toCSS attrs.gap )
                     ]
                 ]
                 [ viewPart [] props.left

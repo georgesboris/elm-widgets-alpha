@@ -4,7 +4,7 @@ module W.Box exposing
     , height, heightRelative, heightFull, heightScreen, heightCustom
     , square
     , border, borderColor, borderLarge, borderSmall, borderStrong, borderSubtle
-    , rounded, roundedExtraSmall, roundedSmall, roundedLarge, roundedExtraLarge, roundedFull, radius
+    , radius
     , shadow, shadowLarge, shadowSmall
     , base, primary, secondary, success, warning, danger
     , tint, solid
@@ -66,7 +66,7 @@ module W.Box exposing
 
 ### Border Radius
 
-@docs rounded, roundedExtraSmall, roundedSmall, roundedLarge, roundedExtraLarge, roundedFull, radius
+@docs radius
 
 
 ### Shadows
@@ -137,10 +137,11 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
-import W.Radius
-import W.Sizing
-import W.Spacing
 import W.Theme
+import W.Theme.Color
+import W.Theme.Radius
+import W.Theme.Sizing
+import W.Theme.Spacing
 
 
 {-| -}
@@ -207,7 +208,7 @@ defaultInteractiveAttrs : Attributes msg
 defaultInteractiveAttrs =
     { defaultAttrs
         | interactive = True
-        , background = W.Theme.color.bg
+        , background = W.Theme.Color.bg
     }
 
 
@@ -343,25 +344,25 @@ widthRelative v =
 
 
 {-| -}
-minWidth : W.Sizing.Sizing -> Attribute msg
+minWidth : W.Theme.Sizing.Sizing -> Attribute msg
 minWidth v =
     Attr.attr
         (\attrs ->
             { attrs
                 | staticClasses = "w--box-min-width" :: attrs.staticClasses
-                , variables = ( "--w-min-width", W.Sizing.toCSS v ) :: attrs.variables
+                , variables = ( "--w-min-width", W.Theme.Sizing.toCSS v ) :: attrs.variables
             }
         )
 
 
 {-| -}
-maxWidth : W.Sizing.Sizing -> Attribute msg
+maxWidth : W.Theme.Sizing.Sizing -> Attribute msg
 maxWidth v =
     Attr.attr
         (\attrs ->
             { attrs
                 | staticClasses = "w--box-max-width" :: attrs.staticClasses
-                , variables = ( "--w-max-width", W.Sizing.toCSS v ) :: attrs.variables
+                , variables = ( "--w-max-width", W.Theme.Sizing.toCSS v ) :: attrs.variables
             }
         )
 
@@ -434,55 +435,55 @@ updatePadding fn =
 
 
 {-| -}
-padding : W.Spacing.Spacing -> Attribute msg
+padding : W.Theme.Spacing.Spacing -> Attribute msg
 padding v =
     let
         value : String
         value =
-            W.Spacing.toCSS v
+            W.Theme.Spacing.toCSS v
     in
     updatePadding (\_ -> { top = value, left = value, bottom = value, right = value })
 
 
 {-| -}
-xPadding : W.Spacing.Spacing -> Attribute msg
+xPadding : W.Theme.Spacing.Spacing -> Attribute msg
 xPadding v =
     let
         value : String
         value =
-            W.Spacing.toCSS v
+            W.Theme.Spacing.toCSS v
     in
     updatePadding (\p -> { p | left = value, right = value })
 
 
 {-| -}
-yPadding : W.Spacing.Spacing -> Attribute msg
+yPadding : W.Theme.Spacing.Spacing -> Attribute msg
 yPadding v =
-    updatePadding (\p -> { p | top = W.Spacing.toCSS v, bottom = W.Spacing.toCSS v })
+    updatePadding (\p -> { p | top = W.Theme.Spacing.toCSS v, bottom = W.Theme.Spacing.toCSS v })
 
 
 {-| -}
-topPadding : W.Spacing.Spacing -> Attribute msg
+topPadding : W.Theme.Spacing.Spacing -> Attribute msg
 topPadding v =
-    updatePadding (\p -> { p | top = W.Spacing.toCSS v })
+    updatePadding (\p -> { p | top = W.Theme.Spacing.toCSS v })
 
 
 {-| -}
-leftPadding : W.Spacing.Spacing -> Attribute msg
+leftPadding : W.Theme.Spacing.Spacing -> Attribute msg
 leftPadding v =
-    updatePadding (\p -> { p | left = W.Spacing.toCSS v })
+    updatePadding (\p -> { p | left = W.Theme.Spacing.toCSS v })
 
 
 {-| -}
-bottomPadding : W.Spacing.Spacing -> Attribute msg
+bottomPadding : W.Theme.Spacing.Spacing -> Attribute msg
 bottomPadding v =
-    updatePadding (\p -> { p | bottom = W.Spacing.toCSS v })
+    updatePadding (\p -> { p | bottom = W.Theme.Spacing.toCSS v })
 
 
 {-| -}
-rightPadding : W.Spacing.Spacing -> Attribute msg
+rightPadding : W.Theme.Spacing.Spacing -> Attribute msg
 rightPadding v =
-    updatePadding (\p -> { p | right = W.Spacing.toCSS v })
+    updatePadding (\p -> { p | right = W.Theme.Spacing.toCSS v })
 
 
 
@@ -521,7 +522,7 @@ borderSubtle : Attribute msg
 borderSubtle =
     Attr.attr
         (\attrs ->
-            { attrs | variables = ( "--w-border-color", W.Theme.color.accentSubtle ) :: attrs.variables }
+            { attrs | variables = ( "--w-border-color", W.Theme.Color.accentSubtle ) :: attrs.variables }
         )
 
 
@@ -530,7 +531,7 @@ borderStrong : Attribute msg
 borderStrong =
     Attr.attr
         (\attrs ->
-            { attrs | variables = ( "--w-border-color", W.Theme.color.accentStrong ) :: attrs.variables }
+            { attrs | variables = ( "--w-border-color", W.Theme.Color.accentStrong ) :: attrs.variables }
         )
 
 
@@ -591,45 +592,9 @@ shadowLarge =
 
 
 {-| -}
-radius : W.Radius.Radius -> Attribute msg
+radius : W.Theme.Radius.Radius -> Attribute msg
 radius v =
-    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", W.Radius.toCSS v ) :: attrs.variables })
-
-
-{-| -}
-roundedExtraSmall : Attribute msg
-roundedExtraSmall =
-    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", W.Theme.radius.xs ) :: attrs.variables })
-
-
-{-| -}
-roundedSmall : Attribute msg
-roundedSmall =
-    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", W.Theme.radius.sm ) :: attrs.variables })
-
-
-{-| -}
-rounded : Attribute msg
-rounded =
-    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", W.Theme.radius.md ) :: attrs.variables })
-
-
-{-| -}
-roundedLarge : Attribute msg
-roundedLarge =
-    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", W.Theme.radius.lg ) :: attrs.variables })
-
-
-{-| -}
-roundedExtraLarge : Attribute msg
-roundedExtraLarge =
-    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", W.Theme.radius.xl ) :: attrs.variables })
-
-
-{-| -}
-roundedFull : Attribute msg
-roundedFull =
-    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", "9999px" ) :: attrs.variables })
+    Attr.attr (\attrs -> { attrs | variables = ( "--w-radius", W.Theme.Radius.toCSS v ) :: attrs.variables })
 
 
 
@@ -638,14 +603,14 @@ roundedFull =
 
 {-| Gap size in "rem".
 -}
-gap : W.Spacing.Spacing -> Attribute msg
+gap : W.Theme.Spacing.Spacing -> Attribute msg
 gap v =
     Attr.attr
         (\attrs ->
             { attrs
                 | gap = True
                 , staticClasses = "w--box-gap" :: attrs.staticClasses
-                , variables = ( "--w-gap", W.Spacing.toCSS v ) :: attrs.variables
+                , variables = ( "--w-gap", W.Theme.Spacing.toCSS v ) :: attrs.variables
             }
         )
 

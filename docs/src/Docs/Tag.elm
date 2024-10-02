@@ -4,7 +4,7 @@ import Book
 import Docs.UI
 import Html as H
 import W.Box
-import W.Spacing
+import W.Theme.Spacing
 import W.Tag
 
 
@@ -23,7 +23,7 @@ view =
                     Docs.UI.viewExample
                         ( label
                         , [ W.Box.view
-                                [ W.Box.gap W.Spacing.md
+                                [ W.Box.gap W.Theme.Spacing.md
                                 , W.Box.flex []
                                 ]
                                 [ W.Tag.view (W.Tag.large :: attrs) [ H.text label ]

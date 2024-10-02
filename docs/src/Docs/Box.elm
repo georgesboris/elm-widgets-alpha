@@ -4,7 +4,7 @@ import Book
 import Docs.UI
 import Html as H
 import W.Box
-import W.Spacing
+import W.Theme.Spacing
 import W.Theme
 
 
@@ -14,13 +14,13 @@ view =
         (List.map Docs.UI.viewExample
             [ ( "Flex"
               , [ W.Box.view
-                    [ W.Box.gap W.Spacing.xs
-                    , W.Box.padding W.Spacing.lg
-                    , W.Box.background W.Theme.color.tintSubtle
+                    [ W.Box.gap W.Theme.Spacing.xs
+                    , W.Box.padding W.Theme.Spacing.lg
+                    , W.Box.background W.Theme.Color.tintSubtle
                     , W.Box.rounded
                     ]
                     [ W.Box.view
-                        [ W.Box.gap W.Spacing.xs
+                        [ W.Box.gap W.Theme.Spacing.xs
                         , W.Box.flex [ W.Box.xSpaceBetween ]
                         ]
                         [ square
@@ -29,7 +29,7 @@ view =
                         , square
                         ]
                     , W.Box.view
-                        [ W.Box.gap W.Spacing.xs
+                        [ W.Box.gap W.Theme.Spacing.xs
                         , W.Box.flex [ W.Box.xSpaceEvenly ]
                         ]
                         [ square
@@ -38,7 +38,7 @@ view =
                         , square
                         ]
                     , W.Box.view
-                        [ W.Box.gap W.Spacing.xs
+                        [ W.Box.gap W.Theme.Spacing.xs
                         , W.Box.flex [ W.Box.xCenter ]
                         ]
                         [ square
@@ -47,7 +47,7 @@ view =
                         , square
                         ]
                     , W.Box.view
-                        [ W.Box.gap W.Spacing.xs
+                        [ W.Box.gap W.Theme.Spacing.xs
                         , W.Box.flex [ W.Box.xCenter ]
                         ]
                         [ square
@@ -71,7 +71,7 @@ view =
                             []
                 in
                 [ W.Box.view
-                    [ W.Box.gap W.Spacing.sm
+                    [ W.Box.gap W.Theme.Spacing.sm
                     , W.Box.grid []
                     ]
                     [ gridColumn [ W.Box.columnSpan 3 ]
@@ -83,19 +83,19 @@ view =
               )
             , ( "Box"
               , [ W.Box.view
-                    [ W.Box.gap W.Spacing.xs
+                    [ W.Box.gap W.Theme.Spacing.xs
                     , W.Box.height 6
-                    , W.Box.padding W.Spacing.md
+                    , W.Box.padding W.Theme.Spacing.md
                     , W.Box.tint
                     , W.Box.rounded
                     , W.Box.grid []
                     ]
                     [ W.Box.view
                         [ W.Box.flex []
-                        , W.Box.gap W.Spacing.xs
+                        , W.Box.gap W.Theme.Spacing.xs
                         , W.Box.rounded
                         , W.Box.shadowLarge
-                        , W.Box.padding W.Spacing.md
+                        , W.Box.padding W.Theme.Spacing.md
                         , W.Box.primary
                         , W.Box.solid
                         ]
@@ -127,7 +127,7 @@ square =
     W.Box.view
         [ W.Box.height 1
         , W.Box.width 1
-        , W.Box.background W.Theme.color.text
+        , W.Box.background W.Theme.Color.text
         , W.Box.rounded
         ]
         []

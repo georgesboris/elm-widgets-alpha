@@ -4,14 +4,14 @@ import Book
 import Html as H
 import W.Avatar
 import W.DataRow
-import W.Spacing
+import W.Theme.Spacing
 
 
 view : Book.Page model msg
 view =
     Book.page "DataRow"
         [ W.DataRow.viewExtra
-            [ W.DataRow.padding W.Spacing.md
+            [ W.DataRow.padding W.Theme.Spacing.md
             ]
             { header = [ H.text "Header" ]
             , main = [ H.text "Main" ]

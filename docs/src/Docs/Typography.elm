@@ -7,7 +7,7 @@ import Html as H
 import W.Box
 import W.Divider
 import W.Heading
-import W.Sizing
+import W.Theme.Sizing
 import W.Spacing
 import W.Text
 import W.TextInline
@@ -29,7 +29,7 @@ view =
                             W.Box.view
                                 [ W.Box.flex [ W.Box.xRight ] ]
                                 [ W.Box.view
-                                    [ W.Box.maxWidth W.Sizing.xl
+                                    [ W.Box.maxWidth W.Theme.Sizing.xl
                                     , W.Box.gap spacing
                                     , W.Box.padding W.Spacing.md
                                     ]

@@ -32,7 +32,7 @@ import Html.Attributes as HA
 import Svg as S
 import Svg.Attributes as SA
 import W.Internal.Helpers as WH
-import W.Theme
+import W.Theme.Color
 
 
 
@@ -61,7 +61,7 @@ defaultAttrs : Attributes
 defaultAttrs =
     { variant = Dots
     , size = 25
-    , color = W.Theme.color.accent
+    , color = W.Theme.Color.accent
     }
 
 

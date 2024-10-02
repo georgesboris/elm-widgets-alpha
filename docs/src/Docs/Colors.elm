@@ -8,7 +8,7 @@ import SolidColor
 import W.Box
 import W.Heading
 import W.Skeleton
-import W.Spacing
+import W.Theme.Spacing
 import W.Theme
 
 
@@ -23,7 +23,7 @@ view theme =
         (List.map Docs.UI.viewExample
             [ ( "Brand Colors"
               , [ W.Box.view
-                    [ W.Box.gap W.Spacing.xs ]
+                    [ W.Box.gap W.Theme.Spacing.xs ]
                     [ viewColorScale "Base" W.Box.base themeColors.base
                     , viewColorScale "Primary" W.Box.primary themeColors.primary
 
@@ -33,7 +33,7 @@ view theme =
               )
             , ( "Semantic Colors"
               , [ W.Box.view
-                    [ W.Box.gap W.Spacing.xs ]
+                    [ W.Box.gap W.Theme.Spacing.xs ]
                     [ viewColorScale "Success" W.Box.success themeColors.success
                     , viewColorScale "Warning" W.Box.warning themeColors.warning
                     , viewColorScale "Danger" W.Box.danger themeColors.danger
@@ -52,7 +52,7 @@ viewColorScale name colorScaleAttr colorScale =
     W.Box.view
         [ colorScaleAttr
         , W.Box.roundedSmall
-        , W.Box.padding W.Spacing.sm
+        , W.Box.padding W.Theme.Spacing.sm
         , W.Box.rounded
         , W.Box.grid []
         ]
@@ -66,7 +66,7 @@ viewColorScale name colorScaleAttr colorScale =
             [ W.Box.columnSpan 10 ]
             [ W.Box.view
                 [ W.Box.grid [ W.Box.columns 15 ]
-                , W.Box.gap W.Spacing.xs
+                , W.Box.gap W.Theme.Spacing.xs
                 ]
                 [ viewColorWithBorder "Bg" colorScale.bg
                 , viewColorWithBorder "Bg Subtle" colorScale.bgSubtle
@@ -97,7 +97,7 @@ viewColorWithBorder _ color =
             , W.Box.square
             , W.Box.rounded
             , W.Box.borderLarge
-            , W.Box.borderColor W.Theme.color.tint
+            , W.Box.borderColor W.Theme.Color.tint
             ]
             []
         ]

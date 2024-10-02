@@ -15,7 +15,7 @@ view =
             [ H.div []
                 [ W.Divider.view [ W.Divider.margins 1 ] []
                 , W.Divider.view [ W.Divider.margins 1, W.Divider.subtle ] [ H.text "Content" ]
-                , W.Divider.view [ W.Divider.margins 1, W.Divider.color W.Theme.color.tint ] []
+                , W.Divider.view [ W.Divider.margins 1, W.Divider.color W.Theme.Color.tint ] []
                 ]
             , H.div
                 [ HA.class "w--flex w--justify-around"
@@ -24,7 +24,7 @@ view =
                 ]
                 [ W.Divider.view [ W.Divider.vertical ] []
                 , W.Divider.view [ W.Divider.vertical, W.Divider.subtle ] [ H.text "Content" ]
-                , W.Divider.view [ W.Divider.vertical, W.Divider.color W.Theme.color.tint ] []
+                , W.Divider.view [ W.Divider.vertical, W.Divider.color W.Theme.Color.tint ] []
                 ]
             ]
         ]

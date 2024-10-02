@@ -16,6 +16,7 @@ import Attr
 import Html as H
 import Html.Attributes as HA
 import W.Theme
+import W.Theme.Color
 
 
 {-| -}
@@ -40,8 +41,8 @@ defaultAttrs =
     , icon = Nothing
     , name = ""
     , image = Nothing
-    , color = W.Theme.color.textSubtle
-    , background = W.Theme.color.tint
+    , color = W.Theme.Color.textSubtle
+    , background = W.Theme.Color.tint
     , custom = Nothing
     }
 
