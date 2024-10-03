@@ -8,7 +8,7 @@ import W.Box
 import W.Divider
 import W.Heading
 import W.Theme.Sizing
-import W.Spacing
+import W.Theme.Spacing
 import W.Text
 import W.TextInline
 
@@ -18,11 +18,11 @@ view =
     Book.page "Typography"
         (List.map Docs.UI.viewExample
             [ ( ""
-              , [ ( W.Spacing.xl, W.Heading.extraLarge, W.Text.extraLarge )
-                , ( W.Spacing.lg, W.Heading.large, W.Text.large )
-                , ( W.Spacing.md, Attr.none, Attr.none )
-                , ( W.Spacing.sm, W.Heading.small, W.Text.small )
-                , ( W.Spacing.xs, W.Heading.extraSmall, W.Text.extraSmall )
+              , [ ( W.Theme.Spacing.xl, W.Heading.extraLarge, W.Text.extraLarge )
+                , ( W.Theme.Spacing.lg, W.Heading.large, W.Text.large )
+                , ( W.Theme.Spacing.md, Attr.none, Attr.none )
+                , ( W.Theme.Spacing.sm, W.Heading.small, W.Text.small )
+                , ( W.Theme.Spacing.xs, W.Heading.extraSmall, W.Text.extraSmall )
                 ]
                     |> List.map
                         (\( spacing, headingSize, textSize ) ->
@@ -31,7 +31,7 @@ view =
                                 [ W.Box.view
                                     [ W.Box.maxWidth W.Theme.Sizing.xl
                                     , W.Box.gap spacing
-                                    , W.Box.padding W.Spacing.md
+                                    , W.Box.padding W.Theme.Spacing.md
                                     ]
                                     [ W.Heading.view
                                         [ headingSize ]

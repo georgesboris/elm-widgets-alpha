@@ -7,7 +7,7 @@ import Html as H
 import W.Box
 import W.Button
 import W.Heading
-import W.Spacing
+import W.Theme.Spacing
 import W.Text
 
 
@@ -25,7 +25,7 @@ The description of the Button component.
             , left = []
             , right =
                 [ W.Box.view
-                    [ W.Box.gap W.Spacing.lg ]
+                    [ W.Box.gap W.Theme.Spacing.lg ]
                     (List.concat
                         [ [ ( "Default", Attr.none )
                           , ( "Outline", W.Button.outline )

@@ -21,6 +21,7 @@ module W.Box exposing
     , xyCenter
     , xCenter, xLeft, xRight, xStretch, xSpaceBetween, xSpaceAround, xSpaceEvenly
     , yCenter, yTop, yBottom, yStretch, ySpaceBetween, ySpaceAround, ySpaceEvenly
+    , wrap, noWrap
     , grow, growAttr
     , columns, columnEnd, columnSpan, columnStart
     , relative, sticky
@@ -103,6 +104,7 @@ module W.Box exposing
 @docs xyCenter
 @docs xCenter, xLeft, xRight, xStretch, xSpaceBetween, xSpaceAround, xSpaceEvenly
 @docs yCenter, yTop, yBottom, yStretch, ySpaceBetween, ySpaceAround, ySpaceEvenly
+@docs wrap, noWrap
 @docs grow, growAttr
 
 
@@ -869,6 +871,18 @@ growAttr =
 
 
 {-| -}
+wrap : FlexAttribute
+wrap =
+    Attr.attr (\attrs -> { attrs | wrap = Just True })
+
+
+{-| -}
+noWrap : FlexAttribute
+noWrap =
+    Attr.attr (\attrs -> { attrs | wrap = Just False })
+
+
+{-| -}
 vertical : FlexAttribute
 vertical =
     Attr.attr (\attrs -> { attrs | vertical = Just True })
@@ -1235,7 +1249,20 @@ alignmentClasses : Attributes msg -> List String
 alignmentClasses attrs =
     case attrs.layout of
         Flex flexAttrs ->
-            flexAlignmentClass flexAttrs
+            let
+                classes : List String
+                classes =
+                    flexAlignmentClass flexAttrs
+            in
+            case flexAttrs.wrap of
+                Nothing ->
+                    classes
+
+                Just True ->
+                    "w--flex-wrap" :: classes
+
+                Just False ->
+                    "w--flex-nowrap" :: classes
 
         _ ->
             []

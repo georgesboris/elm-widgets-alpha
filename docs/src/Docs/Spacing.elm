@@ -6,7 +6,7 @@ import Html as H
 import W.Box
 import W.Theme.Radius
 import W.Theme.Sizing
-import W.Spacing
+import W.Theme.Spacing
 import W.Text
 
 
@@ -15,19 +15,19 @@ view =
     Book.page "Radius, Spacing & Sizing"
         (List.map Docs.UI.viewExample
             [ ( "Radius"
-              , [ ( "xs", W.Spacing.xs, W.Theme.Radius.xs )
-                , ( "sm", W.Spacing.sm, W.Theme.Radius.sm )
-                , ( "md", W.Spacing.md, W.Theme.Radius.md )
-                , ( "lg", W.Spacing.lg, W.Theme.Radius.lg )
-                , ( "xl", W.Spacing.xl, W.Theme.Radius.xl )
-                , ( "xl2", W.Spacing.xl2, W.Theme.Radius.xl2 )
-                , ( "xl3", W.Spacing.xl3, W.Theme.Radius.xl3 )
+              , [ ( "xs", W.Theme.Spacing.xs, W.Theme.Radius.xs )
+                , ( "sm", W.Theme.Spacing.sm, W.Theme.Radius.sm )
+                , ( "md", W.Theme.Spacing.md, W.Theme.Radius.md )
+                , ( "lg", W.Theme.Spacing.lg, W.Theme.Radius.lg )
+                , ( "xl", W.Theme.Spacing.xl, W.Theme.Radius.xl )
+                , ( "xl2", W.Theme.Spacing.xl2, W.Theme.Radius.xl2 )
+                , ( "xl3", W.Theme.Spacing.xl3, W.Theme.Radius.xl3 )
                 ]
                     |> List.map
                         (\( name, spacing, radius ) ->
                             W.Box.view
                                 [ W.Box.flex [ W.Box.yCenter ]
-                                , W.Box.gap W.Spacing.xs
+                                , W.Box.gap W.Theme.Spacing.xs
                                 ]
                                 [ W.Box.view
                                     [ W.Box.width 2 ]
@@ -45,19 +45,19 @@ view =
                         )
               )
             , ( "Spacing"
-              , [ ( "xs", W.Spacing.xs )
-                , ( "sm", W.Spacing.sm )
-                , ( "md", W.Spacing.md )
-                , ( "lg", W.Spacing.lg )
-                , ( "xl", W.Spacing.xl )
-                , ( "xl2", W.Spacing.xl2 )
-                , ( "xl3", W.Spacing.xl3 )
+              , [ ( "xs", W.Theme.Spacing.xs )
+                , ( "sm", W.Theme.Spacing.sm )
+                , ( "md", W.Theme.Spacing.md )
+                , ( "lg", W.Theme.Spacing.lg )
+                , ( "xl", W.Theme.Spacing.xl )
+                , ( "xl2", W.Theme.Spacing.xl2 )
+                , ( "xl3", W.Theme.Spacing.xl3 )
                 ]
                     |> List.map
                         (\( name, spacing ) ->
                             W.Box.view
                                 [ W.Box.flex [ W.Box.yCenter ]
-                                , W.Box.gap W.Spacing.xs
+                                , W.Box.gap W.Theme.Spacing.xs
                                 ]
                                 [ W.Box.view
                                     [ W.Box.width 2 ]
@@ -66,10 +66,10 @@ view =
                                         [ H.text name ]
                                     ]
                                 , W.Box.view
-                                    [ W.Box.widthCustom (W.Spacing.toCSS spacing)
+                                    [ W.Box.widthCustom (W.Theme.Spacing.toCSS spacing)
                                     , W.Box.height 2
                                     , W.Box.tint
-                                    , W.Box.rounded
+                                    , W.Box.radius W.Theme.Radius.md
                                     ]
                                     []
                                 ]
@@ -88,7 +88,7 @@ view =
                         (\( name, sizing ) ->
                             W.Box.view
                                 [ W.Box.flex [ W.Box.yCenter ]
-                                , W.Box.gap W.Spacing.xs
+                                , W.Box.gap W.Theme.Spacing.xs
                                 ]
                                 [ W.Box.view
                                     [ W.Box.width 2 ]
@@ -100,7 +100,7 @@ view =
                                     [ W.Box.widthCustom (W.Theme.Sizing.toCSS sizing)
                                     , W.Box.height 2
                                     , W.Box.tint
-                                    , W.Box.rounded
+                                    , W.Box.radius W.Theme.Radius.md
                                     ]
                                     []
                                 ]

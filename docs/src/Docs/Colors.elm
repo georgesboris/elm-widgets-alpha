@@ -9,13 +9,15 @@ import W.Box
 import W.Heading
 import W.Skeleton
 import W.Theme.Spacing
+import W.Theme.Radius
+import W.Theme.Color
 import W.Theme
 
 
 view : W.Theme.Theme -> Book.Page model msg
 view theme =
     let
-        themeColors : W.Theme.ColorPalette
+        themeColors : W.Theme.Color.ColorPalette
         themeColors =
             W.Theme.toColorPalette theme
     in
@@ -47,13 +49,12 @@ view theme =
         )
 
 
-viewColorScale : String -> W.Box.Attribute msg -> W.Theme.ColorScale -> H.Html msg
+viewColorScale : String -> W.Box.Attribute msg -> W.Theme.Color.ColorScale -> H.Html msg
 viewColorScale name colorScaleAttr colorScale =
     W.Box.view
         [ colorScaleAttr
-        , W.Box.roundedSmall
         , W.Box.padding W.Theme.Spacing.sm
-        , W.Box.rounded
+        , W.Box.radius W.Theme.Radius.md
         , W.Box.grid []
         ]
         [ W.Box.view
@@ -95,7 +96,7 @@ viewColorWithBorder _ color =
             [ W.Box.background (Color.toCssString color)
             , W.Box.widthFull
             , W.Box.square
-            , W.Box.rounded
+            , W.Box.radius W.Theme.Radius.md
             , W.Box.borderLarge
             , W.Box.borderColor W.Theme.Color.tint
             ]
@@ -111,7 +112,7 @@ viewColor _ color =
             [ W.Box.background (Color.toCssString color)
             , W.Box.square
             , W.Box.widthFull
-            , W.Box.rounded
+            , W.Box.radius W.Theme.Radius.md
             ]
             []
 

@@ -5,6 +5,7 @@ import Html as H
 import Html.Attributes as HA
 import W.Divider
 import W.Theme
+import W.Theme.Color
 
 
 view : Book.Page model Book.Msg

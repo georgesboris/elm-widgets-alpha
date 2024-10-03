@@ -14,7 +14,9 @@ import Html.Attributes as HA
 import W.Box
 import W.Divider
 import W.Heading
+import W.Theme.Color
 import W.Theme.Spacing
+import W.Theme.Radius
 import W.Text
 import W.Theme
 
@@ -78,7 +80,7 @@ viewDetailedExample props =
         , W.Box.background W.Theme.Color.bg
         , W.Box.borderSmall
         , W.Box.borderSubtle
-        , W.Box.rounded
+        , W.Box.radius W.Theme.Radius.md
         ]
         [ -- Header
           W.Box.view
@@ -123,7 +125,7 @@ viewExample ( label, content ) =
             [ H.text label ]
         , W.Box.view
             [ W.Box.borderSmall
-            , W.Box.rounded
+            , W.Box.radius W.Theme.Radius.md
             , W.Box.borderSubtle
             , W.Box.shadow
             , W.Box.padding W.Theme.Spacing.sm

@@ -4,7 +4,9 @@ import Book
 import Docs.UI
 import Html as H
 import W.Box
+import W.Theme.Color
 import W.Theme.Spacing
+import W.Theme.Radius
 import W.Theme
 
 
@@ -17,7 +19,7 @@ view =
                     [ W.Box.gap W.Theme.Spacing.xs
                     , W.Box.padding W.Theme.Spacing.lg
                     , W.Box.background W.Theme.Color.tintSubtle
-                    , W.Box.rounded
+                    , W.Box.radius W.Theme.Radius.md
                     ]
                     [ W.Box.view
                         [ W.Box.gap W.Theme.Spacing.xs
@@ -84,16 +86,17 @@ view =
             , ( "Box"
               , [ W.Box.view
                     [ W.Box.gap W.Theme.Spacing.xs
-                    , W.Box.height 6
                     , W.Box.padding W.Theme.Spacing.md
                     , W.Box.tint
-                    , W.Box.rounded
-                    , W.Box.grid []
+                    , W.Box.radius W.Theme.Radius.md
+                    , W.Box.flex [ W.Box.wrap, W.Box.yStretch ]
+                    , W.Box.gap W.Theme.Spacing.md
                     ]
-                    [ W.Box.view
+                    ([ W.Box.view
                         [ W.Box.flex []
+                        , W.Box.square
                         , W.Box.gap W.Theme.Spacing.xs
-                        , W.Box.rounded
+                        , W.Box.radius W.Theme.Radius.md
                         , W.Box.shadowLarge
                         , W.Box.padding W.Theme.Spacing.md
                         , W.Box.primary
@@ -102,20 +105,26 @@ view =
                         [ square, square ]
                     , W.Box.view
                         [ W.Box.shadowSmall
-                        , W.Box.tint
-                        , W.Box.rounded
+                        , W.Box.square
+                        , W.Box.solid
+                        , W.Box.radius W.Theme.Radius.md
                         ]
                         []
                     , W.Box.viewLink
                         [ W.Box.shadowLarge
-                        , W.Box.rounded
+                        , W.Box.square
+                        , W.Box.radius W.Theme.Radius.md
                         , W.Box.solid
                         , W.Box.danger
+                        , W.Box.padding W.Theme.Spacing.md
                         ]
                         { href = "#"
                         , content = [ H.text "Click moi" ]
                         }
                     ]
+                        |> List.repeat 3
+                        |> List.concat
+                    )
                 ]
               )
             ]
@@ -128,6 +137,6 @@ square =
         [ W.Box.height 1
         , W.Box.width 1
         , W.Box.background W.Theme.Color.text
-        , W.Box.rounded
+        , W.Box.radius W.Theme.Radius.md
         ]
         []

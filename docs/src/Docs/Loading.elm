@@ -4,6 +4,7 @@ import Book
 import Docs.UI
 import W.Loading
 import W.Theme
+import W.Theme.Color
 
 
 view : Book.Page model msg
@@ -12,17 +13,17 @@ view =
         [ Docs.UI.viewHorizontal
             [ W.Loading.view
                 [ W.Loading.size 40
-                , W.Loading.color W.Theme.primaryScale.accent
+                , W.Loading.color W.Theme.Color.primaryAccent
                 ]
             , W.Loading.view
                 [ W.Loading.circles
                 , W.Loading.size 40
-                , W.Loading.color W.Theme.primaryScale.accentStrong
+                , W.Loading.color W.Theme.Color.primaryAccentStrong
                 ]
             , W.Loading.view
                 [ W.Loading.ripples
                 , W.Loading.size 40
-                , W.Loading.color W.Theme.secondaryScale.accentStrong
+                , W.Loading.color W.Theme.Color.secondaryAccentStrong
                 ]
             , W.Loading.view [ W.Loading.circles ]
             ]

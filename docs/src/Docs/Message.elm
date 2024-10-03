@@ -5,6 +5,7 @@ import Docs.UI
 import Html as H
 import W.Box
 import W.Message
+import W.Theme.Color
 import W.Theme.Spacing
 import W.Theme
 
@@ -13,11 +14,11 @@ view : Book.Page model Book.Msg
 view =
     Book.page "Message"
         ([ ( [], "Neutral" )
-         , ( [ W.Message.variant W.Theme.primary ], "Primary" )
-         , ( [ W.Message.variant W.Theme.secondary ], "Secondary" )
-         , ( [ W.Message.variant W.Theme.success ], "Success" )
-         , ( [ W.Message.variant W.Theme.warning ], "Warning" )
-         , ( [ W.Message.variant W.Theme.danger ], "Danger" )
+         , ( [ W.Message.variant W.Theme.Color.Primary ], "Primary" )
+         , ( [ W.Message.variant W.Theme.Color.Secondary ], "Secondary" )
+         , ( [ W.Message.variant W.Theme.Color.Success ], "Success" )
+         , ( [ W.Message.variant W.Theme.Color.Warning ], "Warning" )
+         , ( [ W.Message.variant W.Theme.Color.Danger ], "Danger" )
          ]
             |> List.map
                 (\( attrs, label ) ->
