@@ -1,7 +1,7 @@
 module W.TextInline exposing
     ( view
     , notSubtle, subtle, color
-    , light, semibold, bold
+    , light, regular, semibold, bold
     , italic, lineThrough, underline, uppercase, lowercase, subscript, superscript
     , Attribute
     )
@@ -18,7 +18,7 @@ module W.TextInline exposing
 
 ## Font Weight
 
-@docs light, semibold, bold
+@docs light, regular, semibold, bold
 
 
 ## Font Style & Decorations
@@ -95,6 +95,12 @@ color v =
 light : Attribute
 light =
     Attr.attr (\attrs -> { attrs | fontWeight = "w--font-light" })
+
+
+{-| -}
+regular : Attribute
+regular =
+    Attr.attr (\attrs -> { attrs | fontWeight = "w--font-normal" })
 
 
 {-| -}
