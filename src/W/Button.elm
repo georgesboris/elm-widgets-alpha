@@ -1,7 +1,7 @@
 module W.Button exposing
     ( view, viewLink, viewSubmit, viewDummy, Attribute
     , primary, secondary, success, warning, danger
-    , outline, invisible, tint
+    , outline, invisible, tint, subtle
     , rounded, radius
     , full, icon
     , disabled
@@ -15,7 +15,7 @@ module W.Button exposing
 @docs view, viewLink, viewSubmit, viewDummy, Attribute
 
 @docs primary, secondary, success, warning, danger
-@docs outline, invisible, tint
+@docs outline, invisible, tint, subtle
 
 @docs rounded, radius
 @docs full, icon
@@ -65,6 +65,7 @@ type ButtonStyle
     | Outline
     | Tint
     | Invisible
+    | Subtle
 
 
 type ButtonSize
@@ -170,6 +171,12 @@ invisible =
     Attr.attr (\attrs -> { attrs | style = Invisible })
 
 
+{-| -}
+subtle : Attribute msg
+subtle =
+    Attr.attr (\attrs -> { attrs | style = Subtle })
+
+
 
 -- Attrs : Radius
 
@@ -257,7 +264,7 @@ view =
         (\attrs props ->
             H.button
                 (HE.onClick props.onClick :: HA.type_ "button" :: htmlAttrs attrs)
-                props.label
+                (toLabel attrs props.label)
         )
 
 
@@ -271,7 +278,7 @@ viewSubmit =
         (\attrs label ->
             H.button
                 (HA.type_ "submit" :: htmlAttrs attrs)
-                label
+                (toLabel attrs label)
         )
 
 
@@ -285,7 +292,7 @@ viewDummy =
         (\attrs label ->
             H.button
                 (htmlAttrs attrs)
-                label
+                (toLabel attrs label)
         )
 
 
@@ -302,12 +309,27 @@ viewLink =
         (\attrs props ->
             H.a
                 (HA.href props.href :: htmlAttrs attrs)
-                props.label
+                (toLabel attrs props.label)
         )
 
 
 
 -- Views : Helpers
+
+
+toLabel : Attributes msg -> List (H.Html msg) -> List (H.Html msg)
+toLabel attrs children =
+    [ H.div
+        [ HA.class "w--flex w--items-center"
+        , case attrs.style of
+            Subtle ->
+                HA.class "w--text-subtle group-hover/btn:w--text-default group-active/btn:w--text-subtle"
+
+            _ ->
+                HA.class ""
+        ]
+        children
+    ]
 
 
 htmlAttrs : Attributes msg -> List (H.Attribute msg)
@@ -350,6 +372,7 @@ htmlAttrs attrs =
                 ]
     in
     [ WH.maybeAttr HA.id attrs.id
+    , HA.class "w--group/btn"
     , HA.class "w--box-border w--relative"
     , HA.class "w--inline-flex w--items-center "
     , HA.class "w--no-underline"
@@ -428,6 +451,9 @@ htmlAttrs attrs =
         Tint ->
             HA.class "w/tint w--border-transparent"
 
-        Invisible ->
-            HA.class "w/focus w--border-transparent w--bg-transparent hover:w--bg-tint active:w--bg-tint-subtle w--border-none"
+        _ ->
+            HA.class
+                ("w/focus w--border-transparent w--bg-transparent"
+                    ++ " hover:w--bg-tint active:w--bg-tint-subtle w--border-none"
+                )
     ]

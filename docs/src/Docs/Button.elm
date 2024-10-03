@@ -31,6 +31,7 @@ The description of the Button component.
                           , ( "Outline", W.Button.outline )
                           , ( "Tint", W.Button.tint )
                           , ( "Invisible", W.Button.invisible )
+                          , ( "Subtle", W.Button.subtle )
                           ]
                             |> List.map
                                 (\( label, attr ) ->
