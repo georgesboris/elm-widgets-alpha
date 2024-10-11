@@ -1,16 +1,17 @@
 module W.Text exposing
-    ( view
+    ( view, viewInline
     , extraLarge, large, small, extraSmall, fontSize
-    , subtle, color
-    , light, semibold, bold
-    , lineHeight
+    , default, subtle, color
+    , light, regular, semibold, bold
+    , italic, lineThrough, underline, uppercase, lowercase, subscript, superscript
+    , lineHeight, letterSpacing
     , alignCenter, alignRight
     , Attribute
     )
 
 {-|
 
-@docs view
+@docs view, viewInline
 
 
 ## Sizes
@@ -20,17 +21,22 @@ module W.Text exposing
 
 ## Colors
 
-@docs subtle, color
+@docs default, subtle, color
 
 
 ## Font Weight
 
-@docs light, semibold, bold
+@docs light, regular, semibold, bold
 
 
-## Line Height
+## Font Style & Transformations
 
-@docs lineHeight
+@docs italic, lineThrough, underline, uppercase, lowercase, subscript, superscript
+
+
+## Typography Settings
+
+@docs lineHeight, letterSpacing
 
 
 ## Alignment
@@ -53,9 +59,13 @@ type alias Attribute =
 
 
 type alias Attributes =
-    { fontSize : FontSize
+    { styles : String
+    , casing : String
+    , subsuper : String
+    , fontSize : FontSize
     , fontWeight : String
     , lineHeight : Maybe Float
+    , letterSpacing : Maybe Float
     , textAlignment : String
     , color : Color
     }
@@ -64,6 +74,7 @@ type alias Attributes =
 type FontSize
     = FontSizeClass String
     | FontSizeRem Float
+    | FontSizeEm Float
 
 
 type Color
@@ -73,9 +84,13 @@ type Color
 
 defaultAttrs : Attributes
 defaultAttrs =
-    { fontSize = FontSizeClass ""
+    { styles = ""
+    , casing = ""
+    , subsuper = ""
+    , fontSize = FontSizeClass ""
     , fontWeight = ""
     , lineHeight = Nothing
+    , letterSpacing = Nothing
     , textAlignment = ""
     , color = ColorClass ""
     }
@@ -83,6 +98,12 @@ defaultAttrs =
 
 
 -- Attrs : Colors
+
+
+{-| -}
+default : Attribute
+default =
+    Attr.attr (\attrs -> { attrs | color = ColorClass "w--text-text" })
 
 
 {-| -}
@@ -143,6 +164,12 @@ light =
 
 
 {-| -}
+regular : Attribute
+regular =
+    Attr.attr (\attrs -> { attrs | fontWeight = "w--font-normal" })
+
+
+{-| -}
 semibold : Attribute
 semibold =
     Attr.attr (\attrs -> { attrs | fontWeight = "w--font-semibold" })
@@ -155,7 +182,7 @@ bold =
 
 
 
--- Attrs : Line Height
+-- Attrs : Typography Settings
 
 
 {-| Customize the line height using "em" as unit. This way the line height is always related to the current font size.
@@ -163,6 +190,13 @@ bold =
 lineHeight : Float -> Attribute
 lineHeight v =
     Attr.attr (\attrs -> { attrs | lineHeight = Just v })
+
+
+{-| Customize the letter spacing using "em" as unit. This way the letter spacing is always related to the current font size.
+-}
+letterSpacing : Float -> Attribute
+letterSpacing v =
+    Attr.attr (\attrs -> { attrs | letterSpacing = Just v })
 
 
 
@@ -182,21 +216,87 @@ alignRight =
 
 
 
+-- Attrs : Styles
+
+
+{-| -}
+italic : Attribute
+italic =
+    Attr.attr (\attrs -> { attrs | styles = attrs.styles ++ " w--italic" })
+
+
+{-| -}
+lineThrough : Attribute
+lineThrough =
+    Attr.attr (\attrs -> { attrs | styles = attrs.styles ++ " w--line-through" })
+
+
+{-| -}
+underline : Attribute
+underline =
+    Attr.attr (\attrs -> { attrs | styles = attrs.styles ++ " w--underline" })
+
+
+{-| -}
+lowercase : Attribute
+lowercase =
+    Attr.attr (\attrs -> { attrs | casing = "w--lowercase" })
+
+
+{-| -}
+uppercase : Attribute
+uppercase =
+    Attr.attr (\attrs -> { attrs | casing = "w--uppercase" })
+
+
+{-| -}
+superscript : Attribute
+superscript =
+    Attr.attr (\attrs -> { attrs | subsuper = "w--align-super", fontSize = FontSizeEm 0.8 })
+
+
+{-| -}
+subscript : Attribute
+subscript =
+    Attr.attr (\attrs -> { attrs | subsuper = "w--align-sub", fontSize = FontSizeEm 0.8 })
+
+
+
 -- View
 
 
 {-| -}
 view : List Attribute -> List (H.Html msg) -> H.Html msg
 view =
+    view_ H.p
+
+
+{-| -}
+viewInline : List Attribute -> List (H.Html msg) -> H.Html msg
+viewInline =
+    view_ H.span
+
+
+view_ : (List (H.Attribute msg) -> List (H.Html msg) -> H.Html msg) -> List Attribute -> List (H.Html msg) -> H.Html msg
+view_ node =
     Attr.withAttrs defaultAttrs
         (\attrs children ->
-            H.p
+            node
                 [ HA.class "w--m-0"
+                , HA.class attrs.styles
+                , HA.class attrs.casing
+                , HA.class attrs.subsuper
                 , HA.class attrs.textAlignment
                 , HA.class attrs.fontWeight
                 , case attrs.lineHeight of
                     Just value ->
                         HA.style "line-height" (WH.em value)
+
+                    Nothing ->
+                        HA.class ""
+                , case attrs.letterSpacing of
+                    Just value ->
+                        HA.style "letter-spacing" (WH.em value)
 
                     Nothing ->
                         HA.class ""
@@ -209,6 +309,9 @@ view =
                 , case attrs.fontSize of
                     FontSizeRem value ->
                         HA.style "font-size" (WH.rem value)
+
+                    FontSizeEm value ->
+                        HA.style "font-size" (WH.em value)
 
                     FontSizeClass value ->
                         HA.class value

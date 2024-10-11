@@ -23,9 +23,10 @@
  */
 
 .w--box {
+  --w-gap: 0;
+  --w-radius: 0;
   --w-width: auto;
   --w-height: auto;
-  --w-radius: 0px;
   --w-border-color: var(--w-accent);
   --tw-shadow-color: var(--w-shadow);
   --tw-shadow: var(--tw-shadow-colored);

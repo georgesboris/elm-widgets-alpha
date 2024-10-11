@@ -158,13 +158,13 @@ small =
 {-| -}
 large : Attribute msg
 large =
-    Attr.attr (\attrs -> { attrs | fontSize = FontSizeClass "w--text-4xl" })
+    Attr.attr (\attrs -> { attrs | fontSize = FontSizeClass "w--text-3xl" })
 
 
 {-| -}
 extraLarge : Attribute msg
 extraLarge =
-    Attr.attr (\attrs -> { attrs | fontSize = FontSizeClass "w--text-5xl" })
+    Attr.attr (\attrs -> { attrs | fontSize = FontSizeClass "w--text-4xl" })
 
 
 {-| Customize the font size using "rem" as unit. This way the font size is always related to the base font size of the html element.

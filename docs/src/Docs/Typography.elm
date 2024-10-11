@@ -10,7 +10,6 @@ import W.Heading
 import W.Theme.Sizing
 import W.Theme.Spacing
 import W.Text
-import W.TextInline
 
 
 view : Book.Page model msg
@@ -39,14 +38,14 @@ view =
                                     , W.Text.view
                                         [ textSize ]
                                         [ H.text "Lorem ipsum dolor sit amet, "
-                                        , W.TextInline.view
-                                            [ W.TextInline.bold, W.TextInline.underline ]
+                                        , W.Text.viewInline
+                                            [ W.Text.bold, W.Text.underline ]
                                             [ H.text "consectetur adipiscing elit" ]
                                         , H.text ", sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-                                        , W.TextInline.view
-                                            [ W.TextInline.subtle ]
+                                        , W.Text.viewInline
+                                            [ W.Text.subtle ]
                                             [ H.text "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex"
-                                            , W.TextInline.view [ W.TextInline.subscript ] [ H.text "ea" ]
+                                            , W.Text.viewInline [ W.Text.subscript ] [ H.text "ea" ]
                                             , H.text " commodo consequat."
                                             ]
                                         ]
