@@ -85,8 +85,7 @@ view =
               )
             , ( "Box"
               , [ W.Box.view
-                    [ W.Box.gap W.Theme.Spacing.xs
-                    , W.Box.padding W.Theme.Spacing.md
+                    [ W.Box.padding W.Theme.Spacing.md
                     , W.Box.tint
                     , W.Box.radius W.Theme.Radius.md
                     , W.Box.flex [ W.Box.wrap, W.Box.yStretch ]
@@ -94,9 +93,10 @@ view =
                     ]
                     ([ W.Box.view
                         [ W.Box.flex []
-                        , W.Box.square
+                        , W.Box.cardSmall
+                        , W.Box.width 6
+                        , W.Box.squareRatio
                         , W.Box.gap W.Theme.Spacing.xs
-                        , W.Box.radius W.Theme.Radius.md
                         , W.Box.shadowLarge
                         , W.Box.padding W.Theme.Spacing.md
                         , W.Box.primary
@@ -104,16 +104,16 @@ view =
                         ]
                         [ square, square ]
                     , W.Box.view
-                        [ W.Box.shadowSmall
-                        , W.Box.square
+                        [ W.Box.card
+                        , W.Box.width 6
+                        , W.Box.squareRatio
                         , W.Box.solid
-                        , W.Box.radius W.Theme.Radius.md
                         ]
                         []
                     , W.Box.viewLink
-                        [ W.Box.shadowLarge
-                        , W.Box.square
-                        , W.Box.radius W.Theme.Radius.md
+                        [ W.Box.cardLarge
+                        , W.Box.width 6
+                        , W.Box.squareRatio
                         , W.Box.solid
                         , W.Box.danger
                         , W.Box.padding W.Theme.Spacing.md

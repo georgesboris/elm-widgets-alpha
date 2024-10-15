@@ -95,7 +95,7 @@ viewColorWithBorder _ color =
         [ W.Box.view
             [ W.Box.background (Color.toCssString color)
             , W.Box.widthFull
-            , W.Box.square
+            , W.Box.squareRatio
             , W.Box.radius W.Theme.Radius.md
             , W.Box.borderLarge
             , W.Box.borderColor W.Theme.Color.tint
@@ -110,7 +110,7 @@ viewColor _ color =
         []
         [ W.Box.view
             [ W.Box.background (Color.toCssString color)
-            , W.Box.square
+            , W.Box.squareRatio
             , W.Box.widthFull
             , W.Box.radius W.Theme.Radius.md
             ]

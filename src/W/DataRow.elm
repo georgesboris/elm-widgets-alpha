@@ -98,7 +98,7 @@ viewExtra =
         (\attrs props ->
             W.Box.view
                 [ W.Box.flex []
-                , W.Box.styles
+                , W.Box.styleList
                     [ ( "padding", W.Theme.Spacing.toCSS attrs.padding )
                     , ( "gap", W.Theme.Spacing.toCSS attrs.gap )
                     ]

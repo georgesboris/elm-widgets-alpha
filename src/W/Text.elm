@@ -115,7 +115,7 @@ subtle =
 {-| -}
 color : String -> Attribute
 color v =
-    Attr.attr (\attrs -> { attrs | color = ColorClass v })
+    Attr.attr (\attrs -> { attrs | color = ColorCustom v })
 
 
 

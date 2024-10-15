@@ -18,7 +18,7 @@ view =
             [ W.Avatar.view [ W.Avatar.name "User" ]
             , W.Avatar.view [ W.Avatar.names "User" "Name" ]
             , W.Avatar.view [ W.Avatar.name "User", W.Avatar.theme { color = "white", background = "black" } ]
-            , W.Avatar.view [ W.Avatar.custom (W.Box.view [ W.Box.solid, W.Box.square, W.Box.width 1 ] []) ]
+            , W.Avatar.view [ W.Avatar.custom (W.Box.view [ W.Box.solid, W.Box.squareRatio, W.Box.width 1 ] []) ]
             , W.Avatar.view [ W.Avatar.image "https://picsum.photos/200/200" ]
             ]
         ]

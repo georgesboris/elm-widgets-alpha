@@ -1,13 +1,15 @@
 module W.Box exposing
     ( view, viewButton, viewLink, Attribute
+    , size
     , width, widthRelative, widthFull, minWidth, maxWidth, widthCustom
     , height, heightRelative, heightFull, heightScreen, heightCustom
-    , square
+    , squareRatio, widescreenRatio, cinemascopeRatio
     , border, borderColor, borderLarge, borderSmall, borderStrong, borderSubtle
-    , radius
+    , card, cardSmall, cardLarge
+    , rounded, roundedSmall, roundedLarge, radius
     , shadow, shadowLarge, shadowSmall
     , base, primary, secondary, success, warning, danger
-    , tint, solid
+    , bg, subtle, tint, solid
     , background
     , padding
     , xPadding, yPadding
@@ -23,12 +25,12 @@ module W.Box exposing
     , yCenter, yTop, yBottom, yStretch, ySpaceBetween, ySpaceAround, ySpaceEvenly
     , wrap, noWrap
     , grow, growAttr
+    , noShrink, noShrinkAttr
     , columns, columnEnd, columnSpan, columnStart
     , relative, sticky
     , largeScreen
-    , class, classList, styles
+    , class, classList, styleList
     , id, node
-    , noShrink, noShrinkAttr
     )
 
 {-|
@@ -53,9 +55,10 @@ module W.Box exposing
 
 ## Sizing
 
+@docs size
 @docs width, widthRelative, widthFull, minWidth, maxWidth, widthCustom
 @docs height, heightRelative, heightFull, heightScreen, heightCustom
-@docs square
+@docs squareRatio, widescreenRatio, cinemascopeRatio
 
 
 ## Decorations
@@ -66,9 +69,14 @@ module W.Box exposing
 @docs border, borderColor, borderLarge, borderSmall, borderStrong, borderSubtle
 
 
+### Card
+
+@docs card, cardSmall, cardLarge
+
+
 ### Border Radius
 
-@docs radius
+@docs rounded, roundedSmall, roundedLarge, radius
 
 
 ### Shadows
@@ -79,7 +87,7 @@ module W.Box exposing
 ## Theming
 
 @docs base, primary, secondary, success, warning, danger
-@docs tint, solid
+@docs bg, subtle, tint, solid
 @docs background
 
 
@@ -107,6 +115,7 @@ module W.Box exposing
 @docs yCenter, yTop, yBottom, yStretch, ySpaceBetween, ySpaceAround, ySpaceEvenly
 @docs wrap, noWrap
 @docs grow, growAttr
+@docs noShrink, noShrinkAttr
 
 
 ## Grid
@@ -126,7 +135,7 @@ module W.Box exposing
 
 ## Customizing
 
-@docs class, classList, styles
+@docs class, classList, styleList
 
 
 ## Html
@@ -287,8 +296,8 @@ node v =
 
 {-| Pass in extra CSS styles. Note: these styles might conflict with W.Box's own styles.
 -}
-styles : List ( String, String ) -> Attribute msg
-styles v =
+styleList : List ( String, String ) -> Attribute msg
+styleList v =
     Attr.attr (\attrs -> { attrs | styles = v ++ attrs.styles })
 
 
@@ -323,6 +332,13 @@ classList list =
 
 
 -- Attrs : Sizing --------------------------------------------------------------
+
+
+{-| Set width and height in "rem" at the same time.
+-}
+size : Float -> Attribute msg
+size v =
+    Attr.attr (\attrs -> { attrs | variables = ( "--w-width", WH.rem v ) :: ( "--w-height", WH.rem v ) :: attrs.variables })
 
 
 {-| Width in "rem".
@@ -414,9 +430,23 @@ heightScreen =
 
 {-| Sets aspect ratio for the box as 1:1.
 -}
-square : Attribute msg
-square =
+squareRatio : Attribute msg
+squareRatio =
     Attr.attr (\attrs -> { attrs | classes = "w--aspect-square" :: attrs.classes })
+
+
+{-| Sets aspect ratio for the box as 16:9. This is the default ratio for video embeds.
+-}
+widescreenRatio : Attribute msg
+widescreenRatio =
+    Attr.attr (\attrs -> { attrs | classes = "w--aspect-square" :: attrs.classes })
+
+
+{-| Sets aspect ratio for the box as 21:9. This is the default ratio for cinema screens.
+-}
+cinemascopeRatio : Attribute msg
+cinemascopeRatio =
+    Attr.attr (\attrs -> { attrs | classes = "w--aspect-[21/9]" :: attrs.classes })
 
 
 
@@ -557,10 +587,10 @@ shadowSmall =
     Attr.attr
         (\attrs ->
             if attrs.interactive then
-                { attrs | shadowClass = "w--shadow active:w--shadow-sm" }
+                { attrs | shadowClass = "w--shadow-colored w--shadow active:w--shadow-sm" }
 
             else
-                { attrs | shadowClass = "w--shadow" }
+                { attrs | shadowClass = "w--shadow-colored w--shadow" }
         )
 
 
@@ -570,10 +600,10 @@ shadow =
     Attr.attr
         (\attrs ->
             if attrs.interactive then
-                { attrs | shadowClass = "w--shadow-md active:w--shadow-sm" }
+                { attrs | shadowClass = "w--shadow-colored w--shadow-md active:w--shadow-sm" }
 
             else
-                { attrs | shadowClass = "w--shadow" }
+                { attrs | shadowClass = "w--shadow-colored w--shadow-md" }
         )
 
 
@@ -583,15 +613,33 @@ shadowLarge =
     Attr.attr
         (\attrs ->
             if attrs.interactive then
-                { attrs | shadowClass = "w--shadow-lg active:w--shadow-sm" }
+                { attrs | shadowClass = "w--shadow-colored w--shadow-xl active:w--shadow-sm" }
 
             else
-                { attrs | shadowClass = "w--shadow-lg" }
+                { attrs | shadowClass = "w--shadow-colored w--shadow-xl" }
         )
 
 
 
 -- Attrs : Rounded -------------------------------------------------------------
+
+
+{-| -}
+roundedSmall : Attribute msg
+roundedSmall =
+    radius W.Theme.Radius.sm
+
+
+{-| -}
+rounded : Attribute msg
+rounded =
+    radius W.Theme.Radius.lg
+
+
+{-| -}
+roundedLarge : Attribute msg
+roundedLarge =
+    radius W.Theme.Radius.xl2
 
 
 {-| -}
@@ -601,7 +649,29 @@ radius v =
 
 
 
--- Attrs : Layout -------------------------------------------------------------
+-- Attrs : Card ----------------------------------------------------------------
+
+
+{-| -}
+card : Attribute msg
+card =
+    Attr.batch [ bg, shadow, rounded ]
+
+
+{-| -}
+cardSmall : Attribute msg
+cardSmall =
+    Attr.batch [ bg, shadowSmall, roundedSmall ]
+
+
+{-| -}
+cardLarge : Attribute msg
+cardLarge =
+    Attr.batch [ bg, shadowLarge, roundedLarge ]
+
+
+
+-- Attrs : Layout --------------------------------------------------------------
 
 
 {-| Gap size in "rem".
@@ -701,6 +771,18 @@ warning =
 danger : Attribute msg
 danger =
     Attr.attr (\attrs -> { attrs | colorClass = "w/danger" })
+
+
+{-| -}
+bg : Attribute msg
+bg =
+    Attr.attr (\attrs -> { attrs | background = W.Theme.Color.bg })
+
+
+{-| -}
+subtle : Attribute msg
+subtle =
+    Attr.attr (\attrs -> { attrs | background = W.Theme.Color.bgSubtle })
 
 
 {-| -}
@@ -1298,8 +1380,8 @@ layoutVariables attrs =
 -- Helpers --------------------------------------------------------------------
 
 
-styleList : Attributes msg -> List ( String, Attributes msg -> String ) -> List ( String, String )
-styleList attrs list =
+toStyleList : Attributes msg -> List ( String, Attributes msg -> String ) -> List ( String, String )
+toStyleList attrs list =
     List.filterMap (\( k, v ) -> maybeStyle k v attrs) list
 
 

@@ -7,6 +7,7 @@ import Html as H
 import W.Box
 import W.Divider
 import W.Heading
+import W.Theme.Color
 import W.Theme.Sizing
 import W.Theme.Spacing
 import W.Text
@@ -41,7 +42,9 @@ view =
                                         , W.Text.viewInline
                                             [ W.Text.bold, W.Text.underline ]
                                             [ H.text "consectetur adipiscing elit" ]
-                                        , H.text ", sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+                                        , H.text ", sed do eiusmod tempor incididunt ut "
+                                        , W.Text.viewInline [ W.Text.color W.Theme.Color.primarySolid ] [ H.text "labore" ]
+                                        , H.text " et dolore magna aliqua. "
                                         , W.Text.viewInline
                                             [ W.Text.subtle ]
                                             [ H.text "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex"
