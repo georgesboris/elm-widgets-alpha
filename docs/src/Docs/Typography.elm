@@ -26,7 +26,7 @@ view =
                     |> List.map
                         (\( spacing, headingSize, textSize ) ->
                             W.Box.view
-                                [ W.Box.flex [ W.Box.xRight ] ]
+                                [ W.Box.flex [ W.Box.xRight ], W.Box.maxWidth W.Theme.Sizing.lg ]
                                 [ W.Box.view
                                     [ W.Box.maxWidth W.Theme.Sizing.xl
                                     , W.Box.gap spacing

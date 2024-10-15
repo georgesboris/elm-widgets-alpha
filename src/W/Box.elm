@@ -28,6 +28,7 @@ module W.Box exposing
     , largeScreen
     , class, classList, styles
     , id, node
+    , noShrink, noShrinkAttr
     )
 
 {-|
@@ -868,6 +869,21 @@ grow =
 growAttr : H.Attribute msg
 growAttr =
     HA.class "w--grow"
+
+
+{-| -}
+noShrink : Attribute msg
+noShrink =
+    Attr.attr
+        (\attrs ->
+            { attrs | classes = "w--shrink-0" :: attrs.classes }
+        )
+
+
+{-| -}
+noShrinkAttr : H.Attribute msg
+noShrinkAttr =
+    HA.class "w--shrink-0"
 
 
 {-| -}

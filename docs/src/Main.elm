@@ -53,7 +53,7 @@ book =
             [ W.Styles.view [ W.Styles.borderWidth 1 ]
             ]
         ]
-        { name = "Fractal"
+        { name = "elm-widgets"
         , content =
             [ Book.chapter "Core"
                 [ Docs.Typography.view

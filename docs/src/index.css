@@ -53,16 +53,6 @@
   margin-top: var(--w-gap);
 }
 
-.w--box.w--flex>*,
-.w--box.w--inline-flex>* {
-  flex-shrink: 0;
-}
-
-.w--box.w--flex>.w--grow,
-.w--box.w--inline-flex>.w--grow {
-  flex-shrink: 1;
-}
-
 .w--box.w--flex,
 .w--box.w--inline-flex,
 .w--box.w--grid {
