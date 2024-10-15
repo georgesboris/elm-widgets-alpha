@@ -35,7 +35,7 @@ view =
               )
             , ( "Disabled"
               , [ W.InputRadio.view
-                    [ W.InputRadio.disabled True ]
+                    [ W.InputRadio.disabled ]
                     { id = "disabled"
                     , value = 2
                     , toLabel = String.fromInt
@@ -47,7 +47,7 @@ view =
               )
             , ( "Read Only"
               , [ W.InputRadio.view
-                    [ W.InputRadio.readOnly True ]
+                    [ W.InputRadio.readOnly ]
                     { id = "read-only"
                     , value = 2
                     , toLabel = String.fromInt
@@ -82,7 +82,7 @@ view =
               )
             , ( "Vertical"
               , [ W.InputRadio.view
-                    [ W.InputRadio.vertical True ]
+                    [ W.InputRadio.vertical ]
                     { id = "vertical"
                     , value = 2
                     , toLabel = String.fromInt
@@ -95,7 +95,7 @@ view =
             , ( "Vertical + Small"
               , [ W.InputRadio.view
                     [ W.InputRadio.small
-                    , W.InputRadio.vertical True
+                    , W.InputRadio.vertical
                     ]
                     { id = "default"
                     , value = 1

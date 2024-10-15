@@ -29,7 +29,7 @@ view =
                                 [ W.Popover.view attrs (popoverChildren "Default")
                                 , W.Popover.view (W.Popover.width 180 :: W.Popover.over :: attrs) (popoverChildren "Over")
                                 , W.Popover.view (W.Popover.width 180 :: W.Popover.offset 4 :: attrs) (popoverChildren "Offset")
-                                , W.Popover.view (W.Popover.width 180 :: W.Popover.full True :: attrs) (popoverChildren "Full")
+                                , W.Popover.view (W.Popover.width 180 :: W.Popover.full :: attrs) (popoverChildren "Full")
                                 , W.Popover.view (W.Popover.width 180 :: W.Popover.showOnHover :: W.Popover.offset 4 :: attrs) (popoverChildren "Hover")
                                 ]
                           ]

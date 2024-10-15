@@ -86,21 +86,21 @@ view =
               )
             , ( "Right aligned"
               , [ W.FormField.view
-                    [ W.FormField.alignRight True
+                    [ W.FormField.alignRight
                     ]
                     singleInput
                 , W.FormField.view
-                    [ W.FormField.alignRight True
+                    [ W.FormField.alignRight
                     , W.FormField.hint [ H.text "Try writing some text here." ]
                     ]
                     singleInput
                 , W.Divider.view [] []
                 , W.FormField.view
-                    [ W.FormField.alignRight True
+                    [ W.FormField.alignRight
                     ]
                     props
                 , W.FormField.view
-                    [ W.FormField.alignRight True
+                    [ W.FormField.alignRight
                     ]
                     props
                 ]

@@ -28,7 +28,7 @@ view =
               , [ W.InputText.view
                     [ W.InputText.placeholder "Type something…"
                     , W.InputText.suffix [ H.div [ HA.style "height" "60px" ] [ H.text "Email" ] ]
-                    , W.InputText.disabled True
+                    , W.InputText.disabled
                     ]
                     { value = ""
                     , onInput = Book.logActionWithString "onInput"
@@ -38,7 +38,7 @@ view =
             , ( "Read Only"
               , [ W.InputText.view
                     [ W.InputText.placeholder "Type something…"
-                    , W.InputText.readOnly True
+                    , W.InputText.readOnly
                     ]
                     { value = ""
                     , onInput = Book.logActionWithString "onInput"
