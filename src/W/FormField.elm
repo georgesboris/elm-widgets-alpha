@@ -55,9 +55,9 @@ defaultAttrs =
 
 
 {-| -}
-alignRight : Bool -> Attribute msg
-alignRight v =
-    Attr.attr (\attrs -> { attrs | alignRight = v })
+alignRight : Attribute msg
+alignRight =
+    Attr.attr (\attrs -> { attrs | alignRight = True })
 
 
 {-| Appears underneath the label.

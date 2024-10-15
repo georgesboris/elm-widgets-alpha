@@ -75,21 +75,21 @@ small =
 
 
 {-| -}
-disabled : Bool -> Attribute msg
-disabled v =
-    Attr.attr (\attrs -> { attrs | disabled = v })
+disabled : Attribute msg
+disabled =
+    Attr.attr (\attrs -> { attrs | disabled = True })
 
 
 {-| -}
-readOnly : Bool -> Attribute msg
-readOnly v =
-    Attr.attr (\attrs -> { attrs | readOnly = v })
+readOnly : Attribute msg
+readOnly =
+    Attr.attr (\attrs -> { attrs | readOnly = True })
 
 
 {-| -}
-vertical : Bool -> Attribute msg
-vertical v =
-    Attr.attr (\attrs -> { attrs | vertical = v })
+vertical : Attribute msg
+vertical =
+    Attr.attr (\attrs -> { attrs | vertical = True })
 
 
 

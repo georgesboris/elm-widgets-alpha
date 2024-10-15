@@ -247,15 +247,15 @@ placeholder v =
 
 
 {-| -}
-disabled : Bool -> Attribute msg
-disabled v =
-    Attr.attr (\attrs -> { attrs | disabled = v })
+disabled : Attribute msg
+disabled =
+    Attr.attr (\attrs -> { attrs | disabled = True })
 
 
 {-| -}
-readOnly : Bool -> Attribute msg
-readOnly v =
-    Attr.attr (\attrs -> { attrs | readOnly = v })
+readOnly : Attribute msg
+readOnly =
+    Attr.attr (\attrs -> { attrs | readOnly = True })
 
 
 {-| -}
@@ -265,9 +265,9 @@ autofocus =
 
 
 {-| -}
-required : Bool -> Attribute msg
-required v =
-    Attr.attr (\attrs -> { attrs | required = v })
+required : Attribute msg
+required =
+    Attr.attr (\attrs -> { attrs | required = True })
 
 
 {-| -}

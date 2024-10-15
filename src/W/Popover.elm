@@ -146,15 +146,10 @@ persistent =
     Attr.attr (\attrs -> { attrs | persistent = True })
 
 
-isOpen : Bool -> Attribute
-isOpen v =
-    Attr.attr (\attrs -> { attrs | isOpen = Just v })
-
-
 {-| -}
-full : Bool -> Attribute
-full v =
-    Attr.attr (\attrs -> { attrs | full = v })
+full : Attribute
+full =
+    Attr.attr (\attrs -> { attrs | full = True })
 
 
 {-| -}

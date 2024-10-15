@@ -7,6 +7,7 @@ module W.InputAutocomplete exposing
     , required
     , onEnter, onDone, onDelete, onBlur, onFocus
     , htmlAttrs, noAttr, Attribute
+    , loading
     )
 
 {-|
@@ -271,28 +272,28 @@ placeholder v =
 
 
 {-| -}
-disabled : Bool -> Attribute msg
-disabled v =
-    Attribute <| \attrs -> { attrs | disabled = v }
+disabled : Attribute msg
+disabled =
+    Attribute <| \attrs -> { attrs | disabled = True }
 
 
 {-| -}
-readOnly : Bool -> Attribute msg
-readOnly v =
-    Attribute <| \attrs -> { attrs | readOnly = v }
+readOnly : Attribute msg
+readOnly =
+    Attribute <| \attrs -> { attrs | readOnly = True }
 
 
 {-| Control loading state manually. Usually, loading state is displayed when `Nothing` is passed in as options.
 -}
-isLoading : Bool -> Attribute msg
-isLoading v =
-    Attribute <| \attrs -> { attrs | isLoading = Just v }
+loading : Attribute msg
+loading =
+    Attribute <| \attrs -> { attrs | isLoading = Just True }
 
 
 {-| -}
-required : Bool -> Attribute msg
-required v =
-    Attribute <| \attrs -> { attrs | required = v }
+required : Attribute msg
+required =
+    Attribute <| \attrs -> { attrs | required = True }
 
 
 {-| -}
