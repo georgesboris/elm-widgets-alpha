@@ -200,13 +200,13 @@ radius v =
 {-| -}
 alignLeft : Attribute msg
 alignLeft =
-    Attr.attr (\attrs -> { attrs | alignClass = "w--justify-start" })
+    Attr.attr (\attrs -> { attrs | alignClass = "w--justify-start w--text-left" })
 
 
 {-| -}
 alignRight : Attribute msg
 alignRight =
-    Attr.attr (\attrs -> { attrs | alignClass = "w--justify-end" })
+    Attr.attr (\attrs -> { attrs | alignClass = "w--justify-end w--text-right" })
 
 
 

@@ -64,24 +64,22 @@ The description of the Button component.
                                 }
                           ]
                         , [ Docs.UI.viewDetailedExample
-                                { label = "Different Alignments"
+                                { label = "Multiline & Different Alignments"
                                 , description = Nothing
                                 , content =
                                     [ Docs.UI.viewVertical
                                         [ W.Button.viewDummy
                                             [ W.Button.alignLeft
                                             , W.Button.primary
-                                            , W.Button.rounded
                                             , W.Button.full
                                             ]
-                                            [ H.text "Button" ]
+                                            [ H.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
                                         , W.Button.viewDummy
                                             [ W.Button.alignRight
                                             , W.Button.primary
-                                            , W.Button.rounded
                                             , W.Button.full
                                             ]
-                                            [ H.text "Button" ]
+                                            [ H.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
                                         ]
                                     ]
                                 , code = Nothing
