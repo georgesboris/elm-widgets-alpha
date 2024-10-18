@@ -50,7 +50,7 @@ book =
     Book.book
         [ Book.theme theme
         , Book.extraHtml
-            [ W.Styles.view [ W.Styles.borderWidth 1 ]
+            [ W.Styles.view []
             ]
         ]
         { name = "elm-widgets"

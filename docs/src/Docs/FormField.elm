@@ -8,6 +8,7 @@ import W.Divider
 import W.FormField
 import W.InputRadio
 import W.InputSlider
+import W.InputText
 
 
 view : Book.Page model Book.Msg
@@ -22,14 +23,12 @@ view =
                 [ H.text "Label" ]
             , input =
                 [ H.div [ HA.style "display" "flex", HA.style "flex-direction" "column", HA.style "gap" "20px" ]
-                    [ H.text "InputText"
-
-                    -- W.InputText.view
-                    --     [ W.InputText.placeholder "..."
-                    --     ]
-                    --     { value = ""
-                    --     , onInput = Book.logActionWithString "onInput"
-                    --     }
+                    [ W.InputText.view
+                        [ W.InputText.placeholder "..."
+                        ]
+                        { value = ""
+                        , onInput = Book.logActionWithString "onInput"
+                        }
                     , W.InputRadio.view
                         []
                         { id = "default"
@@ -58,15 +57,14 @@ view =
         singleInput =
             { label =
                 [ H.text "Label" ]
-            , input = [ H.text "InputText" ]
-
-            -- [ W.InputText.view
-            --     [ W.InputText.placeholder "..."
-            --     ]
-            --     { value = ""
-            --     , onInput = Book.logActionWithString "onInput"
-            --     }
-            -- ]
+            , input =
+                [ W.InputText.view
+                    [ W.InputText.placeholder "..."
+                    ]
+                    { value = ""
+                    , onInput = Book.logActionWithString "onInput"
+                    }
+                ]
             }
     in
     Book.page "Form Field"

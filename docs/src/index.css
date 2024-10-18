@@ -188,7 +188,7 @@
 .w--input:has(input:focus-visible) {
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
-  box-shadow: 0 0 0 1px rgb(var(--w-bg)), 0 0 0 4px rgb(var(--w-accent-subtle)) !important;
+  box-shadow: 0 0 0 2px rgb(var(--w-bg)), 0 0 0 4px rgb(var(--w-accent-subtle)) !important;
 }
 
 .w--input input:focus-visible,

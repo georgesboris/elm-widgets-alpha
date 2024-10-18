@@ -1123,7 +1123,7 @@ mainAxisAlignment v =
             "w--justify-stretch"
 
         Nothing ->
-            "w--justify-start"
+            "w--justify-stretch"
 
 
 crossAxisAlignment : Maybe FlexAlignment -> String
@@ -1151,7 +1151,7 @@ crossAxisAlignment v =
             "w--items-stretch"
 
         Nothing ->
-            "w--items-center"
+            "w--items-stretch"
 
 
 

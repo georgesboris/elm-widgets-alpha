@@ -63,6 +63,30 @@ The description of the Button component.
                                 , code = Nothing
                                 }
                           ]
+                        , [ Docs.UI.viewDetailedExample
+                                { label = "Different Alignments"
+                                , description = Nothing
+                                , content =
+                                    [ Docs.UI.viewVertical
+                                        [ W.Button.viewDummy
+                                            [ W.Button.alignLeft
+                                            , W.Button.primary
+                                            , W.Button.rounded
+                                            , W.Button.full
+                                            ]
+                                            [ H.text "Button" ]
+                                        , W.Button.viewDummy
+                                            [ W.Button.alignRight
+                                            , W.Button.primary
+                                            , W.Button.rounded
+                                            , W.Button.full
+                                            ]
+                                            [ H.text "Button" ]
+                                        ]
+                                    ]
+                                , code = Nothing
+                                }
+                          ]
                         ]
                     )
                 ]

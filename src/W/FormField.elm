@@ -132,7 +132,7 @@ view =
 
                  else
                     [ H.div
-                        [ HA.class "w--pb-ms" ]
+                        [ HA.class "w--pb-sm" ]
                         [ H.h1 [ HA.class "w--m-0 w--font-normal w--text-sm w--font-base w--text-default" ]
                             props.label
                         , attrs.hint
