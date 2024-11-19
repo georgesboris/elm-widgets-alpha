@@ -107,7 +107,7 @@ view =
                 colorAttr : H.Attribute msg
                 colorAttr =
                     if attrs.disabled then
-                        HA.class "w--text-base-aux"
+                        HA.class "w--text-subtle"
 
                     else
                         HA.style "color" attrs.color

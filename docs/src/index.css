@@ -414,34 +414,47 @@
  * ======================================================
  */
 
+.w--input select {
+  appearance: none;
+  background-image: linear-gradient(45deg, rgba(0, 0, 0, 0) 50%, rgb(var(--w-accent)) 50%), linear-gradient(135deg, rgb(var(--w-accent)) 50%, rgba(0, 0, 0, 0) 50%);
+  background-position-x: calc(100% - 20px), calc(100% - 14px);
+  background-position-y: calc(50% + 1px), calc(50% + 1px);
+  background-repeat: no-repeat;
+  background-size: 6px 6px, 6px 6px;
+}
+
 .w--input select option {
-  color: var(--theme-base-fg);
-  background-color: var(--theme-base-bg);
+  color: rgb(var(--w-text)/1.0);
+  background-color: rgb(var(--w-bg)/1.0);
+
+  &:hover {
+    background-color: rgb(var(--w-tint)/1.0);
+  }
 }
 
 .w--input input+.w--input-icon::before,
 .w--input select+.w--input-icon::before {
-  background: rgb(var(--theme-base-aux-ch) / 0.07);
+  background: rgb(var(--w-tint-subtle) / 1.0);
 }
 
 .w--input input:focus+.w--input-icon::before,
 .w--input select:focus+.w--input-icon::before {
-  background: var(--theme-base-bg);
+  background: rgb(var(--w-bg)/1.0);
 }
 
 .w--input input:disabled+.w--input-icon::before,
 .w--input select:disabled+.w--input-icon::before {
-  background: rgb(var(--theme-base-aux-ch) / 0.3);
+  background: rgb(var(--w-tint) / 1.0);
 }
 
 .w--input input[aria-readonly]:disabled+.w--input-icon::before,
 .w--input select[aria-readonly]:disabled+.w--input-icon::before {
-  background: rgb(var(--theme-base-aux-ch) / 0.07);
+  background: rgb(var(--w-tint-subtle) / 1.0);
 }
 
 .w--input input[aria-readonly]:read-only:focus+.w--input-icon::before,
 .w--input select[aria-readonly]:read-only:focus+.w--input-icon::before {
-  background: rgb(var(--theme-base-aux-ch) / 0.1);
+  background: rgb(var(--w-tint-subtle) / 1.0);
 }
 
 /* 

@@ -271,7 +271,7 @@ baseAttrs attrs (Value valueString timeZone value) =
     , HA.type_ "date"
     , HA.class (W.Internal.Input.baseClassNoColor attrs.small)
     , HA.classList
-        [ ( "ew-text-base-aux/80", value == Nothing )
+        [ ( "ew-text-subtle", value == Nothing )
         , ( "ew-text-inherit", value /= Nothing )
         ]
     , HA.required attrs.required

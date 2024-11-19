@@ -113,7 +113,7 @@ viewWithIcon attrs icon input =
     view attrs
         (H.div [ HA.class "w--flex w--items-stretch w--w-full w--relative w--input-with-icon" ]
             [ input
-            , iconWrapper "w--text-base-aux" icon
+            , iconWrapper "w--text-subtle" icon
             ]
         )
 
@@ -124,7 +124,7 @@ prefixSuffixClass =
         "w--flex w--items-center w--justify-center w--box-border"
             ++ " w--border-0 w--border-solid w--border-accent"
             ++ " w--p-sm w--min-w-[48px] w--self-stretch"
-            ++ " w--text-base-aux"
+            ++ " w--text-subtle"
 
 
 baseClass : Bool -> String

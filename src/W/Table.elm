@@ -473,13 +473,13 @@ viewTableRow attrs columns datum =
         [ HA.class "w--p-0"
         , if attrs.highlight datum then
             HA.classList
-                [ ( "w--bg-base-aux/10", True )
-                , ( "hover:w--bg-base-aux/[0.07] active:w--bg-base-aux/10", attrs.onClick /= Nothing )
+                [ ( "w--bg-tint", True )
+                , ( "hover:w--bg-tint-subtle active:w--bg-tint", attrs.onClick /= Nothing )
                 ]
 
           else
             HA.classList
-                [ ( "hover:w--bg-base-aux/[0.04] active:w--bg-base-aux/[0.07]", attrs.onClick /= Nothing )
+                [ ( "hover:w--bg-tint-subtle active:w--bg-tint", attrs.onClick /= Nothing )
                 ]
         , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
         , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter

@@ -141,7 +141,7 @@ viewGroups =
                         |> List.map (\a -> ( props.toLabel a, a ))
                         |> Dict.fromList
             in
-            W.Internal.Input.viewWithIcon
+            W.Internal.Input.view
                 { small = attrs.small
                 , prefix = attrs.prefix
                 , suffix = attrs.suffix
@@ -150,7 +150,6 @@ viewGroups =
                 , mask = Nothing
                 , maskInput = ""
                 }
-                W.Internal.Icons.chevronDown
                 (H.select
                     [ WH.maybeAttr HA.id attrs.id
                     , HA.class (W.Internal.Input.baseClass attrs.small)
