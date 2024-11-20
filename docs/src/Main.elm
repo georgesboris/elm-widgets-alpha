@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Book
 import Docs
+import Docs.Accordion
 import Docs.Avatar
 import Docs.Badge
 import Docs.Box
@@ -62,7 +63,8 @@ book =
                 , Docs.Button.view
                 ]
             , Book.chapter "Layout"
-                [ Docs.Box.view
+                [ Docs.Accordion.view
+                , Docs.Box.view
                 , Docs.DataRow.view
                 , Docs.Menu.view
                 , Docs.Divider.view

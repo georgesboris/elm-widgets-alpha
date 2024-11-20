@@ -5,11 +5,98 @@
 /* 
  * ======================================================
  * Utilities
+ * ======================================================
  */
 
 .w--cfg-border {
   border: var(--w-cfg-border) solid rgb(var(--w-accent));
 }
+
+/* 
+ * ======================================================
+ * W.Accordion
+ * ======================================================
+ */
+
+@layer components {
+  .w--accordion.w--m-subtle {
+    @apply w--border-0 w--border-b w--border-solid w--border-accent;
+  }
+
+  .w--accordion.w--m-card {
+    @apply w--rounded;
+    @apply w--border-2 w--border-solid w--border-accent;
+
+    .w--accordion-content {
+      @apply w--border-0 w--border-t-2 w--border-solid w--border-accent;
+    }
+  }
+
+  .w--accordion.w--m-card+.w--accordion.w--m-card {
+    margin-top: var(--padding);
+  }
+
+  .w--accordion-summary {
+    @apply w--flex w--items-center w--justify-between;
+    @apply w--rounded;
+    @apply w--list-none w--cursor-pointer;
+    @apply w--select-none;
+    @apply w--font-semibold;
+  }
+
+  .w--accordion-icon {
+    @apply w--duration-150;
+    transform: rotate(-90deg);
+    color: rgb(var(--w-accent-strong));
+  }
+
+  .w--accordion-summary:hover .w--accordion-icon {
+    @apply w--text-subtle;
+  }
+
+  .w--accordion-summary:focus-visible {
+    @apply w--outline-none w--bg-tint-subtle;
+
+    .w--accordion-icon {
+      @apply w--text-subtle;
+    }
+  }
+
+  .w--accordion-summary,
+  .w--accordion-content {
+    padding: var(--padding);
+  }
+
+
+  /* .w--accordion-control:selected+.w--accordion-summary+.w--accordion-content { */
+  /* height: auto; */
+  /* overflow: auto; */
+  /* } */
+  .w--accordion-control {
+    display: none;
+  }
+
+  .w--accordion-control+.w--accordion-summary+.w--accordion-content {
+    display: none;
+  }
+
+  .w--accordion-control:checked+.w--accordion-summary+.w--accordion-content {
+    display: block;
+  }
+
+  .w--accordion-control:checked+.w--accordion-summary .w--accordion-icon {
+    @apply w--text-default;
+    transform: rotate(0deg);
+  }
+
+  .w--accordion[open=""] {
+    .w--accordion-icon {
+      @apply w--text-default;
+      transform: rotate(0deg);
+    }
+  }
+}
+
 
 /* 
  * ======================================================

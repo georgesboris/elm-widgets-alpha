@@ -22,14 +22,39 @@ close props =
         ]
 
 
-chevronDown : H.Html msg
-chevronDown =
-    H.div
-        [ HA.class "ew-block ew-h-1.5 ew-w-1.5 ew-border-2 ew-border-current ew-border-solid ew-rotate-[45deg]"
-        , HA.style "border-left" "none"
-        , HA.style "border-top" "none"
+chevronDown : { class : String, size : Int } -> H.Html msg
+chevronDown props =
+    S.svg
+        [ SA.width (WH.px props.size)
+        , SA.height (WH.px props.size)
+        , SA.class props.class
+        , SA.viewBox "0 0 256 256"
         ]
-        []
+        [ S.rect
+            [ SA.width "256"
+            , SA.height "256"
+            , SA.fill "none"
+            ]
+            []
+        , S.polyline
+            [ SA.points "208 96 128 176 48 96"
+            , SA.fill "none"
+            , SA.stroke "currentColor"
+            , SA.strokeLinecap "round"
+            , SA.strokeLinejoin "round"
+            , SA.strokeWidth "24"
+            ]
+            []
+        ]
+
+
+
+-- H.div
+--     [ HA.class "ew-block ew-h-1.5 ew-w-1.5 ew-border-2 ew-border-current ew-border-solid ew-rotate-[45deg]"
+--     , HA.style "border-left" "none"
+--     , HA.style "border-top" "none"
+--     ]
+--     []
 
 
 check : { size : Int } -> S.Svg msg
