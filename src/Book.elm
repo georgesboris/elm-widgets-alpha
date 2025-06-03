@@ -378,6 +378,7 @@ view props =
             , W.Box.heightScreen
             , W.Box.widthCustom (W.Theme.Sizing.toCSS W.Theme.Sizing.full)
             , W.Box.maxWidth W.Theme.Sizing.sm
+            , W.Box.noShrink
             , W.Box.background W.Theme.Color.bg
             ]
             [ H.nav

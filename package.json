@@ -24,8 +24,8 @@
     "start": "elm-doc-preview ./"
   },
   "devDependencies": {
-    "elm-doc-preview": "^5.0.5",
-    "elm-tooling": "^1.14.1",
+    "elm-doc-preview": "^6.0.1",
+    "elm-tooling": "^1.15.1",
     "w-theme": "github:georgesboris/w-theme#main"
   }
 }
