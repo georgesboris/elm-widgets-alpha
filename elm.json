@@ -33,6 +33,7 @@
         "W.Modal",
         "W.Notification",
         "W.Pagination",
+        "W.Playground",
         "W.Popover",
         "W.Skeleton",
         "W.Styles",

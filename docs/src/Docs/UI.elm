@@ -14,11 +14,10 @@ import Html.Attributes as HA
 import W.Box
 import W.Divider
 import W.Heading
-import W.Theme.Color
-import W.Theme.Spacing
-import W.Theme.Radius
 import W.Text
-import W.Theme
+import W.Theme.Color
+import W.Theme.Radius
+import W.Theme.Spacing
 
 
 viewPlaceholder : String -> Book.Page model msg

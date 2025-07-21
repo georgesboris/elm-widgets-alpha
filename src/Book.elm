@@ -1,12 +1,12 @@
 module Book exposing
     ( Book(..), book, bookName, bookSlug, bookItems
     , chapter, chapterName, chapterPages, chapterSlug
-    , page, pageContent, addTags, pageHasTag, pageName, pageSlug
+    , page, pageInteractive, pageContent, addTags, pageHasTag, pageName, pageSlug
     , bookPage, bookRef, bookRefGroup, bookLink, BookContent(..)
     , Chapter, Page(..)
     , application, Application, Model, Msg(..)
     , logAction, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
-    , mapMsg
+    , mapMsg, mapBookMsg, mapChapterMsg, mapPageMsg
     , darkMode, extraHtml, header, theme
     )
 
@@ -14,12 +14,12 @@ module Book exposing
 
 @docs Book, book, bookName, bookSlug, bookItems
 @docs chapter, chapterName, chapterPages, chapterSlug
-@docs page, pageContent, addTags, pageHasTag, pageName, pageSlug
+@docs page, pageInteractive, pageContent, addTags, pageHasTag, pageName, pageSlug
 @docs bookPage, bookRef, bookRefGroup, bookLink, BookContent
 @docs Chapter, Page
 @docs application, Application, Model, Msg
 @docs logAction, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
-@docs mapMsg
+@docs mapMsg, mapBookMsg, mapChapterMsg, mapPageMsg
 
 -}
 
@@ -696,13 +696,33 @@ type BookContent model msg
 
 
 {-| -}
-mapMsg : (a -> b) -> Book model a -> Book model b
-mapMsg fn (Book b) =
+mapMsg : (a -> b) -> BookContent model a -> BookContent model b
+mapMsg fn content =
+    case content of
+        BookChapter c ->
+            BookChapter (mapChapterMsg fn c)
+
+        BookPage p ->
+            BookPage (mapPageMsg fn p)
+
+        BookRef refTitle b ->
+            BookRef refTitle (mapBookMsg fn b)
+
+        BookRefGroup groupRefTitle bookRefs ->
+            BookRefGroup groupRefTitle (List.map (Tuple.mapSecond (mapBookMsg fn)) bookRefs)
+
+        BookLink c ->
+            BookLink c
+
+
+{-| -}
+mapBookMsg : (a -> b) -> Book model a -> Book model b
+mapBookMsg fn (Book b) =
     Book
         { name = b.name
         , slug = b.slug
         , items = List.map (mapContentMsg fn) b.items
-        , books = Dict.map (\_ -> mapMsg fn) b.books
+        , books = Dict.map (\_ -> mapBookMsg fn) b.books
         , pages = Dict.map (\_ -> mapPageMsg fn) b.pages
         , options = mapOptionsMsg fn b.options
         }
@@ -728,10 +748,10 @@ mapContentMsg fn content =
             BookPage (mapPageMsg fn p)
 
         BookRef l ref ->
-            BookRef l (mapMsg fn ref)
+            BookRef l (mapBookMsg fn ref)
 
         BookRefGroup l refs ->
-            BookRefGroup l (List.map (Tuple.mapSecond (mapMsg fn)) refs)
+            BookRefGroup l (List.map (Tuple.mapSecond (mapBookMsg fn)) refs)
 
         BookLink l ->
             BookLink l
@@ -960,6 +980,21 @@ page name content =
         , excerpt = \_ -> []
         , chapterSlug = Nothing
         , content = \_ -> content
+        , tags = Set.empty
+        , meta = Dict.empty
+        }
+
+
+{-| -}
+pageInteractive : String -> (model -> List (H.Html msg)) -> Page model msg
+pageInteractive name toContent =
+    Page
+        { name = name
+        , slug = slugify name
+        , anchors = []
+        , excerpt = \_ -> []
+        , chapterSlug = Nothing
+        , content = toContent
         , tags = Set.empty
         , meta = Dict.empty
         }

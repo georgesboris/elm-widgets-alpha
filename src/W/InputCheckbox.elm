@@ -90,7 +90,7 @@ colorful =
 {-| -}
 disabled : Attribute msg
 disabled =
-    Attr.attr (\attrs -> { attrs | readOnly = True })
+    Attr.attr (\attrs -> { attrs | disabled = True })
 
 
 {-| -}

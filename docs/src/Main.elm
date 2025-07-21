@@ -69,12 +69,14 @@ book =
                 , Docs.Menu.view
                 , Docs.Divider.view
                 ]
+                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Tables & Lists"
                 [ Docs.UI.viewPlaceholder "Breadcrumbs"
                 , Docs.UI.viewPlaceholder "DataList"
                 , Docs.Table.view
                 , Docs.Pagination.view
                 ]
+                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Info & Feedback"
                 [ Docs.Avatar.view
                 , Docs.Badge.view
@@ -84,11 +86,13 @@ book =
                 , Docs.Notification.view
                 , Docs.Tag.view
                 ]
+                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Overlays"
                 [ Docs.Modal.view
                 , Docs.Popover.view
                 , Docs.Tooltip.view
                 ]
+                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Forms & Inputs"
                 [ Docs.UI.viewPlaceholder "Form"
                 , Docs.FormField.view
@@ -105,9 +109,9 @@ book =
                 , Docs.InputCode.view
                 , Docs.InputColor.view
                 ]
+                |> Book.mapMsg Docs.BookMsg
             ]
         }
-        |> Book.mapMsg Docs.BookMsg
 
 
 main : Book.Application () Docs.Model Docs.Msg

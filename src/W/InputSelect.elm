@@ -32,7 +32,6 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
-import W.Internal.Icons
 import W.Internal.Input
 
 
@@ -153,6 +152,7 @@ viewGroups =
                 (H.select
                     [ WH.maybeAttr HA.id attrs.id
                     , HA.class (W.Internal.Input.baseClass attrs.small)
+                    , HA.class "w--pr-[2.5em]"
                     , HA.disabled attrs.disabled
                     , HA.readonly attrs.readOnly
                     , HA.autofocus attrs.autofocus

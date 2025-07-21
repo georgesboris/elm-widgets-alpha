@@ -14,21 +14,27 @@ module Docs exposing
     )
 
 import Book
+import Dict
+import W.Playground
 
 
 type alias Model =
     { slider : Float
+    , playground : Dict.Dict String W.Playground.PlaygroundState
     }
 
 
 type Msg
     = BookMsg Book.Msg
     | Slider_OnInput Float
+    | Playground_Updated String W.Playground.PlaygroundState
 
 
 init : flags -> url -> navKey -> ( Model, Cmd Msg )
 init _ _ _ =
-    ( { slider = 0.0 }
+    ( { slider = 0.0
+      , playground = Dict.empty
+      }
     , Cmd.none
     )
 
@@ -38,6 +44,11 @@ update msg model =
     case msg of
         Slider_OnInput v ->
             ( { model | slider = v }
+            , Cmd.none
+            )
+
+        Playground_Updated k v ->
+            ( { model | playground = Dict.insert k v model.playground }
             , Cmd.none
             )
 
