@@ -290,8 +290,8 @@ viewDummy :
 viewDummy =
     Attr.withAttrs defaultAttrs
         (\attrs label ->
-            H.button
-                (htmlAttrs attrs)
+            H.div
+                (HA.attribute "role" "button" :: HA.tabindex 0 :: htmlAttrs attrs)
                 (toLabel attrs label)
         )
 
