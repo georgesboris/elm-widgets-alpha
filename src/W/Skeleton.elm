@@ -1,6 +1,6 @@
 module W.Skeleton exposing
     ( view
-    , width, height, relativeWidth, relativeHeight
+    , subtle, strong, width, height, relativeWidth, relativeHeight
     , radius, circle, noAnimation
     , Attribute
     )
@@ -12,7 +12,7 @@ module W.Skeleton exposing
 
 # Sizing
 
-@docs width, height, relativeWidth, relativeHeight
+@docs subtle, strong, width, height, relativeWidth, relativeHeight
 
 
 # Styles
@@ -39,7 +39,8 @@ type alias Attribute =
 
 
 type alias Attributes =
-    { borderRadius : String
+    { colorClass : String
+    , borderRadius : String
     , height : String
     , width : String
     , useAnimation : Bool
@@ -48,7 +49,8 @@ type alias Attributes =
 
 defaultAttrs : Attributes
 defaultAttrs =
-    { borderRadius = "4px"
+    { colorClass = "w--bg-tint"
+    , borderRadius = "4px"
     , height = "16px"
     , width = "auto"
     , useAnimation = True
@@ -57,6 +59,20 @@ defaultAttrs =
 
 
 -- Attributes : Setters
+
+
+{-| Adjusts the background color for backgrounds like `bg-subtle`.
+-}
+subtle : Attribute
+subtle =
+    Attr.attr (\attrs -> { attrs | colorClass = "w--bg-tint-subtle" })
+
+
+{-| Adjusts the background color for backgrounds like `tint`.
+-}
+strong : Attribute
+strong =
+    Attr.attr (\attrs -> { attrs | colorClass = "w--bg-accent-subtle" })
 
 
 {-| Sets the height of the skeleton element in "rem".
@@ -139,7 +155,7 @@ view =
                 [ HA.style "border-radius" attrs.borderRadius
                 , HA.style "width" attrs.width
                 , HA.style "height" attrs.height
-                , HA.class "w--bg-tint"
+                , HA.class attrs.colorClass
                 , HA.classList [ ( "w--animate-pulse", attrs.useAnimation ) ]
                 ]
                 []
