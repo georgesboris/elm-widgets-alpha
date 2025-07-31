@@ -13,30 +13,47 @@ view : Book.Page model Book.Msg
 view =
     Book.page "Popover"
         (List.map Docs.UI.viewExample
-            ([ ( "Bottom (Persistent)", [ W.Popover.persistent ] )
-             , ( "Bottom Right", [ W.Popover.bottomRight ] )
-             , ( "Top", [ W.Popover.top ] )
-             , ( "Top Right", [ W.Popover.topRight ] )
-             , ( "Left", [ W.Popover.left ] )
-             , ( "Left Bottom", [ W.Popover.leftBottom ] )
-             , ( "Right", [ W.Popover.right ] )
-             , ( "Right Bottom", [ W.Popover.rightBottom ] )
-             ]
-                |> List.map
-                    (\( label, attrs ) ->
-                        ( label
-                        , [ Docs.UI.viewHorizontal
-                                [ W.Popover.view attrs (popoverChildren "Default")
-                                , W.Popover.view (W.Popover.width 180 :: W.Popover.over :: attrs) (popoverChildren "Over")
-                                , W.Popover.view (W.Popover.width 180 :: W.Popover.offset 4 :: attrs) (popoverChildren "Offset")
-                                , W.Popover.view (W.Popover.width 180 :: W.Popover.full :: attrs) (popoverChildren "Full")
-                                , W.Popover.view (W.Popover.width 180 :: W.Popover.showOnHover :: W.Popover.offset 4 :: attrs) (popoverChildren "Hover")
-                                ]
-                          ]
-                        )
-                    )
-            )
+            (inlineExamples ++ blockExamples)
         )
+
+
+blockExamples : List ( String, List (H.Html msg) )
+blockExamples =
+    [ ( "Trigger with display block"
+      , [ W.Popover.view
+            [ W.Popover.displayBlock
+            , W.Popover.bottomRight
+            ]
+            (popoverChildren "Default")
+        ]
+      )
+    ]
+
+
+inlineExamples : List ( String, List (H.Html msg) )
+inlineExamples =
+    [ ( "Bottom (Persistent)", [ W.Popover.persistent ] )
+    , ( "Bottom Right", [ W.Popover.bottomRight ] )
+    , ( "Top", [ W.Popover.top ] )
+    , ( "Top Right", [ W.Popover.topRight ] )
+    , ( "Left", [ W.Popover.left ] )
+    , ( "Left Bottom", [ W.Popover.leftBottom ] )
+    , ( "Right", [ W.Popover.right ] )
+    , ( "Right Bottom", [ W.Popover.rightBottom ] )
+    ]
+        |> List.map
+            (\( label, attrs ) ->
+                ( label
+                , [ Docs.UI.viewHorizontal
+                        [ W.Popover.view attrs (popoverChildren "Default")
+                        , W.Popover.view (W.Popover.width 180 :: W.Popover.over :: attrs) (popoverChildren "Over")
+                        , W.Popover.view (W.Popover.width 180 :: W.Popover.offset 4 :: attrs) (popoverChildren "Offset")
+                        , W.Popover.view (W.Popover.width 180 :: W.Popover.full :: attrs) (popoverChildren "Full")
+                        , W.Popover.view (W.Popover.width 180 :: W.Popover.showOnHover :: W.Popover.offset 4 :: attrs) (popoverChildren "Hover")
+                        ]
+                  ]
+                )
+            )
 
 
 popoverChildren :
@@ -71,6 +88,6 @@ popoverChildren label =
             ]
         ]
     , trigger =
-        [ W.Button.viewDummy [] [ H.text label ]
+        [ W.Button.viewDummy [ W.Button.full ] [ H.text label ]
         ]
     }

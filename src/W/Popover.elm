@@ -3,6 +3,7 @@ module W.Popover exposing
     , showOnHover, persistent
     , top, topRight, bottomRight, left, leftBottom, right, rightBottom
     , over, offset, full, width, minWidth
+    , displayBlock
     )
 
 {-|
@@ -23,6 +24,11 @@ module W.Popover exposing
 # Styles
 
 @docs over, offset, full, width, minWidth
+
+
+# Trigger Settings
+
+@docs displayBlock
 
 -}
 
@@ -63,6 +69,7 @@ type alias Attributes =
     , full : Bool
     , over : Bool
     , persistent : Bool
+    , displayBlock : Bool
     , isOpen : Maybe Bool
     , widthAttr : ( String, String )
     , showOnHover : Bool
@@ -76,6 +83,7 @@ defaultAttrs =
     , full = False
     , over = False
     , persistent = False
+    , displayBlock = False
     , isOpen = Nothing
     , widthAttr = ( "width", "auto" )
     , showOnHover = False
@@ -168,6 +176,12 @@ minWidth v =
 showOnHover : Attribute
 showOnHover =
     Attr.attr (\attrs -> { attrs | showOnHover = True })
+
+
+{-| -}
+displayBlock : Attribute
+displayBlock =
+    Attr.attr (\attrs -> { attrs | displayBlock = True })
 
 
 
@@ -304,7 +318,12 @@ view_ attrs props =
                     ]
     in
     H.div
-        [ HA.class "w--popover w--inline-flex w--relative"
+        [ HA.class "w--popover w--relative"
+        , if attrs.displayBlock then
+            HA.class "w--block"
+
+          else
+            HA.class "w--inline-flex"
         , case attrs.isOpen of
             Just isOpen_ ->
                 HA.classList
