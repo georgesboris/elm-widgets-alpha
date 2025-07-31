@@ -864,3 +864,25 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
   border-width: 4px 4px 4px 0;
   border-color: transparent rgb(var(--w-solid) / 1.0) transparent transparent;
 }
+
+/* 
+ * ======================================================
+ * W.Tag
+ * ======================================================
+ */
+
+.w--tag.w--tag--custom-theme {
+  color: var(--fg);
+  background-color: var(--bg);
+  &:hover {
+    opacity: 0.85;
+    color: var(--fg);
+    background-color: var(--bg);
+  }
+  &:active {
+    opacity: 0.7;
+  }
+  &:focus-visible {
+    box-shadow: 0 0 0 1px rgb(var(--w-bg)), 0 0 0 5px rgb(var(--w-bg) / 0.35), 0 0 0 4px var(--bg) !important;
+  }
+}

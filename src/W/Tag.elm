@@ -3,6 +3,7 @@ module W.Tag exposing
     , large, small
     , primary, secondary, success, warning, danger
     , id
+    , color
     )
 
 {-|
@@ -31,6 +32,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
+import W.Theme
 
 
 
@@ -45,6 +47,7 @@ type alias Attribute msg =
 type alias Attributes msg =
     { id : Maybe String
     , theme : String
+    , customTheme : Maybe { text : String, background : String }
     , size : Size
     , href : Maybe String
     , onClick : Maybe msg
@@ -61,6 +64,7 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
     , theme = "w/base"
+    , customTheme = Nothing
     , size = Medium
     , href = Nothing
     , onClick = Nothing
@@ -98,6 +102,12 @@ onClick v =
 href : String -> Attribute msg
 href v =
     Attr.attr (\attrs -> { attrs | href = Just v })
+
+
+{-| -}
+color : { text : String, background : String } -> Attribute msg
+color v =
+    Attr.attr (\attrs -> { attrs | customTheme = Just v })
 
 
 {-| -}
@@ -158,11 +168,22 @@ view =
                 baseAttrs : List (H.Attribute msg)
                 baseAttrs =
                     [ WH.maybeAttr HA.id attrs.id
-                    , HA.class attrs.theme
+                    , HA.class "w--tag"
                     , HA.class "w/tint"
                     , HA.class "w--m-0 w--box-border w--relative w--inline-flex w--items-center w--leading-none w--font-base w--font-medium w--tracking-wider"
-                    , HA.class "w--rounded-full w--border-solid w--border-current w--border-0"
-                    , HA.class "before:w--content-[''] before:w--absolute before:w--inset-0 before:w--rounded-full before:w--bg-current before:w--opacity-10"
+                    , HA.class "w--rounded-full w--border-0"
+                    , WH.maybeAttr
+                        (\_ -> HA.class "w--tag--custom-theme")
+                        attrs.customTheme
+                    , case attrs.customTheme of
+                        Nothing ->
+                            HA.class attrs.theme
+
+                        Just theme ->
+                            W.Theme.styleList
+                                [ ( "--fg", theme.text )
+                                , ( "--bg", theme.background )
+                                ]
                     , case attrs.size of
                         Large ->
                             HA.class "w--h-[32px] w--px-lg w--text-base"
@@ -193,8 +214,8 @@ view =
 interactiveClass : H.Attribute msg
 interactiveClass =
     HA.class
-        ("w--appearance-none w--bg-transparent w--no-underline hover:before:w--opacity-[0.05] active:before:w--opacity-[0.03]"
+        ("w--appearance-none w--bg-transparent w--no-underline"
             ++ " w--transition"
             ++ " w--outline-0 w--ring-offset-0 w--ring-primary-fg/50"
-            ++ " focus-visible:w--bg-base-bg focus-visible:w--ring focus-visible:w--border-primary-fg"
+            ++ " focus-visible:w--bg-base-bg focus-visible:w--ring"
         )

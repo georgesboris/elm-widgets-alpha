@@ -4,8 +4,8 @@ import Book
 import Docs.UI
 import Html as H
 import W.Box
-import W.Theme.Spacing
 import W.Tag
+import W.Theme.Spacing
 
 
 view : Book.Page model Book.Msg
@@ -17,6 +17,13 @@ view =
          , ( [ W.Tag.success ], "Success" )
          , ( [ W.Tag.warning ], "Warning" )
          , ( [ W.Tag.danger ], "Danger" )
+         , ( [ W.Tag.color
+                { text = "black"
+                , background = "white"
+                }
+             ]
+           , "Custom Color"
+           )
          ]
             |> List.map
                 (\( attrs, label ) ->
