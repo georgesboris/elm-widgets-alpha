@@ -1,9 +1,8 @@
 module W.Tag exposing
     ( view, viewButton, viewLink, Attribute
     , large, small
-    , primary, secondary, success, warning, danger
+    , primary, secondary, success, warning, danger, color
     , id
-    , color
     )
 
 {-|
@@ -18,7 +17,7 @@ module W.Tag exposing
 
 # Colors
 
-@docs primary, secondary, success, warning, danger
+@docs primary, secondary, success, warning, danger, color
 
 
 # Html
