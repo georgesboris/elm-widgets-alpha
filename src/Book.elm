@@ -1104,7 +1104,7 @@ viewNavigation props =
             [ W.Box.grow
             , W.Box.yScroll
             ]
-            [ W.Menu.view []
+            [ W.Menu.view [ W.Menu.uppercaseHeadings ]
                 (routeBook props.route
                     |> bookItems
                     |> List.map

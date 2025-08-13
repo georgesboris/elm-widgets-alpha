@@ -94,7 +94,7 @@ demo =
                                     ]
                                 ]
                                 [ H.div
-                                    [ HA.class "flex-grow" ]
+                                    [ HA.class "grow" ]
                                     [ H.h1
                                         [ W.Theme.styleList
                                             [ ( "font-size", "0.8rem" )

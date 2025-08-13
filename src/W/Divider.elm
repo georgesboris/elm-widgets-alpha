@@ -1,15 +1,21 @@
 module W.Divider exposing
     ( view, Attribute
-    , subtle, thin, vertical
+    , subtle, large, vertical
     , color, margins
+    , thin
     )
 
 {-|
 
 @docs view, Attribute
 
-@docs subtle, thin, vertical
+@docs subtle, large, vertical
 @docs color, margins
+
+
+## Deprecated
+
+@docs thin
 
 -}
 
@@ -29,16 +35,16 @@ type alias Attribute =
 type alias Attributes =
     { color : String
     , vertical : Bool
-    , thin : Bool
+    , large : Bool
     , margins : Float
     }
 
 
 defaultAttrs : Attributes
 defaultAttrs =
-    { color = W.Theme.Color.accent
+    { color = W.Theme.Color.accentSubtle
     , vertical = False
-    , thin = False
+    , large = False
     , margins = 0
     }
 
@@ -47,16 +53,23 @@ defaultAttrs =
 -- Attrs : Setters
 
 
-{-| -}
+{-| Deprecated. Thin is now the default.
+-}
 thin : Attribute
 thin =
-    Attr.attr (\attrs -> { attrs | thin = True })
+    Attr.none
+
+
+{-| -}
+large : Attribute
+large =
+    Attr.attr (\attrs -> { attrs | large = True })
 
 
 {-| -}
 subtle : Attribute
 subtle =
-    Attr.attr (\attrs -> { attrs | color = W.Theme.Color.accentSubtle })
+    Attr.attr (\attrs -> { attrs | color = W.Theme.Color.tintStrong })
 
 
 {-| -}
@@ -89,16 +102,16 @@ view =
             if List.isEmpty children then
                 H.hr
                     [ HA.class "w--self-stretch w--border-solid w--border-0"
-                    , if attrs.thin then
+                    , if attrs.large then
                         HA.classList
-                            [ ( "w--border-t", not attrs.vertical )
-                            , ( "w--border-l", attrs.vertical )
+                            [ ( "w--border-t-2", not attrs.vertical )
+                            , ( "w--border-l-2", attrs.vertical )
                             ]
 
                       else
                         HA.classList
-                            [ ( "w--border-t-2", not attrs.vertical )
-                            , ( "w--border-l-2", attrs.vertical )
+                            [ ( "w--border-t", not attrs.vertical )
+                            , ( "w--border-l", attrs.vertical )
                             ]
                     , if attrs.vertical then
                         W.Theme.styleList
@@ -122,16 +135,16 @@ view =
                     , HA.class "before:w--content-[''] before:w--block before:w--grow"
                     , HA.class "after:w--content-[''] after:w--block after:w--grow"
                     , HA.class "before:w--bg-current after:w--bg-current"
-                    , if attrs.thin then
+                    , if attrs.large then
                         HA.classList
-                            [ ( "before:w--h-[1px] after:w--h-[1px]", not attrs.vertical )
-                            , ( "w--flex-col before:w--w-[1px] after:w--w-[1px]", attrs.vertical )
+                            [ ( "before:w--h-[1px] after:w--h-[2px]", not attrs.vertical )
+                            , ( "w--flex-col before:w--w-[2px] after:w--w-[2px]", attrs.vertical )
                             ]
 
                       else
                         HA.classList
-                            [ ( "before:w--h-[2px] after:w--h-[2px]", not attrs.vertical )
-                            , ( "w--flex-col before:w--w-[2px] after:w--w-[2px]", attrs.vertical )
+                            [ ( "before:w--h-[1px] after:w--h-[1px]", not attrs.vertical )
+                            , ( "w--flex-col before:w--w-[1px] after:w--w-[1px]", attrs.vertical )
                             ]
                     , if attrs.vertical then
                         W.Theme.styleList

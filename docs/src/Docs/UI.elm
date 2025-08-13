@@ -2,6 +2,7 @@ module Docs.UI exposing
     ( viewChapter
     , viewDetailedExample
     , viewExample
+    , viewExampleNoPadding
     , viewHorizontal
     , viewPlaceholder
     , viewTwoColumnsSection
@@ -130,6 +131,22 @@ viewExample ( label, content ) =
             , W.Box.padding W.Theme.Spacing.sm
             , W.Box.background W.Theme.Color.bg
             , W.Box.gap W.Theme.Spacing.sm
+            ]
+            content
+        ]
+
+viewExampleNoPadding : ( String, List (H.Html msg) ) -> H.Html msg
+viewExampleNoPadding ( label, content ) =
+    W.Box.view []
+        [ W.Heading.view
+            [ W.Heading.extraSmall ]
+            [ H.text label ]
+        , W.Box.view
+            [ W.Box.borderSmall
+            , W.Box.radius W.Theme.Radius.md
+            , W.Box.borderSubtle
+            , W.Box.shadow
+            , W.Box.background W.Theme.Color.bg
             ]
             content
         ]

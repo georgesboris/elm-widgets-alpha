@@ -1,8 +1,12 @@
 module W.Menu exposing
     ( view, Attribute
     , viewButton, viewLink, viewDummy, viewHeading, viewSection, ItemAttribute
-    , id, disabled, selected, faded, left, right, noPadding
-    , padding, paddingX, paddingY, titlePadding, titlePaddingX, titlePaddingY
+    , id, disabled, selected, faded, left, right
+    , flat, small
+    , uppercaseHeadings
+    , padding, paddingX, paddingY
+    , margin, marginX, marginY
+    , radius
     )
 
 {-|
@@ -11,14 +15,18 @@ module W.Menu exposing
 @docs viewButton, viewLink, viewDummy, viewHeading, viewSection, ItemAttribute
 
 
-# Styles
+# Item Attributes
 
-@docs id, disabled, selected, faded, left, right, noPadding
+@docs id, disabled, selected, faded, left, right
 
 
-# Container Styles
+# Menu Attributes
 
-@docs padding, paddingX, paddingY, titlePadding, titlePaddingX, titlePaddingY
+@docs flat, small
+@docs uppercaseHeadings
+@docs padding, paddingX, paddingY
+@docs margin, marginX, marginY
+@docs radius
 
 -}
 
@@ -28,6 +36,8 @@ import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
 import W.Theme
+import W.Theme.Radius
+import W.Theme.Spacing
 
 
 
@@ -40,16 +50,26 @@ type alias Attribute msg =
 
 
 type alias Attributes msg =
-    { titlePadding : { x : Int, y : Int }
-    , padding : { x : Int, y : Int }
+    { small : Bool
+    , uppercaseHeadings : Bool
+    , paddingX : W.Theme.Spacing.Spacing
+    , paddingY : W.Theme.Spacing.Spacing
+    , marginX : W.Theme.Spacing.Spacing
+    , marginY : W.Theme.Spacing.Spacing
+    , radius : W.Theme.Radius.Radius
     , msg : Maybe msg
     }
 
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { titlePadding = { x = 12, y = 8 }
-    , padding = { x = 12, y = 8 }
+    { small = False
+    , uppercaseHeadings = False
+    , paddingX = W.Theme.Spacing.md
+    , paddingY = W.Theme.Spacing.sm
+    , marginX = W.Theme.Spacing.sm
+    , marginY = W.Theme.Spacing.sm
+    , radius = W.Theme.Radius.md
     , msg = Nothing
     }
 
@@ -59,39 +79,79 @@ defaultAttrs =
 
 
 {-| -}
-padding : Int -> Attribute msg
+flat : Attribute msg
+flat =
+    Attr.attr
+        (\attrs ->
+            { attrs
+                | marginX = W.Theme.Spacing.none
+                , marginY = W.Theme.Spacing.none
+                , radius = W.Theme.Radius.none
+            }
+        )
+
+
+{-| -}
+uppercaseHeadings : Attribute msg
+uppercaseHeadings =
+    Attr.attr (\attrs -> { attrs | uppercaseHeadings = True })
+
+
+{-| -}
+small : Attribute msg
+small =
+    Attr.attr
+        (\attrs ->
+            { attrs
+                | small = True
+                , paddingX = W.Theme.Spacing.sm
+                , paddingY = W.Theme.Spacing.sm
+                , marginX = W.Theme.Spacing.xs
+                , marginY = W.Theme.Spacing.xs
+            }
+        )
+
+
+{-| -}
+padding : W.Theme.Spacing.Spacing -> Attribute msg
 padding v =
-    Attr.attr (\attrs -> { attrs | padding = { x = v, y = v } })
+    Attr.attr (\attrs -> { attrs | paddingX = v, paddingY = v })
 
 
 {-| -}
-paddingX : Int -> Attribute msg
+paddingX : W.Theme.Spacing.Spacing -> Attribute msg
 paddingX v =
-    Attr.attr (\attrs -> { attrs | padding = { x = v, y = attrs.padding.y } })
+    Attr.attr (\attrs -> { attrs | paddingX = v })
 
 
 {-| -}
-paddingY : Int -> Attribute msg
+paddingY : W.Theme.Spacing.Spacing -> Attribute msg
 paddingY v =
-    Attr.attr (\attrs -> { attrs | padding = { y = v, x = attrs.padding.x } })
+    Attr.attr (\attrs -> { attrs | paddingY = v })
 
 
 {-| -}
-titlePadding : Int -> Attribute msg
-titlePadding v =
-    Attr.attr (\attrs -> { attrs | titlePadding = { x = v, y = v } })
+margin : W.Theme.Spacing.Spacing -> Attribute msg
+margin v =
+    Attr.attr (\attrs -> { attrs | marginX = v, marginY = v })
 
 
 {-| -}
-titlePaddingX : Int -> Attribute msg
-titlePaddingX v =
-    Attr.attr (\attrs -> { attrs | titlePadding = { x = v, y = attrs.titlePadding.y } })
+marginX : W.Theme.Spacing.Spacing -> Attribute msg
+marginX v =
+    Attr.attr (\attrs -> { attrs | marginX = v })
 
 
 {-| -}
-titlePaddingY : Int -> Attribute msg
-titlePaddingY v =
-    Attr.attr (\attrs -> { attrs | titlePadding = { y = v, x = attrs.titlePadding.x } })
+marginY : W.Theme.Spacing.Spacing -> Attribute msg
+marginY v =
+    Attr.attr (\attrs -> { attrs | marginY = v })
+
+
+{-| -}
+radius : W.Theme.Radius.Radius -> Attribute msg
+radius v =
+    Attr.attr (\attrs -> { attrs | radius = v })
 
 
 
@@ -108,7 +168,6 @@ type alias ItemAttributes msg =
     , faded : Bool
     , disabled : Bool
     , selected : Bool
-    , padding : Bool
     , left : Maybe (List (H.Html msg))
     , right : Maybe (List (H.Html msg))
     }
@@ -120,7 +179,6 @@ defaultItemAttrs =
     , faded = False
     , disabled = False
     , selected = False
-    , padding = True
     , left = Nothing
     , right = Nothing
     }
@@ -166,12 +224,6 @@ right v =
     Attr.attr (\attrs -> { attrs | right = Just v })
 
 
-{-| -}
-noPadding : ItemAttribute msg
-noPadding =
-    Attr.attr (\attrs -> { attrs | padding = False })
-
-
 
 -- View
 
@@ -181,21 +233,24 @@ view : List (Attribute msg) -> List (H.Html msg) -> H.Html msg
 view =
     Attr.withAttrs defaultAttrs
         (\attrs children ->
-            H.ul
-                [ HA.class "w--list-none w--p-0"
-                , HA.class "w--font-base"
+            H.div
+                [ HA.attribute "role" "menu"
+                , HA.class "w__menu"
+                , HA.class "w--bg w--font-base"
+                , HA.classList
+                    [ ( "w__m-small", attrs.small )
+                    , ( "w__m-upper", attrs.uppercaseHeadings )
+                    ]
                 , W.Theme.styleList
-                    [ ( "--w--menu-padding", paddingString attrs.padding )
-                    , ( "--w--menu-title-padding", paddingString attrs.titlePadding )
+                    [ ( "--w-menu-margin-x", W.Theme.Spacing.toCSS attrs.marginX )
+                    , ( "--w-menu-margin-y", W.Theme.Spacing.toCSS attrs.marginY )
+                    , ( "--w-menu-padding-x", W.Theme.Spacing.toCSS attrs.paddingX )
+                    , ( "--w-menu-padding-y", W.Theme.Spacing.toCSS attrs.paddingY )
+                    , ( "--w-menu-radius", W.Theme.Radius.toCSS attrs.radius )
                     ]
                 ]
                 children
         )
-
-
-paddingString : { x : Int, y : Int } -> String
-paddingString { x, y } =
-    String.fromInt y ++ "px " ++ String.fromInt x ++ "px"
 
 
 {-| -}
@@ -206,24 +261,12 @@ viewSection :
         , content : List (H.Html msg)
         }
     -> H.Html msg
-viewSection =
-    Attr.withAttrs defaultItemAttrs
-        (\attrs props ->
-            H.section
-                [ HA.class "w--menu-section" ]
-                [ H.p
-                    [ HA.class "w--m-0 w--flex w--items-center"
-                    , HA.class "w--uppercase w--text-xs w--font-bold w--font-text w--text-subtle"
-                    , if attrs.padding then
-                        W.Theme.styleList [ ( "padding", "var(--w--menu-title-padding)" ) ]
-
-                      else
-                        HA.class ""
-                    ]
-                    (baseContent attrs props.heading)
-                , H.ul [ HA.class "w--list-style-none w--p-0" ] props.content
-                ]
-        )
+viewSection attrs props =
+    H.section
+        [ HA.class "w__menu__section" ]
+        [ viewHeading attrs props.heading
+        , H.div [ HA.class "w__menu" ] props.content
+        ]
 
 
 {-| -}
@@ -235,13 +278,9 @@ viewHeading =
     Attr.withAttrs defaultItemAttrs
         (\attrs children ->
             H.p
-                [ HA.class "w--m-0 w--flex w--items-center"
-                , HA.class "w--uppercase w--text-xs w--font-bold w--font-text w--text-subtle"
-                , if attrs.padding then
-                    W.Theme.styleList [ ( "padding", "var(--w--menu-title-padding)" ) ]
-
-                  else
-                    HA.class ""
+                [ HA.class "w__menu__heading"
+                , HA.class "w--flex w--items-center w--m-0"
+                , HA.class "w--font-semibold w--tracking-wide w--font-text w--text-subtle"
                 ]
                 (baseContent attrs children)
         )
@@ -257,8 +296,8 @@ viewDummy =
         (\attrs label ->
             H.div
                 (baseAttrs attrs
-                    ++ [ HA.class "w--border-0 w--focusable"
-                       , HA.tabindex 0
+                    ++ [ HA.tabindex 0
+                       , HA.attribute "role" "button"
                        ]
                 )
                 (baseContent attrs label)
@@ -279,7 +318,7 @@ viewButton =
             H.button
                 (baseAttrs attrs
                     ++ [ HE.onClick props.onClick
-                       , HA.class "w--border-0"
+                       , HA.class "w--appearance-none w--border-0"
                        ]
                 )
                 (baseContent attrs props.label)
@@ -298,7 +337,11 @@ viewLink =
     Attr.withAttrs defaultItemAttrs
         (\attrs props ->
             H.a
-                (HA.href props.href :: baseAttrs attrs)
+                ([ HA.href props.href
+                 , HA.class "w--no-underline"
+                 ]
+                    ++ baseAttrs attrs
+                )
                 (baseContent attrs props.label)
         )
 
@@ -307,34 +350,24 @@ baseAttrs : ItemAttributes msg -> List (H.Attribute msg)
 baseAttrs attrs =
     [ WH.maybeAttr HA.id attrs.id
     , HA.disabled attrs.disabled
-    , HA.class "w/focus"
-    , HA.class "w--m-0 w--w-full w--box-border w--flex w--items-center w--content-start"
-    , HA.class "w--no-underline w--text-default"
-    , HA.class "w--text-left w--text-base w--text-fg"
-    , HA.class "hover:w--bg-tint-strong focus-visible:w--bg-tint-subtle active:w--bg-tint-subtle"
-    , HA.class "w--focusable-reset w--relative focus:w--z-10"
-    , if attrs.disabled then
-        HA.class "w--text-subtle w--pointer-events-none w--cursor-not-allowed"
-
-      else if attrs.selected then
-        HA.class "w--text-default w--bg-tint"
-
-      else if attrs.faded then
-        HA.class "w--text-subtle"
-
-      else
-        HA.class ""
-    , if attrs.padding then
-        W.Theme.styleList [ ( "padding", "var(--w--menu-padding)" ) ]
-
-      else
-        HA.class ""
+    , HA.class "w__menu__item"
+    , HA.class "w/focus w--appearance-none"
+    , HA.class "w--flex w--items-center w--content-start"
+    , HA.class "w--text-default"
+    , HA.class "w--text-left w--text-fg"
+    , HA.class "w--relative focus:w--z-10"
+    , HA.classList
+        [ ( "w--bg hover:w--bg-tint-subtle focus-visible:w--bg-tint-subtle active:w--bg", not attrs.selected && not attrs.disabled )
+        , ( "w--text-subtle", attrs.disabled || (attrs.faded && not attrs.selected) )
+        , ( "w--bg-tint-subtle w--cursor-not-allowed", attrs.disabled )
+        , ( "w--bg-tint hover:w--bg-tint-strong focus-visible:w--bg-tint-strong active:w--bg-tint-subtle", attrs.selected )
+        ]
     ]
 
 
 baseContent : ItemAttributes msg -> List (H.Html msg) -> List (H.Html msg)
 baseContent attrs label =
-    [ WH.maybeHtml (H.span [ HA.class "w--shrink-0 w--pr-3" ]) attrs.left
+    [ WH.maybeHtml (H.span [ HA.class "w--shrink-0" ]) attrs.left
     , H.span [ HA.class "w--grow" ] label
-    , WH.maybeHtml (H.span [ HA.class "w--shrink-0 w--pr-3" ]) attrs.right
+    , WH.maybeHtml (H.span [ HA.class "w--shrink-0" ]) attrs.right
     ]

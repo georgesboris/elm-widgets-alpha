@@ -485,7 +485,7 @@ viewPlayground props state =
         , HA.class "w--border w--border-tint w--rounded"
         ]
         [ H.div
-            [ HA.class "w--flex-grow"
+            [ HA.class "w--grow"
             , HA.class "w--bg w--border-r w--border-tint w--rounded-l w--p-lg"
             , HA.class "w--flex w--items-center w--justify-center"
             ]
