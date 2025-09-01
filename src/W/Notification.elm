@@ -166,7 +166,7 @@ view =
                     , HA.class "w--min-h-[60px]"
                     , HA.class "w--bg w--rounded-md w--shadow-lg"
                     , HA.class "w--border-solid w--border-tint w--border"
-                    , HA.class "w--border-t-8 w--border-t-accent"
+                    , HA.class "w--border-t-8 w--border-t-accent-strong"
                     ]
 
                 children : H.Html msg
@@ -174,10 +174,10 @@ view =
                     H.div
                         [ HA.class "w--flex w--gap-md w--items-center w--w-full w--relative w--z-10"
                         ]
-                        [ WH.maybeHtml (H.div [ HA.class "w--shrink-0 w--flex w--items-center" ]) attrs.icon
+                        [ WH.maybeHtml (H.div [ HA.class "w--shrink-0 w--flex w--items-center w--text-default" ]) attrs.icon
                         , H.div
                             [ HA.class "w--grow w--flex w--flex-col" ]
-                            [ H.div [] children_
+                            [ H.div [ HA.class "w--text-default" ] children_
                             , WH.maybeHtml (H.div [ HA.class "w--text-sm w--font-normal w--text-subtle" ]) attrs.footer
                             ]
                         , WH.maybeHtml

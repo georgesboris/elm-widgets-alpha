@@ -8,7 +8,7 @@ import W.Theme
 import W.Theme.Color
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Divider"
         [ H.div

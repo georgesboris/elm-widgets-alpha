@@ -71,7 +71,6 @@ book =
                 , Docs.Menu.view
                 , Docs.Divider.view
                 ]
-                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Tables & Lists"
                 [ Docs.UI.viewPlaceholder "Breadcrumbs"
                 , Docs.UI.viewPlaceholder "DataList"

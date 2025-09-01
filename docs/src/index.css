@@ -817,6 +817,22 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
 
 /* 
  * ======================================================
+ * Playground
+ * ======================================================
+ */
+
+.w__playground__bg {
+  --size: 8px;
+  --grid: 1px;
+  background-color: rgb(var(--w-bg));
+  background-image: linear-gradient(rgb(var(--w-bg)) var(--grid), transparent var(--grid)), linear-gradient(90deg, rgb(var(--w-bg)) var(--grid), rgb(var(--w-bg-subtle)) var(--grid));
+  background-size: var(--size) var(--size), var(--size) var(--size);
+  background-position: calc(var(--grid) * -1), calc(var(--grid) * -1);
+}
+
+
+/* 
+ * ======================================================
  * Popover
  * ======================================================
  */

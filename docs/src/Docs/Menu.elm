@@ -1,6 +1,7 @@
 module Docs.Menu exposing (view)
 
 import Book
+import Docs
 import Docs.UI
 import Html as H
 import W.Button
@@ -9,7 +10,7 @@ import W.Skeleton
 import W.Theme.Spacing
 
 
-view : Book.Page model Book.Msg
+view : Book.Page Docs.Model Docs.Msg
 view =
     let
         items : List (H.Html Book.Msg)
@@ -50,6 +51,7 @@ view =
             , ( "Custom Padding", [ W.Menu.view [ W.Menu.paddingX W.Theme.Spacing.xl ] items ] )
             ]
         )
+        |> Book.mapPageMsg Docs.BookMsg
 
 viewIcon : H.Html msg
 viewIcon =

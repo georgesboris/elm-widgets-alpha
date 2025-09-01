@@ -34,6 +34,7 @@ import Set
 import Task
 import Url
 import W.Box
+import W.Button
 import W.DataRow
 import W.Divider
 import W.Heading
@@ -106,6 +107,7 @@ type alias Model =
     { navKey : Browser.Navigation.Key
     , url : Url.Url
     , actions : List String
+    , isNavOpen : Bool
     }
 
 
@@ -114,6 +116,7 @@ type Msg
     = OnUrlChange Url.Url
     | OnUrlRequest Browser.UrlRequest
     | LogAction String
+    | CloseNav
     | DoNothing
 
 
@@ -152,7 +155,7 @@ application props =
         { init = appInit { book = props.book, init = props.init }
         , update = appUpdate { book = props.book, update = props.update, effects = props.effects }
         , subscriptions = appSubscriptions { book = props.book, subscriptions = props.subscriptions }
-        , view = appView { book = props.book }
+        , view = appView { book = props.book, toMsg = BookMsg }
         , onUrlChange = BookMsg << OnUrlChange
         , onUrlRequest = BookMsg << OnUrlRequest
         }
@@ -176,6 +179,7 @@ appInit props flags url navKey =
                         { navKey = navKey
                         , url = url
                         , actions = []
+                        , isNavOpen = True
                         }
                     }
             )
@@ -226,7 +230,7 @@ appSubscriptions props (ApplicationModel m) =
         |> Sub.map UserMsg
 
 
-appView : { book : Book model msg } -> ApplicationModel model -> Browser.Document (ApplicationMsg msg)
+appView : { book : Book model msg, toMsg : Msg -> ApplicationMsg msg } -> ApplicationModel model -> Browser.Document (ApplicationMsg msg)
 appView props (ApplicationModel m) =
     let
         route_ : Route model msg
@@ -240,7 +244,7 @@ appView props (ApplicationModel m) =
             options =
                 bookOptions props.book
 
-            bookHtml : List (H.Html msg)
+            bookHtml : List (H.Html (ApplicationMsg msg))
             bookHtml =
                 view
                     { route = route_
@@ -249,11 +253,11 @@ appView props (ApplicationModel m) =
                     , model = m.userModel
                     }
 
-            body : List (H.Html msg)
+            body : List (H.Html (ApplicationMsg msg))
             body =
                 case options.extraHtml of
                     Just html ->
-                        html ++ bookHtml
+                        List.map (H.map UserMsg) html ++ bookHtml
 
                     Nothing ->
                         bookHtml
@@ -264,7 +268,7 @@ appView props (ApplicationModel m) =
                     []
                     [ H.text "body { background: rgb(var(--w-bg-subtle) / 1.0) !important; }" ]
         in
-        globalStyles :: List.map (H.map UserMsg) body
+        globalStyles :: body
     }
 
 
@@ -328,6 +332,11 @@ update props =
                     , Browser.Navigation.replaceUrl model.navKey "/"
                     )
 
+        CloseNav ->
+            ( { model | isNavOpen = False }
+            , Cmd.none
+            )
+
         LogAction message ->
             ( { model | actions = message :: model.actions }
             , Cmd.none
@@ -350,7 +359,7 @@ view :
     , bookModel : Model
     , model : model
     }
-    -> List (H.Html msg)
+    -> List (H.Html (ApplicationMsg msg))
 view props =
     let
         options : Options model msg
@@ -373,26 +382,30 @@ view props =
     , W.Box.view
         [ W.Box.flex [ W.Box.yTop ]
         ]
-        [ W.Box.view
-            [ W.Box.sticky
-            , W.Box.heightScreen
-            , W.Box.widthCustom (W.Theme.Sizing.toCSS W.Theme.Sizing.full)
-            , W.Box.maxWidth W.Theme.Sizing.sm
-            , W.Box.noShrink
-            , W.Box.background W.Theme.Color.bg
-            ]
-            [ H.nav
-                [ HA.class "w--absolute w--inset-0 w--overflow-x-hidden w--overflow-y-auto w--border-0 w--border-solid w--border-r w--border-accent"
-                , HA.class "w--flex w--items-stretch w--justify-stretch"
+        [ if not props.bookModel.isNavOpen then
+            H.text ""
+
+          else
+            W.Box.view
+                [ W.Box.sticky
+                , W.Box.heightScreen
+                , W.Box.widthCustom (W.Theme.Sizing.toCSS W.Theme.Sizing.full)
+                , W.Box.maxWidth W.Theme.Sizing.sm
+                , W.Box.noShrink
+                , W.Box.background W.Theme.Color.bg
                 ]
-                [ viewNavigation
-                    { url = props.bookModel.url
-                    , rootBook = props.book
-                    , route = props.route
-                    , right = []
-                    }
+                [ H.nav
+                    [ HA.class "w--absolute w--inset-0 w--overflow-x-hidden w--overflow-y-auto w--border-0 w--border-solid w--border-r w--border-accent"
+                    , HA.class "w--flex w--items-stretch w--justify-stretch"
+                    ]
+                    [ viewNavigation
+                        { url = props.bookModel.url
+                        , rootBook = props.book
+                        , route = props.route
+                        , right = []
+                        }
+                    ]
                 ]
-            ]
         , W.Box.view
             [ W.Box.grow
             , W.Box.relative
@@ -421,6 +434,7 @@ view props =
                         viewShowcase props.book props.model
                 ]
             ]
+            |> H.map UserMsg
         ]
     ]
 
@@ -1049,7 +1063,7 @@ viewNavigation :
     , route : Route model msg
     , right : List (H.Html msg)
     }
-    -> H.Html msg
+    -> H.Html (ApplicationMsg msg)
 viewNavigation props =
     let
         currentHref : String
@@ -1079,7 +1093,16 @@ viewNavigation props =
         [ W.DataRow.viewExtra
             []
             { left = []
-            , right = []
+            , right =
+                [ W.Button.view
+                    [ W.Button.invisible
+                    , W.Button.icon
+                    , W.Button.extraSmall
+                    ]
+                    { onClick = BookMsg CloseNav
+                    , label = [ H.text "«" ]
+                    }
+                ]
             , header =
                 case parentBook of
                     Just parentBook_ ->
@@ -1168,6 +1191,7 @@ viewNavigation props =
                         )
                 )
             ]
+            |> H.map UserMsg
         ]
 
 
