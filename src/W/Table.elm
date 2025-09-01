@@ -366,18 +366,14 @@ view attrs_ columns data =
                     List.map (viewTableRow attrs columns) data
     in
     H.table
-        [ HA.class "w--table w--table-fixed w--indent-0"
+        [ HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
         , HA.class "w--w-full w--overflow-auto"
         , HA.class "w--bg-bg-color w--font-base w--text-default"
         , W.Theme.styleList attrs.styles
         ]
         [ -- Table Head
           if attrs.showHeader then
-            H.thead
-                [ HA.class "w--sticky w--z-20 w--top-0 w--z-10"
-                , HA.class "w--bg-bg-color"
-                ]
-                [ H.tr [] (List.map viewTableHeaderColumn columns) ]
+            H.thead [] [ H.tr [] (List.map viewTableHeaderColumn columns) ]
 
           else
             H.text ""
@@ -446,12 +442,15 @@ viewTableHeaderColumn : Column msg a -> H.Html msg
 viewTableHeaderColumn (Column col) =
     H.th
         (columnStyles col
-            ++ [ HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle" ]
+            ++ [ HA.class "w--sticky w--z-20 w--top-0"
+               , HA.class "w--bg"
+               , HA.class "w--border-b-2 w--border-solid w--border-0 w--border-tint-subtle"
+               , HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle"
+               ]
         )
         [ H.div
             [ HA.class "w--flex w--items-center gap-1"
             , HA.class "w--p-md"
-            , HA.class "w--border-b-2 w--border-solid w--border-0 w--border-tint-subtle"
             , HA.class col.labelClass
             ]
             [ col.customLeft
