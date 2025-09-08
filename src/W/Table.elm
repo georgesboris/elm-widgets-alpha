@@ -5,6 +5,7 @@ module W.Table exposing
     , onClick, onMouseEnter, onMouseLeave
     , groupBy, groupValue, groupValueCustom, groupSortBy, groupSortByDesc, groupSortWith, groupCollapsed, groupLabel, onGroupClick, onGroupMouseEnter, onGroupMouseLeave
     , noHeader, highlight, maxHeight
+    , footer
     )
 
 {-|
@@ -211,6 +212,7 @@ type alias ColumnAttributes msg a =
     , largeScreenOnly : Bool
     , toHtml : a -> H.Html msg
     , toGroup : Maybe (String -> a -> List a -> H.Html msg)
+    , toFooter : Maybe (List a -> H.Html msg)
     }
 
 
@@ -231,6 +233,7 @@ columnAttrs label toHtml =
     , largeScreenOnly = False
     , toHtml = toHtml
     , toGroup = Nothing
+    , toFooter = Nothing
     }
 
 
@@ -330,6 +333,12 @@ groupLabel =
     Attr.attr (\attrs -> { attrs | toGroup = Just (\label _ _ -> H.text label) })
 
 
+{-| -}
+footer : (List a -> H.Html msg) -> ColumnAttribute msg a
+footer v =
+    Attr.attr (\attrs -> { attrs | toFooter = Just v })
+
+
 
 -- View
 
@@ -364,6 +373,10 @@ view attrs_ columns data =
 
                 Nothing ->
                     List.map (viewTableRow attrs columns) data
+
+        hasFooter : Bool
+        hasFooter =
+            List.any (\(Column c) -> c.toFooter /= Nothing) columns
     in
     H.table
         [ HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
@@ -381,6 +394,12 @@ view attrs_ columns data =
           H.tbody
             [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
             rows
+        , -- Table Footer
+          if hasFooter then
+            H.tfoot [] [ H.tr [] (List.map (viewTableFooterColumn data) columns) ]
+
+          else
+            H.text ""
         ]
 
 
@@ -463,6 +482,22 @@ viewTableHeaderColumn (Column col) =
                 |> Maybe.map (H.span [ HA.class "w--shrink-0" ])
                 |> Maybe.withDefault (H.text "")
             ]
+        ]
+
+
+viewTableFooterColumn : List a -> Column msg a -> H.Html msg
+viewTableFooterColumn data (Column col) =
+    H.td
+        (columnStyles col
+            ++ [ HA.class "w--sticky w--z-20 w--bottom-0"
+               , HA.class "w--bg"
+               , HA.class "w--border-t-2 w--border-solid w--border-0 w--border-tint-subtle"
+               , HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle"
+               ]
+        )
+        [ col.toFooter
+            |> Maybe.map (\fn -> fn data)
+            |> Maybe.withDefault (H.text "")
         ]
 
 

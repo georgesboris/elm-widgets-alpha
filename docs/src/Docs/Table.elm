@@ -58,11 +58,30 @@ view =
                         { label = "Name"
                         , value = .name
                         }
-                    , W.Table.int [ W.Table.width 40 ]
+                    , W.Table.int
+                        [ W.Table.width 40
+                        , W.Table.footer
+                            (\items ->
+                                items
+                                |> List.map .age
+                                |> List.sum
+                                |> (\x -> toFloat x / toFloat (List.length items))
+                                |> (\x -> H.text (String.fromFloat x))
+                            )
+                        ]
                         { label = "Age"
                         , value = .age
                         }
-                    , W.Table.float [ W.Table.width 80 ]
+                    , W.Table.float
+                        [ W.Table.width 80
+                        , W.Table.footer
+                            (\items ->
+                                items
+                                |> List.map .score
+                                |> List.sum
+                                |> (\x -> H.text (String.fromInt (truncate x)))
+                            )
+                        ]
                         { label = "Score"
                         , value = .score
                         }
