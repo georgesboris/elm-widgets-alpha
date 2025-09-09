@@ -10,20 +10,23 @@ import W.Tooltip
 
 data :
     List
-        { age : Int
+        { index : Int
+        , age : Int
         , score : Float
         , ready : Bool
         , picture : String
         , name : String
         }
 data =
-    [ { name = "Georges Boris"
+    [ { index = 0
+      , name = "Georges Boris"
       , age = 33
       , score = 85
       , ready = False
       , picture = "https://picsum.photos/100"
       }
-    , { name = "Janine Bonfadini"
+    , { index = 0
+      , name = "Janine Bonfadini"
       , age = 35
       , score = 904.6
       , ready = True
@@ -32,6 +35,18 @@ data =
     ]
         |> List.repeat 10
         |> List.concat
+        |> List.indexedMap
+            (\index x ->
+                { x
+                    | index = index
+                    , score =
+                        x.score
+                        |> ((*) (toFloat index))
+                        |> floor
+                        |> modBy 100
+                        |> toFloat
+                }
+            )
 
 
 view : Book.Page model Book.Msg
@@ -43,13 +58,21 @@ view =
                     [ W.Table.onClick (\x -> Book.logAction ("onClick" ++ x.name))
                     , W.Table.onMouseEnter (\x -> Book.logAction ("onMouseEnter" ++ x.name))
                     , W.Table.onMouseLeave (Book.logAction "onMouseLeave")
+                    , W.Table.striped
                     , W.Table.highlight (.age >> (==) 35)
                     ]
                     [ W.Table.column
                         [ W.Table.width 60, W.Table.largeScreenOnly ]
                         { label = "Image"
                         , content =
-                            \{ picture } -> H.img [ HA.src picture, HA.height 60 ] []
+                            \{ picture } ->
+                                H.div
+                                    [ HA.class "w--bg-tint w--bg-cover w--rounded"
+                                    , HA.style "width" "45px"
+                                    , HA.style "height" "45px"
+                                    , HA.style "background-image" ("url(\"" ++ picture ++ "\")")
+                                    ]
+                                    []
                         }
                     , W.Table.string
                         [ W.Table.labelLeft [ H.text "L" ]
@@ -106,7 +129,14 @@ view =
                         [ W.Table.width 60, W.Table.largeScreenOnly ]
                         { label = "Image"
                         , content =
-                            \{ picture } -> H.img [ HA.src picture, HA.height 60 ] []
+                            \{ picture } ->
+                                H.div
+                                    [ HA.class "w--bg-tint w--bg-cover w--rounded"
+                                    , HA.style "width" "45px"
+                                    , HA.style "height" "45px"
+                                    , HA.style "background-image" ("url(\"" ++ picture ++ "\")")
+                                    ]
+                                    []
                         }
                     , W.Table.string [ W.Table.groupLabel ]
                         { label = "Name"

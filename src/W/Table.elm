@@ -1,11 +1,18 @@
 module W.Table exposing
     ( view, Attribute
     , column, string, int, float, bool, Column, ColumnAttribute
-    , customLabel, labelClass, labelLeft, labelRight, alignRight, alignCenter, width, relativeWidth, largeScreenOnly
+    , customLabel, labelClass, labelLeft, labelRight
+    , groupLabel, footer
+    , alignRight, alignCenter
+    , width, relativeWidth
+    , largeScreenOnly
     , onClick, onMouseEnter, onMouseLeave
-    , groupBy, groupValue, groupValueCustom, groupSortBy, groupSortByDesc, groupSortWith, groupCollapsed, groupLabel, onGroupClick, onGroupMouseEnter, onGroupMouseLeave
-    , noHeader, highlight, maxHeight
-    , footer
+    , groupBy, groupValue, groupValueCustom
+    , groupSortBy, groupSortByDesc, groupSortWith
+    , groupCollapsed
+    , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
+    , noHeader, striped, highlight, maxHeight
+    , xPadding, yPadding, yHeaderPadding, yFooterPadding
     )
 
 {-|
@@ -20,7 +27,11 @@ module W.Table exposing
 
 # Column Attributes
 
-@docs customLabel, labelClass, labelLeft, labelRight, alignRight, alignCenter, width, relativeWidth, largeScreenOnly
+@docs customLabel, labelClass, labelLeft, labelRight
+@docs groupLabel, footer
+@docs alignRight, alignCenter
+@docs width, relativeWidth
+@docs largeScreenOnly
 
 
 # Actions
@@ -30,12 +41,16 @@ module W.Table exposing
 
 # Groups
 
-@docs groupBy, groupValue, groupValueCustom, groupSortBy, groupSortByDesc, groupSortWith, groupCollapsed, groupLabel, onGroupClick, onGroupMouseEnter, onGroupMouseLeave
+@docs groupBy, groupValue, groupValueCustom
+@docs groupSortBy, groupSortByDesc, groupSortWith
+@docs groupCollapsed
+@docs onGroupClick, onGroupMouseEnter, onGroupMouseLeave
 
 
 # Table Attributes
 
-@docs noHeader, highlight, maxHeight
+@docs noHeader, striped, highlight, maxHeight
+@docs xPadding, yPadding, yHeaderPadding, yFooterPadding
 
 -}
 
@@ -47,6 +62,7 @@ import Html.Events as HE
 import W.InputCheckbox
 import W.Internal.Helpers as WH
 import W.Theme
+import W.Theme.Spacing
 
 
 
@@ -60,7 +76,12 @@ type alias Attribute msg a =
 
 type alias Attributes msg a =
     { showHeader : Bool
+    , isStriped : Bool
     , styles : List ( String, String )
+    , xPadding : W.Theme.Spacing.Spacing
+    , yPadding : W.Theme.Spacing.Spacing
+    , yHeaderPadding : Maybe W.Theme.Spacing.Spacing
+    , yFooterPadding : Maybe W.Theme.Spacing.Spacing
     , groupBy : Maybe (a -> String)
     , groupSortBy : List ( String, a, List a ) -> List ( String, a, List a )
     , groupCollapsed : Maybe (a -> String -> Bool)
@@ -77,7 +98,12 @@ type alias Attributes msg a =
 defaultAttrs : Attributes msg a
 defaultAttrs =
     { showHeader = True
+    , isStriped = False
     , styles = []
+    , xPadding = W.Theme.Spacing.sm
+    , yPadding = W.Theme.Spacing.sm
+    , yHeaderPadding = Nothing
+    , yFooterPadding = Nothing
     , groupBy = Nothing
     , groupSortBy = identity
     , groupCollapsed = Nothing
@@ -91,10 +117,26 @@ defaultAttrs =
     }
 
 
+
+-- Table Attributes
+
+
 {-| -}
 noHeader : Attribute msg a
 noHeader =
     Attr.attr (\attrs -> { attrs | showHeader = False })
+
+
+{-| -}
+striped : Attribute msg a
+striped =
+    Attr.attr (\attrs -> { attrs | isStriped = True })
+
+
+{-| -}
+footer : (List a -> H.Html msg) -> ColumnAttribute msg a
+footer v =
+    Attr.attr (\attrs -> { attrs | toFooter = Just v })
 
 
 {-| Max height in "rem".
@@ -102,6 +144,51 @@ noHeader =
 maxHeight : Float -> Attribute msg a
 maxHeight v =
     Attr.attr (\attrs -> { attrs | styles = ( "max-height", WH.rem v ) :: attrs.styles })
+
+
+{-| -}
+xPadding : W.Theme.Spacing.Spacing -> Attribute msg a
+xPadding v =
+    Attr.attr (\attrs -> { attrs | xPadding = v })
+
+
+{-| -}
+yPadding : W.Theme.Spacing.Spacing -> Attribute msg a
+yPadding v =
+    Attr.attr (\attrs -> { attrs | yPadding = v })
+
+
+{-| -}
+yHeaderPadding : W.Theme.Spacing.Spacing -> Attribute msg a
+yHeaderPadding v =
+    Attr.attr (\attrs -> { attrs | yHeaderPadding = Just v })
+
+
+{-| -}
+yFooterPadding : W.Theme.Spacing.Spacing -> Attribute msg a
+yFooterPadding v =
+    Attr.attr (\attrs -> { attrs | yFooterPadding = Just v })
+
+
+paddingStyles : Attributes msg a -> List ( String, String )
+paddingStyles attrs =
+    [ ( "--padding-x", W.Theme.Spacing.toCSS attrs.xPadding )
+    , ( "--padding-y", W.Theme.Spacing.toCSS attrs.yPadding )
+    , ( "--header-padding-y"
+      , attrs.yHeaderPadding
+            |> Maybe.withDefault attrs.yPadding
+            |> W.Theme.Spacing.toCSS
+      )
+    , ( "--footer-padding-y"
+      , attrs.yFooterPadding
+            |> Maybe.withDefault attrs.yPadding
+            |> W.Theme.Spacing.toCSS
+      )
+    ]
+
+
+
+-- Grouping
 
 
 {-| -}
@@ -333,12 +420,6 @@ groupLabel =
     Attr.attr (\attrs -> { attrs | toGroup = Just (\label _ _ -> H.text label) })
 
 
-{-| -}
-footer : (List a -> H.Html msg) -> ColumnAttribute msg a
-footer v =
-    Attr.attr (\attrs -> { attrs | toFooter = Just v })
-
-
 
 -- View
 
@@ -379,10 +460,12 @@ view attrs_ columns data =
             List.any (\(Column c) -> c.toFooter /= Nothing) columns
     in
     H.table
-        [ HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
+        [ HA.class "w__table"
+        , HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
         , HA.class "w--w-full w--overflow-auto"
         , HA.class "w--bg-bg-color w--font-base w--text-default"
-        , W.Theme.styleList attrs.styles
+        , HA.classList [ ( "w__table__striped", attrs.isStriped ) ]
+        , W.Theme.styleList (attrs.styles ++ paddingStyles attrs)
         ]
         [ -- Table Head
           if attrs.showHeader then
@@ -469,7 +552,6 @@ viewTableHeaderColumn (Column col) =
         )
         [ H.div
             [ HA.class "w--flex w--items-center gap-1"
-            , HA.class "w--p-md"
             , HA.class col.labelClass
             ]
             [ col.customLeft
@@ -503,18 +585,17 @@ viewTableFooterColumn data (Column col) =
 
 viewTableRow : Attributes msg a -> List (Column msg a) -> a -> H.Html msg
 viewTableRow attrs columns datum =
+    let
+        isHighlighted : Bool
+        isHighlighted =
+            attrs.highlight datum
+    in
     H.tr
-        [ HA.class "w--p-0"
-        , if attrs.highlight datum then
-            HA.classList
-                [ ( "w--bg-tint", True )
-                , ( "hover:w--bg-tint-subtle active:w--bg-tint", attrs.onClick /= Nothing )
-                ]
-
-          else
-            HA.classList
-                [ ( "hover:w--bg-tint-subtle active:w--bg-tint", attrs.onClick /= Nothing )
-                ]
+        [ HA.class "w__table__row w--p-0"
+        , HA.classList
+            [ ( "w__m-highlight", isHighlighted )
+            , ( "w__m-interactive", attrs.onClick /= Nothing )
+            ]
         , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
         , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
         ]
