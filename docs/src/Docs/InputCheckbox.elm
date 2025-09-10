@@ -52,31 +52,33 @@ view =
                 ]
               )
             , ( "Different Sizes"
-              , [ W.InputCheckbox.view
-                    []
-                    { value = True
-                    , onInput = Book.logActionWithBool "onInput"
-                    }
-                , H.div [ HA.style "display" "inline-block", HA.style "width" "8px" ] []
-                , W.InputCheckbox.view
-                    [ W.InputCheckbox.small ]
-                    { value = True
-                    , onInput = Book.logActionWithBool "onInput"
-                    }
+              , [ Docs.UI.viewHorizontal
+                    [ W.InputCheckbox.view
+                        []
+                        { value = True
+                        , onInput = Book.logActionWithBool "onInput"
+                        }
+                    , W.InputCheckbox.view
+                        [ W.InputCheckbox.small ]
+                        { value = True
+                        , onInput = Book.logActionWithBool "onInput"
+                        }
+                    ]
                 ]
               )
             , ( "Colorful"
-              , [ W.InputCheckbox.view
-                    [ W.InputCheckbox.colorful ]
-                    { value = False
-                    , onInput = Book.logActionWithBool "onInput"
-                    }
-                , H.div [ HA.style "display" "inline-block", HA.style "width" "8px" ] []
-                , W.InputCheckbox.view
-                    [ W.InputCheckbox.small, W.InputCheckbox.colorful ]
-                    { value = False
-                    , onInput = Book.logActionWithBool "onInput"
-                    }
+              , [ Docs.UI.viewHorizontal
+                    [ W.InputCheckbox.view
+                        [ W.InputCheckbox.colorful ]
+                        { value = True
+                        , onInput = Book.logActionWithBool "onInput"
+                        }
+                    , W.InputCheckbox.view
+                        [ W.InputCheckbox.small, W.InputCheckbox.colorful ]
+                        { value = True
+                        , onInput = Book.logActionWithBool "onInput"
+                        }
+                    ]
                 ]
               )
             , ( "Toggle"

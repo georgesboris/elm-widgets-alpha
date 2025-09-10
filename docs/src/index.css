@@ -379,19 +379,28 @@
  */
 
 @layer components {
+  input[type="checkbox"].w--checkbox,
+  input[type="checkbox"].w--toggle {
+    --fg: rgb(var(--w-solid));
+
+    @apply w--bg w--cursor-pointer;
+    @apply hover:w--opacity-90 active:w--opacity-75;
+
+    &:checked {
+      --fg: var(--fg-color);
+      background: color-mix(in srgb, var(--bg), var(--fg) 10%);
+      border-color: color-mix(in srgb, rgb(var(--w-accent)), var(--fg) 20%);
+    }
+
+    &:disabled:not(.w__m-read-only) { --fg: rgb(var(--w-solid-subtle)); }
+    @apply disabled:w--bg-tint disabled:w--cursor-not-allowed;
+  }
+
   input[type="checkbox"].w--checkbox {
     @apply w--m-0;
     @apply w--appearance-none;
     @apply w--shadow-none;
     @apply w--inline-flex w--items-center w--justify-center;
-
-    @apply w--bg-tint-subtle checked:w--bg;
-
-    @apply hover:w--opacity-90 active:w--opacity-75;
-    @apply disabled:w--bg-tint;
-
-    @apply w--cursor-pointer;
-    @apply disabled:w--cursor-not-allowed;
 
     width: var(--w-cfg-click);
     height: var(--w-cfg-click);
@@ -404,14 +413,16 @@
       width: 1.5rem;
       height: 1.5rem;
       background-image: linear-gradient(-45deg, transparent 65%, var(--bg) 65.99%), linear-gradient(45deg, transparent 75%, var(--bg) 75.99%), linear-gradient(-45deg, var(--bg) 40%, transparent 40.99%), linear-gradient(45deg, var(--bg) 30%, var(--fg) 30.99%, var(--fg) 40%, transparent 40.99%), linear-gradient(-45deg, var(--fg) 50%, var(--bg) 50.99%);
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.2s;
+      transform: scale(0.0);
     }
 
     &:checked::before {
+      transform: scale(1.0);
       opacity: 1.0;
     }
 
-    &:checked:disabled::before {
+    &:checked:disabled:not(.w__m-read-only)::before {
       opacity: 0.5;
     }
   }
@@ -443,11 +454,6 @@
     @apply before:w--block before:w--content-[""];
     @apply before:w--rounded-full before:w--shadow;
     @apply before:w--transition before:w--ease-out before:w--duration-150;
-
-    @apply hover:w--opacity-90 active:w--opacity-75;
-
-    @apply w--bg-tint;
-    @apply checked:w--bg;
 
     @apply before:w--translate-x-0;
     @apply checked:before:w--translate-x-full;

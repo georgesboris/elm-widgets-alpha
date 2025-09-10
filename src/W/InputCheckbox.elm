@@ -55,7 +55,7 @@ type Style
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { color = W.Theme.Color.primarySolid
+    { color = W.Theme.Color.successSolidStrong
     , small = False
     , colorful = False
     , disabled = False
@@ -119,20 +119,14 @@ baseAttrs attrs_ value =
     [ HA.class "w/focus"
     , HA.classList
         [ ( "w--toggle", attrs.style == Toggle )
+        , ( "w__m-read-only", attrs.readOnly )
         , ( "w--checkbox w--rounded before:w--rounded", attrs.style == Checkbox )
         , ( "w--small", attrs.small )
         , ( "w--colorful", attrs.colorful )
-        , ( "w--pointer-events-none", attrs.readOnly )
         ]
     , W.Theme.styleList
         [ ( "--bg", W.Theme.Color.bg )
-        , ( "--fg"
-          , if attrs.disabled then
-                W.Theme.Color.textSubtle
-
-            else
-                attrs.color
-          )
+        , ( "--fg-color", attrs.color )
         ]
     , HA.type_ "checkbox"
     , HA.checked value
