@@ -392,8 +392,12 @@
       border-color: color-mix(in srgb, rgb(var(--w-accent)), var(--fg) 20%);
     }
 
-    &:disabled:not(.w__m-read-only) { --fg: rgb(var(--w-solid-subtle)); }
-    @apply disabled:w--bg-tint disabled:w--cursor-not-allowed;
+    &:disabled:not(.w__m-read-only) {
+      --fg: rgb(var(--w-solid-subtle));
+      cursor: not-allowed;
+    }
+
+    @apply disabled:w--bg-tint;
   }
 
   input[type="checkbox"].w--checkbox {
