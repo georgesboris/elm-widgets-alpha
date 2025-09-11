@@ -517,12 +517,12 @@ viewGroupHeader : Attributes msg a -> List (Column msg a) -> String -> a -> List
 viewGroupHeader attrs columns groupLabel_ groupItem groupColumns =
     H.tr
         [ HA.class "w--table-group-header"
-        , HA.class "w--p-0 w--font-semibold w--bg-tint"
+        , HA.class "w--p-0 w--font-semibold w--bg-tint-subtle"
         , WH.maybeAttr (\fn -> HE.onClick (fn groupItem)) attrs.onGroupClick
         , WH.maybeAttr (\fn -> HE.onMouseEnter (fn groupItem)) attrs.onGroupMouseEnter
         , WH.maybeAttr HE.onMouseEnter attrs.onGroupMouseLeave
         , HA.classList
-            [ ( "hover:w--bg-tint-strong active:w--bg-tint-subtle", attrs.onGroupClick /= Nothing )
+            [ ( "hover:w--bg-tint active:w--bg", attrs.onGroupClick /= Nothing )
             ]
         ]
         (columns
@@ -571,7 +571,7 @@ viewTableFooterColumn : List a -> Column msg a -> H.Html msg
 viewTableFooterColumn data (Column col) =
     H.td
         (columnStyles col
-            ++ [ HA.class "w--sticky w--z-20 w--bottom-0"
+            ++ [ HA.class "w--sticky w--z-10 w--bottom-0"
                , HA.class "w--bg"
                , HA.class "w--border-t-2 w--border-solid w--border-0 w--border-tint-subtle"
                , HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle"
