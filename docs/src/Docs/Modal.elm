@@ -7,11 +7,11 @@ import W.Box
 import W.Button
 import W.Modal
 import W.Popover
-import W.Theme.Spacing
 import W.Text
+import W.Theme.Spacing
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Modal"
         (List.map Docs.UI.viewExample

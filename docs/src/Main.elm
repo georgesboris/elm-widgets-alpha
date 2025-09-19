@@ -1,12 +1,13 @@
 module Main exposing (main)
 
 import Book
-import Docs
+import Color
 import Docs.Accordion
 import Docs.Avatar
 import Docs.Badge
 import Docs.Box
 import Docs.Button
+import Docs.ButtonGroup
 import Docs.Colors
 import Docs.DataRow
 import Docs.Divider
@@ -39,16 +40,15 @@ import Docs.Typography
 import Docs.UI
 import W.Styles
 import W.Theme
-import Color
 import W.Theme.Color
 
 
 theme : W.Theme.Theme
 theme =
-    W.Theme.darkTheme
+    darkTheme
 
 
-book : Book.Book Docs.Model Docs.Msg
+book : Book.Book Model Msg
 book =
     Book.book
         [ Book.theme theme
@@ -62,11 +62,17 @@ book =
                 [ Docs.Typography.view
                 , Docs.Colors.view theme
                 , Docs.Spacing.view
-                , Docs.Button.view
+                ]
+            , Book.chapter "Actions & Controls"
+                [ Docs.Button.view
+                    |> Book.mapPage ButtonMsg .button
+                , Docs.ButtonGroup.view
+                    |> Book.mapPage ButtonGroupMsg .buttonGroup
                 ]
             , Book.chapter "Layout"
                 [ Docs.Accordion.view
                 , Docs.Box.view
+                    |> Book.mapPage BoxMsg .box
                 , Docs.DataRow.view
                 , Docs.Menu.view
                 , Docs.Divider.view
@@ -77,7 +83,6 @@ book =
                 , Docs.Table.view
                 , Docs.Pagination.view
                 ]
-                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Info & Feedback"
                 [ Docs.Avatar.view
                 , Docs.Badge.view
@@ -87,13 +92,11 @@ book =
                 , Docs.Notification.view
                 , Docs.Tag.view
                 ]
-                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Overlays"
                 [ Docs.Modal.view
                 , Docs.Popover.view
                 , Docs.Tooltip.view
                 ]
-                |> Book.mapMsg Docs.BookMsg
             , Book.chapter "Forms & Inputs"
                 [ Docs.UI.viewPlaceholder "Form"
                 , Docs.FormField.view
@@ -110,26 +113,14 @@ book =
                 , Docs.InputCode.view
                 , Docs.InputColor.view
                 ]
-                |> Book.mapMsg Docs.BookMsg
             ]
-        }
-
-
-main : Book.Application () Docs.Model Docs.Msg
-main =
-    Book.application
-        { book = book
-        , init = Docs.init
-        , update = Docs.update
-        , subscriptions = Docs.subscriptions
-        , effects = Docs.effects
         }
 
 
 baseColorScale : W.Theme.Color.ColorScale
 baseColorScale =
-    { bg = primary800
-    , bgSubtle = primary850
+    { bg = Color.rgb255 36 41 48
+    , bgSubtle = Color.rgb255 30 35 41
 
     -- Tint
     , tint = Color.rgb255 45 50 58
@@ -155,6 +146,7 @@ baseColorScale =
     , shadow = Color.rgb255 6 11 22
     }
 
+
 primaryColorScale : W.Theme.Color.ColorScale
 primaryColorScale =
     { bg = Color.rgb255 36 41 48
@@ -174,34 +166,6 @@ primaryColorScale =
     , shadow = Color.rgb255 10 11 14
     }
 
-lightDisabledColorScale : W.Theme.Color.ColorScale
-lightDisabledColorScale =
-    { bg = primary100
-    , bgSubtle = primary100
-
-    -- Tint
-    , tint = primary100
-    , tintSubtle = primary100
-    , tintStrong = primary100
-
-    -- Accent
-    , accent = primary100
-    , accentSubtle = primary100
-    , accentStrong = primary100
-
-    -- Solid
-    , solid = primary100
-    , solidSubtle = primary100
-    , solidStrong = primary100
-    , solidText = primary100
-
-    -- Text
-    , text = primary100
-    , textSubtle = primary100
-
-    -- Text
-    , shadow = primary100
-    }
 
 darkTheme : W.Theme.Theme
 darkTheme =
@@ -269,74 +233,75 @@ lightTheme =
         |> W.Theme.withHeadingFont "Inter, system-ui, sans-serif"
         |> W.Theme.withTextFont "Inter, system-ui, sans-serif"
         |> W.Theme.withBaseColor
-            { bg = primary100
-            , bgSubtle = primary175
+            { bg = Color.rgb255 243 244 246
+            , bgSubtle = Color.rgb255 229 231 235
 
             -- Tint
-            , tintSubtle = primary225
-            , tint = primary250
-            , tintStrong = primary300
+            , tintSubtle = Color.rgb255 220 222 227
+            , tint = Color.rgb255 216 219 225
+            , tintStrong = Color.rgb255 206 210 217
 
             -- Accent
-            , accentSubtle = primary250
-            , accent = primary300
-            , accentStrong = primary350
+            , accentSubtle = Color.rgb255 216 219 225
+            , accent = Color.rgb255 206 210 217
+            , accentStrong = Color.rgb255 180 184 192
 
             -- Solid
-            , solidSubtle = primary375
-            , solid = primary400
-            , solidStrong = primary425
+            , solidSubtle = Color.rgb255 169 174 183
+            , solid = Color.rgb255 157 163 174
+            , solidStrong = Color.rgb255 144 151 162
             , solidText = Color.white
 
             -- Text
-            , text = primary750
-            , textSubtle = primary450
+            , text = Color.rgb255 41 46 54
+            , textSubtle = Color.rgb255 132 138 150
 
             -- Shadow
-            , shadow = primary750
+            , shadow = Color.rgb255 41 46 54
             }
         |> W.Theme.withPrimaryColor
             { bg = Color.white
-            , bgSubtle = primary100
+            , bgSubtle = Color.rgb255 243 244 246
 
             -- Tint
-            , tintSubtle = primary150
-            , tint = primary175
-            , tintStrong = primary200
+            , tintSubtle = Color.rgb255 235 237 240
+            , tint = Color.rgb255 229 231 235
+            , tintStrong = Color.rgb255 223 225 230
 
             -- Accent
-            , accentSubtle = primary250
-            , accent = primary300
-            , accentStrong = primary350
+            , accentSubtle = Color.rgb255 216 219 225
+            , accent = Color.rgb255 206 210 217
+            , accentStrong = Color.rgb255 180 184 192
 
             -- Solid
-            , solidSubtle = primary625
-            , solid = primary700
-            , solidStrong = primary800
+            , solidSubtle = Color.rgb255 75 82 93
+            , solid = Color.rgb255 48 54 62
+            , solidStrong = Color.rgb255 36 41 48
             , solidText = Color.white
 
             -- Text
-            , text = primary750
-            , textSubtle = primary450
+            , text = Color.rgb255 41 46 54
+            , textSubtle = Color.rgb255 132 138 150
 
             -- Shadow
-            , shadow = primary750
+            , shadow = Color.rgb255 41 46 54
             }
-        |> W.Theme.withSecondaryColor lightDisabledColorScale
         |> W.Theme.withSuccessColor
-            { grass
-                | bg = Color.rgb255 239 242 239
-                , bgSubtle = Color.rgb255 232 238 233
-
-                -- Tint
-                , tintSubtle = Color.rgb255 219 233 220
-                , tint = Color.rgb255 203 226 205
-                , tintStrong = Color.rgb255 185 217 188
-
-                -- Accent
-                , accentSubtle = Color.rgb255 185 217 188
-                , accent = Color.rgb255 162 206 166
-                , accentStrong = Color.rgb255 132 190 138
+            { bg = Color.rgb255 239 242 239
+            , bgSubtle = Color.rgb255 232 238 233
+            , tintSubtle = Color.rgb255 219 233 220
+            , tint = Color.rgb255 203 226 205
+            , tintStrong = Color.rgb255 185 217 188
+            , accentSubtle = Color.rgb255 185 217 188
+            , accent = Color.rgb255 162 206 166
+            , accentStrong = Color.rgb255 132 190 138
+            , solidSubtle = Color.rgb255 79 177 97
+            , solid = Color.rgb255 70 167 88
+            , solidStrong = Color.rgb255 62 155 79
+            , solidText = Color.rgb255 255 255 255
+            , textSubtle = Color.rgb255 42 126 59
+            , text = Color.rgb255 32 60 37
+            , shadow = Color.rgb255 42 126 59
             }
         |> W.Theme.withWarningColor
             { bg = Color.rgb255 242 241 239
@@ -373,111 +338,63 @@ lightTheme =
             , shadow = Color.rgb255 206 44 49
             }
 
-primary100 : Color.Color
-primary100 =
-    Color.rgb255 243 244 246
 
 
-primary150 : Color.Color
-primary150 =
-    Color.rgb255 235 237 240
+-- Application
 
 
-primary175 : Color.Color
-primary175 =
-    Color.rgb255 229 231 235
-
-
-primary200 : Color.Color
-primary200 =
-    Color.rgb255 223 225 230
-
-
-primary225 : Color.Color
-primary225 =
-    Color.rgb255 220 222 227
-
-
-primary250 : Color.Color
-primary250 =
-    Color.rgb255 216 219 225
-
-
-primary300 : Color.Color
-primary300 =
-    Color.rgb255 206 210 217
-
-
-primary350 : Color.Color
-primary350 =
-    Color.rgb255 180 184 192
-
-
-primary375 : Color.Color
-primary375 =
-    Color.rgb255 169 174 183
-
-
-primary400 : Color.Color
-primary400 =
-    Color.rgb255 157 163 174
-
-
-primary425 : Color.Color
-primary425 =
-    Color.rgb255 144 151 162
-
-
-primary450 : Color.Color
-primary450 =
-    Color.rgb255 132 138 150
-
-
-primary625 : Color.Color
-primary625 =
-    Color.rgb255 75 82 93
-
-
-primary700 : Color.Color
-primary700 =
-    Color.rgb255 48 54 62
-
-
-primary725 : Color.Color
-primary725 =
-    Color.rgb255 45 50 58
-
-
-primary750 : Color.Color
-primary750 =
-    Color.rgb255 41 46 54
-
-
-primary800 : Color.Color
-primary800 =
-    Color.rgb255 36 41 48
-
-
-primary850 : Color.Color
-primary850 =
-    Color.rgb255 30 35 41
-
-{-| -}
-grass : W.Theme.Color.ColorScale
-grass =
-    { bg = Color.rgb255 251 254 251
-    , bgSubtle = Color.rgb255 245 251 245
-    , tintSubtle = Color.rgb255 233 246 233
-    , tint = Color.rgb255 218 241 219
-    , tintStrong = Color.rgb255 201 232 202
-    , accentSubtle = Color.rgb255 178 221 181
-    , accent = Color.rgb255 148 206 154
-    , accentStrong = Color.rgb255 101 186 116
-    , solidSubtle = Color.rgb255 79 177 97
-    , solid = Color.rgb255 70 167 88
-    , solidStrong = Color.rgb255 62 155 79
-    , solidText = Color.rgb255 255 255 255
-    , textSubtle = Color.rgb255 42 126 59
-    , text = Color.rgb255 32 60 37
-    , shadow = Color.rgb255 42 126 59
+type alias Model =
+    { box : Docs.Box.Model
+    , button : Docs.Button.Model
+    , buttonGroup : Docs.ButtonGroup.Model
     }
+
+
+type Msg
+    = BoxMsg Docs.Box.Msg
+    | ButtonGroupMsg Docs.ButtonGroup.Msg
+    | ButtonMsg Docs.Button.Msg
+
+
+init : flags -> url -> navKey -> ( Model, Cmd Msg )
+init _ _ _ =
+    ( { box = Docs.Box.init
+      , button = Docs.Button.init
+      , buttonGroup = Docs.ButtonGroup.init
+      }
+    , Cmd.none
+    )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        BoxMsg subMsg ->
+            Docs.Box.update subMsg model.button
+                |> Tuple.mapFirst (\m -> { model | button = m })
+                |> Tuple.mapSecond (Cmd.map BoxMsg)
+
+        ButtonMsg subMsg ->
+            Docs.Button.update subMsg model.button
+                |> Tuple.mapFirst (\m -> { model | button = m })
+                |> Tuple.mapSecond (Cmd.map ButtonMsg)
+
+        ButtonGroupMsg subMsg ->
+            Docs.ButtonGroup.update subMsg model.buttonGroup
+                |> Tuple.mapFirst (\m -> { model | buttonGroup = m })
+                |> Tuple.mapSecond (Cmd.map ButtonGroupMsg)
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.none
+
+
+main : Book.Application () Model Msg
+main =
+    Book.application
+        { book = book
+        , init = init
+        , update = update
+        , subscriptions = subscriptions
+        }

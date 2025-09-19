@@ -1,9 +1,7 @@
-module Docs.Button exposing (view)
+module Docs.Button exposing (Model, Msg, init, update, view)
 
 import Attr
 import Book
-import Dict
-import Docs
 import Docs.UI
 import Html as H
 import Html.Attributes as HA
@@ -13,6 +11,36 @@ import W.Internal.Icons
 import W.Playground
 import W.Text
 import W.Theme.Spacing
+
+
+
+--
+
+
+type alias Model =
+    { playground : W.Playground.PlaygroundState
+    }
+
+
+type Msg
+    = UpdatePlayground W.Playground.PlaygroundState
+
+
+init : Model
+init =
+    { playground = W.Playground.init playground
+    }
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        UpdatePlayground v ->
+            ( { model | playground = v }, Cmd.none )
+
+
+
+--
 
 
 playground : W.Playground.Playground (H.Html msg)
@@ -123,10 +151,10 @@ playground =
             }
 
 
-view : Book.Page Docs.Model Docs.Msg
+view : Book.Page Model Msg
 view =
-    Book.pageInteractive "Buttons"
-        (\state ->
+    Book.pageInteractive "Button"
+        (\model ->
             [ W.Text.view
                 []
                 [ H.text """
@@ -136,15 +164,9 @@ The description of the Button component.
             , W.Playground.view
                 { playground = playground
                 , toHtml = identity
-                , onUpdate = Docs.Playground_Updated "Buttons"
+                , onUpdate = Book.sendMsg << UpdatePlayground
                 }
-                (case Dict.get "Buttons" state.playground of
-                    Just s ->
-                        s
-
-                    Nothing ->
-                        W.Playground.init playground
-                )
+                model.playground
             , Docs.UI.viewTwoColumnsSection
                 { title = "Variants"
                 , left = []

@@ -5,6 +5,7 @@ module Docs.UI exposing
     , viewExampleNoPadding
     , viewHorizontal
     , viewPlaceholder
+    , viewPlayground
     , viewTwoColumnsSection
     , viewVertical
     )
@@ -15,6 +16,7 @@ import Html.Attributes as HA
 import W.Box
 import W.Divider
 import W.Heading
+import W.Playground
 import W.Text
 import W.Theme.Color
 import W.Theme.Radius
@@ -27,7 +29,7 @@ viewPlaceholder label =
         |> Book.addTags [ "wip" ]
 
 
-viewChapter : Book.Page model msg -> model -> H.Html msg
+viewChapter : Book.Page model msg -> model -> Book.Html msg
 viewChapter c model =
     H.details
         [ HA.attribute "open" ""
@@ -40,6 +42,24 @@ viewChapter c model =
                 [ HA.class "w--list-none w--space-y-2xl w--p-0" ]
                 (Book.pageContent c model)
             ]
+        ]
+
+
+viewPlayground :
+    { value : W.Playground.PlaygroundState
+    , playground : W.Playground.Playground (Book.Html msg)
+    , onUpdate : W.Playground.PlaygroundState -> msg
+    }
+    -> Book.Html msg
+viewPlayground props =
+    H.div
+        [ HA.class "w--border w--border-solid w--border-accent-subtle w--rounded-md" ]
+        [ W.Playground.view
+            { playground = props.playground
+            , toHtml = identity
+            , onUpdate = Book.sendMsg << props.onUpdate
+            }
+            props.value
         ]
 
 
@@ -134,6 +154,7 @@ viewExample ( label, content ) =
             ]
             content
         ]
+
 
 viewExampleNoPadding : ( String, List (H.Html msg) ) -> H.Html msg
 viewExampleNoPadding ( label, content ) =

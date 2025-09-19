@@ -6,7 +6,7 @@ import Html as H
 import W.Pagination
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Pagination"
         (List.map Docs.UI.viewExample

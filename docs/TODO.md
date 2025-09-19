@@ -8,16 +8,24 @@
 - [ ] Finish all form widgets
 
 - [ ] Review modal (check for dialog)
-- [ ] Review Menu (redesign)
-- [ ] Create ButtonGroup (check for generic group?)
+- [x] Review Menu (redesign)
+- [x] Create ButtonGroup (check for generic group?)
+
 
 - [ ] Review theme colors (tint is too strong)
 - [ ] Review theme shadow (W.Box shadow is not appearing?)
 
+- [ ] Review box and typography (class based?)
 
 
 ---
 
+
+# Book
+
+- [ ] Review `logAction` -> should receive `List (LogAttribute msg)`
+
+---
 
 # Everything that needs to be done
 
@@ -42,7 +50,7 @@
 ## Actions
 
 - [x] W.Button
-- [ ] W.ButtonGroup
+- [x] W.ButtonGroup
 - [x] W.Badge
 - [x] W.Loading
 - [x] W.Skeleton

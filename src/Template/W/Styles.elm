@@ -1,14 +1,18 @@
 module Template.W.Styles exposing
     ( view
     , lightTheme, darkTheme, lightAndDarkTheme, customTheme
-    , borderWidth, clickArea, clickAreaSmall
+    , borderWidth
+    , buttonLinksDecoration
+    , clickArea, clickAreaSmall
     )
 
 {-|
 
 @docs view
 @docs lightTheme, darkTheme, lightAndDarkTheme, customTheme
-@docs borderWidth, clickArea, clickAreaSmall
+@docs borderWidth
+@docs buttonLinksDecoration
+@docs clickArea, clickAreaSmall
 
 -}
 
@@ -19,7 +23,7 @@ import W.Theme
 
 
 
--- Attrs
+-- Attributes
 
 
 {-| -}
@@ -28,7 +32,8 @@ type alias Attribute msg =
 
 
 type alias Attributes msg =
-    { borderWidth : Int
+    { buttonLinksDecoration : Bool
+    , borderWidth : Int
     , clickArea : Float
     , clickAreaSmall : Float
     , theme : Maybe (H.Html msg)
@@ -37,15 +42,19 @@ type alias Attributes msg =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { borderWidth = 2
+    { buttonLinksDecoration = False
+    , borderWidth = 2
     , clickArea = 1.75
     , clickAreaSmall = 1.25
     , theme = Nothing
     }
 
 
-
--- View
+{-| Add the default link decoration to button links.
+-}
+buttonLinksDecoration : Attribute msg
+buttonLinksDecoration =
+    Attr.attr (\attrs -> { attrs | buttonLinksDecoration = True })
 
 
 {-| Default border width in pixels.

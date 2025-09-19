@@ -7,7 +7,7 @@ import Html.Attributes as HA
 import W.InputCheckbox
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Input Checkbox"
         (List.map Docs.UI.viewExample

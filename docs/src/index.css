@@ -12,6 +12,14 @@
   border: var(--w-cfg-border) solid rgb(var(--w-accent));
 }
 
+.w\/inherit {
+  @apply w--text-default;
+}
+
+.w\/focus:hover {
+  cursor: pointer;
+}
+
 /* 
  * ======================================================
  * W.Accordion
@@ -95,13 +103,29 @@
       transform: rotate(0deg);
     }
   }
+}
 
-  /* 
-   * ======================================================
-   * W.Menu
-   * ======================================================
-   */
+/* 
+ * ======================================================
+ * W.ButtonGroup
+ * ======================================================
+ */
 
+@layer components {
+  .w__button-group {
+    @apply w--inline-flex w--items-center;
+    @apply w--p-xs w--gap-xs;
+    @apply w--bg w--border w--border-solid w--border-accent;
+  }
+}
+
+/* 
+ * ======================================================
+ * W.Menu
+ * ======================================================
+ */
+
+@layer components {
   .w__menu {
     display: flex;
     flex-direction: column;
@@ -141,13 +165,15 @@
       @apply w--text-sm;
     }
   }
+}
 
-  /* 
-   * ======================================================
-   * W.Table
-   * ======================================================
-   */
+/* 
+ * ======================================================
+ * W.Table
+ * ======================================================
+ */
 
+@layer components {
    .w__table {
      thead th {
        padding: var(--header-padding-y) var(--padding-x);
@@ -180,7 +206,6 @@
        }
      }
    }
-
 }
 
 
@@ -853,6 +878,23 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
     width: var(--size);
     height: var(--size);
     opacity: 0;
+  }
+}
+
+/* 
+ * ======================================================
+ * W.Notification
+ * ======================================================
+ */
+
+.w__notification {
+  @apply w--border w--border-solid w--border-tint;
+  @apply w--border-t-accent-strong;
+  border-top-width: 6px;
+
+  &:is(a, button) {
+    @apply hover:w--bg-tint-subtle;
+    @apply active:w--bg-subtle;
   }
 }
 

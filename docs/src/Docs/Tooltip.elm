@@ -8,7 +8,7 @@ import W.Theme.Spacing
 import W.Tooltip
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Tooltip"
         (List.map Docs.UI.viewExample

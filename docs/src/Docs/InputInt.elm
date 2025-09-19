@@ -5,7 +5,7 @@ import Docs.UI
 import W.InputInt
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Input Int"
         (List.map Docs.UI.viewExample

@@ -41,15 +41,15 @@ data =
                     | index = index
                     , score =
                         x.score
-                        |> ((*) (toFloat index))
-                        |> floor
-                        |> modBy 100
-                        |> toFloat
+                            |> (*) (toFloat index)
+                            |> floor
+                            |> modBy 100
+                            |> toFloat
                 }
             )
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Table"
         (List.map Docs.UI.viewExample
@@ -86,10 +86,10 @@ view =
                         , W.Table.footer
                             (\items ->
                                 items
-                                |> List.map .age
-                                |> List.sum
-                                |> (\x -> toFloat x / toFloat (List.length items))
-                                |> (\x -> H.text (String.fromFloat x))
+                                    |> List.map .age
+                                    |> List.sum
+                                    |> (\x -> toFloat x / toFloat (List.length items))
+                                    |> (\x -> H.text (String.fromFloat x))
                             )
                         ]
                         { label = "Age"
@@ -100,9 +100,9 @@ view =
                         , W.Table.footer
                             (\items ->
                                 items
-                                |> List.map .score
-                                |> List.sum
-                                |> (\x -> H.text (String.fromInt (truncate x)))
+                                    |> List.map .score
+                                    |> List.sum
+                                    |> (\x -> H.text (String.fromInt (truncate x)))
                             )
                         ]
                         { label = "Score"

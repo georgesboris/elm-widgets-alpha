@@ -11,12 +11,12 @@ import W.InputSlider
 import W.InputText
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     let
         props :
-            { label : List (H.Html Book.Msg)
-            , input : List (H.Html Book.Msg)
+            { label : List (Book.Html msg)
+            , input : List (Book.Html msg)
             }
         props =
             { label =
@@ -51,8 +51,8 @@ view =
             }
 
         singleInput :
-            { label : List (H.Html Book.Msg)
-            , input : List (H.Html Book.Msg)
+            { label : List (Book.Html msg)
+            , input : List (Book.Html msg)
             }
         singleInput =
             { label =

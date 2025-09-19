@@ -1,6 +1,6 @@
 module W.Button exposing
     ( view, viewLink, viewSubmit, viewDummy, Attribute
-    , primary, secondary, success, warning, danger
+    , base, primary, secondary, success, warning, danger
     , outline, invisible, tint, subtle
     , rounded, radius
     , full, icon
@@ -14,7 +14,7 @@ module W.Button exposing
 
 @docs view, viewLink, viewSubmit, viewDummy, Attribute
 
-@docs primary, secondary, success, warning, danger
+@docs base, primary, secondary, success, warning, danger
 @docs outline, invisible, tint, subtle
 
 @docs rounded, radius
@@ -76,7 +76,8 @@ type ButtonSize
 
 
 type ButtonVariant
-    = Base
+    = Inherit
+    | Base
     | Primary
     | Secondary
     | Success
@@ -88,7 +89,7 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
     , style = Basic
-    , variant = Base
+    , variant = Inherit
     , disabled = False
     , radius = Nothing
     , size = Medium
@@ -117,6 +118,12 @@ disabled =
 
 
 -- Attrs : Colors
+
+
+{-| -}
+base : Attribute msg
+base =
+    Attr.attr (\attrs -> { attrs | variant = Base })
 
 
 {-| -}
@@ -372,6 +379,7 @@ htmlAttrs attrs =
                 ]
     in
     [ WH.maybeAttr HA.id attrs.id
+    , HA.class "w__button"
     , HA.class "w--group/btn"
     , HA.class "w--box-border w--relative"
     , HA.class "w--inline-flex w--items-center "
@@ -418,6 +426,9 @@ htmlAttrs attrs =
 
     -- Variants
     , case attrs.variant of
+        Inherit ->
+            HA.class "w/inherit"
+
         Base ->
             HA.class "w/base"
 
@@ -454,6 +465,6 @@ htmlAttrs attrs =
         _ ->
             HA.class
                 ("w/focus w--border-transparent w--bg-transparent"
-                    ++ " hover:w--bg-tint active:w--bg-tint-subtle w--border-none"
+                    ++ " hover:w--bg-tint active:w--bg-tint-subtle"
                 )
     ]

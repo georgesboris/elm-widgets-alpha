@@ -6,7 +6,7 @@ import Time
 import W.InputTime
 
 
-logAction : W.InputTime.Value -> Book.Msg
+logAction : W.InputTime.Value -> Book.Msg msg
 logAction value =
     case W.InputTime.toTime value of
         Just v_ ->
@@ -16,7 +16,7 @@ logAction value =
             Book.logAction "Nothing"
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Input Time"
         (List.map Docs.UI.viewExample

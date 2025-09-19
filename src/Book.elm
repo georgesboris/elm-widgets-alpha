@@ -3,11 +3,12 @@ module Book exposing
     , chapter, chapterName, chapterPages, chapterSlug
     , page, pageInteractive, pageContent, addTags, pageHasTag, pageName, pageSlug
     , bookPage, bookRef, bookRefGroup, bookLink, BookContent(..)
+    , mapHtml, Html
     , Chapter, Page(..)
     , application, Application, Model, Msg(..)
     , logAction, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
     , mapMsg, mapBookMsg, mapChapterMsg, mapPageMsg
-    , darkMode, extraHtml, header, theme
+    , darkMode, extraHtml, header, mapPage, sendMsg, theme
     )
 
 {-|
@@ -16,6 +17,7 @@ module Book exposing
 @docs chapter, chapterName, chapterPages, chapterSlug
 @docs page, pageInteractive, pageContent, addTags, pageHasTag, pageName, pageSlug
 @docs bookPage, bookRef, bookRefGroup, bookLink, BookContent
+@docs mapHtml, Html
 @docs Chapter, Page
 @docs application, Application, Model, Msg
 @docs logAction, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
@@ -32,6 +34,7 @@ import Html as H
 import Html.Attributes as HA
 import Set
 import Task
+import Time
 import Url
 import W.Box
 import W.Button
@@ -39,11 +42,54 @@ import W.DataRow
 import W.Divider
 import W.Heading
 import W.Menu
+import W.Notification
 import W.Tag
 import W.Theme
 import W.Theme.Color
 import W.Theme.Sizing
 import W.Theme.Spacing
+
+
+
+-- Html
+
+
+type alias Html msg =
+    H.Html (Msg msg)
+
+
+{-| -}
+mapHtml : (a -> b) -> H.Html (Msg a) -> H.Html (Msg b)
+mapHtml fn =
+    H.map (mapUserMsg fn)
+
+
+mapUserMsg : (a -> b) -> Msg a -> Msg b
+mapUserMsg fn msg =
+    case msg of
+        OnUserMsg userMsg ->
+            OnUserMsg (fn userMsg)
+
+        OnUrlChange url ->
+            OnUrlChange url
+
+        OnUrlRequest urlRequest ->
+            OnUrlRequest urlRequest
+
+        LogAction data ->
+            LogAction data
+
+        LogActionWithTime data timestamp ->
+            LogActionWithTime data timestamp
+
+        MonitorNotifications timestamp ->
+            MonitorNotifications timestamp
+
+        CloseNav ->
+            CloseNav
+
+        DoNothing ->
+            DoNothing
 
 
 
@@ -58,9 +104,10 @@ type alias Option model msg =
 type alias Options model msg =
     { theme : W.Theme.Theme
     , darkMode : W.Theme.DarkMode
-    , customHeader : Maybe (H.Html msg)
-    , extraHtml : Maybe (List (H.Html msg))
+    , customHeader : Maybe (H.Html (Msg msg))
+    , extraHtml : Maybe (List (H.Html (Msg msg)))
     , model : Maybe model
+    , notificationsTimeout : Int
     }
 
 
@@ -71,6 +118,7 @@ defaultOptions =
     , customHeader = Nothing
     , extraHtml = Nothing
     , model = Nothing
+    , notificationsTimeout = 3000
     }
 
 
@@ -87,13 +135,13 @@ darkMode v =
 
 
 {-| -}
-header : H.Html msg -> Option model msg
+header : H.Html (Msg msg) -> Option model msg
 header v =
     Attr.attr (\attrs -> { attrs | customHeader = Just v })
 
 
 {-| -}
-extraHtml : List (H.Html msg) -> Option model msg
+extraHtml : List (H.Html (Msg msg)) -> Option model msg
 extraHtml v =
     Attr.attr (\attrs -> { attrs | extraHtml = Just v })
 
@@ -103,21 +151,30 @@ extraHtml v =
 
 
 {-| -}
-type alias Model =
+type alias Model userModel =
     { navKey : Browser.Navigation.Key
     , url : Url.Url
-    , actions : List String
+    , notifications :
+        List
+            { data : ActionData
+            , timestamp : Time.Posix
+            }
+    , notificationsTimeoutPaused : Bool
     , isNavOpen : Bool
+    , userModel : userModel
     }
 
 
 {-| -}
-type Msg
+type Msg userMsg
     = OnUrlChange Url.Url
     | OnUrlRequest Browser.UrlRequest
-    | LogAction String
+    | LogAction ActionData
+    | LogActionWithTime ActionData Time.Posix
+    | MonitorNotifications Time.Posix
     | CloseNav
     | DoNothing
+    | OnUserMsg userMsg
 
 
 
@@ -126,19 +183,7 @@ type Msg
 
 {-| -}
 type alias Application flags model msg =
-    Program flags (ApplicationModel model) (ApplicationMsg msg)
-
-
-type ApplicationModel model
-    = ApplicationModel
-        { userModel : model
-        , bookModel : Model
-        }
-
-
-type ApplicationMsg msg
-    = UserMsg msg
-    | BookMsg Msg
+    Program flags (Model model) (Msg msg)
 
 
 {-| -}
@@ -146,18 +191,17 @@ application :
     { book : Book model msg
     , init : flags -> Url.Url -> Browser.Navigation.Key -> ( model, Cmd msg )
     , update : msg -> model -> ( model, Cmd msg )
-    , effects : msg -> model -> Maybe Msg
     , subscriptions : model -> Sub msg
     }
     -> Application flags model msg
 application props =
     Browser.application
         { init = appInit { book = props.book, init = props.init }
-        , update = appUpdate { book = props.book, update = props.update, effects = props.effects }
+        , update = update { book = props.book, userUpdate = props.update }
         , subscriptions = appSubscriptions { book = props.book, subscriptions = props.subscriptions }
-        , view = appView { book = props.book, toMsg = BookMsg }
-        , onUrlChange = BookMsg << OnUrlChange
-        , onUrlRequest = BookMsg << OnUrlRequest
+        , view = appView props.book
+        , onUrlChange = OnUrlChange
+        , onUrlRequest = OnUrlRequest
         }
 
 
@@ -168,101 +212,68 @@ appInit :
     -> flags
     -> Url.Url
     -> Browser.Navigation.Key
-    -> ( ApplicationModel model, Cmd (ApplicationMsg msg) )
+    -> ( Model model, Cmd (Msg msg) )
 appInit props flags url navKey =
     props.init flags url navKey
         |> Tuple.mapFirst
             (\userModel ->
-                ApplicationModel
-                    { userModel = userModel
-                    , bookModel =
-                        { navKey = navKey
-                        , url = url
-                        , actions = []
-                        , isNavOpen = True
-                        }
-                    }
+                { navKey = navKey
+                , url = url
+                , notifications = []
+                , notificationsTimeoutPaused = False
+                , isNavOpen = True
+                , userModel = userModel
+                }
             )
-        |> Tuple.mapSecond (Cmd.map UserMsg)
-
-
-appUpdate :
-    { book : Book model msg
-    , update : msg -> model -> ( model, Cmd msg )
-    , effects : msg -> model -> Maybe Msg
-    }
-    -> ApplicationMsg msg
-    -> ApplicationModel model
-    -> ( ApplicationModel model, Cmd (ApplicationMsg msg) )
-appUpdate props msg (ApplicationModel m) =
-    case msg of
-        UserMsg userMsg ->
-            let
-                ( bookModel, bookCmd ) =
-                    case props.effects userMsg m.userModel of
-                        Just bookMsg ->
-                            update { book = props.book, model = m.bookModel, msg = bookMsg }
-
-                        Nothing ->
-                            ( m.bookModel, Cmd.none )
-
-                ( userModel, userCmd ) =
-                    props.update userMsg m.userModel
-            in
-            ( ApplicationModel { m | bookModel = bookModel, userModel = userModel }
-            , Cmd.batch [ Cmd.map BookMsg bookCmd, Cmd.map UserMsg userCmd ]
-            )
-
-        BookMsg bookMsg ->
-            update { book = props.book, model = m.bookModel, msg = bookMsg }
-                |> Tuple.mapFirst (\bookModel -> ApplicationModel { m | bookModel = bookModel })
-                |> Tuple.mapSecond (Cmd.map BookMsg)
+        |> Tuple.mapSecond (Cmd.map OnUserMsg)
 
 
 appSubscriptions :
     { book : Book model msg
     , subscriptions : model -> Sub msg
     }
-    -> ApplicationModel model
-    -> Sub (ApplicationMsg msg)
-appSubscriptions props (ApplicationModel m) =
-    props.subscriptions m.userModel
-        |> Sub.map UserMsg
+    -> Model model
+    -> Sub (Msg msg)
+appSubscriptions props model =
+    Sub.batch
+        [ Time.every 1000 MonitorNotifications
+        , props.subscriptions model.userModel
+            |> Sub.map OnUserMsg
+        ]
 
 
-appView : { book : Book model msg, toMsg : Msg -> ApplicationMsg msg } -> ApplicationModel model -> Browser.Document (ApplicationMsg msg)
-appView props (ApplicationModel m) =
+appView : Book model msg -> Model model -> Browser.Document (Msg msg)
+appView book_ model =
     let
         route_ : Route model msg
         route_ =
-            route m.bookModel.url props.book
+            route model.url book_
     in
     { title = routeTitle route_
     , body =
         let
             options : Options model msg
             options =
-                bookOptions props.book
+                bookOptions book_
 
-            bookHtml : List (H.Html (ApplicationMsg msg))
+            bookHtml : List (H.Html (Msg msg))
             bookHtml =
                 view
                     { route = route_
-                    , book = props.book
-                    , bookModel = m.bookModel
-                    , model = m.userModel
+                    , book = book_
+                    , model = model
                     }
 
-            body : List (H.Html (ApplicationMsg msg))
+            body : List (H.Html (Msg msg))
             body =
                 case options.extraHtml of
                     Just html ->
-                        List.map (H.map UserMsg) html ++ bookHtml
+                        html ++ bookHtml
 
                     Nothing ->
                         bookHtml
 
-            globalStyles : H.Html (ApplicationMsg msg)
+            globalStyles : H.Html (Msg msg)
             globalStyles =
                 H.node "style"
                     []
@@ -279,24 +290,25 @@ appView props (ApplicationModel m) =
 {-| -}
 update :
     { book : Book model msg
-    , msg : Msg
-    , model : Model
+    , userUpdate : msg -> model -> ( model, Cmd msg )
     }
-    -> ( Model, Cmd Msg )
-update props =
+    -> Msg msg
+    -> Model model
+    -> ( Model model, Cmd (Msg msg) )
+update props msg model =
     let
-        model : Model
-        model =
-            props.model
+        options : Options model msg
+        options =
+            bookOptions props.book
     in
-    case props.msg of
+    case msg of
         DoNothing ->
-            ( props.model, Cmd.none )
+            ( model, Cmd.none )
 
         OnUrlRequest urlRequest ->
             case urlRequest of
                 Browser.External url ->
-                    ( props.model, Browser.Navigation.load url )
+                    ( model, Browser.Navigation.load url )
 
                 Browser.Internal url ->
                     let
@@ -305,8 +317,11 @@ update props =
                             Url.toString url
                     in
                     if String.contains "logAction" urlString then
-                        ( { model | actions = ("Navigate to: " ++ urlString) :: model.actions }
-                        , Cmd.none
+                        ( model
+                        , logActionWithTime
+                            { header = Just "Browser Navigation"
+                            , message = url.path |> String.replace "/logAction" ""
+                            }
                         )
 
                     else
@@ -332,15 +347,55 @@ update props =
                     , Browser.Navigation.replaceUrl model.navKey "/"
                     )
 
+        OnUserMsg userMsg ->
+            case props.userUpdate userMsg model.userModel of
+                ( userModel, userCmd ) ->
+                    ( { model | userModel = userModel }
+                    , Cmd.map OnUserMsg userCmd
+                    )
+
         CloseNav ->
             ( { model | isNavOpen = False }
             , Cmd.none
             )
 
-        LogAction message ->
-            ( { model | actions = message :: model.actions }
+        LogAction actionData ->
+            ( model
+            , logActionWithTime actionData
+            )
+
+        LogActionWithTime actionData now ->
+            ( { model | notifications = { data = actionData, timestamp = now } :: model.notifications }
             , Cmd.none
             )
+
+        MonitorNotifications now ->
+            let
+                currentTimestamp : Int
+                currentTimestamp =
+                    Time.posixToMillis now
+            in
+            if model.notificationsTimeoutPaused then
+                ( model, Cmd.none )
+
+            else
+                ( { model
+                    | notifications =
+                        model.notifications
+                            |> List.filter
+                                (\notification ->
+                                    Time.posixToMillis notification.timestamp
+                                        + options.notificationsTimeout
+                                        >= currentTimestamp
+                                )
+                  }
+                , Cmd.none
+                )
+
+
+logActionWithTime : ActionData -> Cmd (Msg msg)
+logActionWithTime actionData =
+    Task.perform (LogActionWithTime actionData) Time.now
 
 
 scrollTo : String -> Task.Task Browser.Dom.Error ()
@@ -356,10 +411,9 @@ scrollTo id =
 view :
     { route : Route model msg
     , book : Book model msg
-    , bookModel : Model
-    , model : model
+    , model : Model model
     }
-    -> List (H.Html (ApplicationMsg msg))
+    -> List (H.Html (Msg msg))
 view props =
     let
         options : Options model msg
@@ -382,7 +436,7 @@ view props =
     , W.Box.view
         [ W.Box.flex [ W.Box.yTop ]
         ]
-        [ if not props.bookModel.isNavOpen then
+        [ if not props.model.isNavOpen then
             H.text ""
 
           else
@@ -395,11 +449,11 @@ view props =
                 , W.Box.background W.Theme.Color.bg
                 ]
                 [ H.nav
-                    [ HA.class "w--absolute w--inset-0 w--overflow-x-hidden w--overflow-y-auto w--border-0 w--border-solid w--border-r w--border-accent"
+                    [ HA.class "w--absolute w--inset-0 w--overflow-x-hidden w--overflow-y-auto w--border-0 w--border-solid w--border-r w--border-accent-subtle"
                     , HA.class "w--flex w--items-stretch w--justify-stretch"
                     ]
                     [ viewNavigation
-                        { url = props.bookModel.url
+                        { url = props.model.url
                         , rootBook = props.book
                         , route = props.route
                         , right = []
@@ -427,15 +481,31 @@ view props =
                                 [ W.Box.padding W.Theme.Spacing.md
                                 , W.Box.gap W.Theme.Spacing.xl
                                 ]
-                                (pageContent p props.model)
+                                (pageContent p props.model.userModel)
                             ]
 
                     Nothing ->
-                        viewShowcase props.book props.model
+                        viewShowcase props.book props.model.userModel
                 ]
             ]
-            |> H.map UserMsg
         ]
+    , -- Notifications
+      H.div
+        [ HA.style "z-index" "9999"
+        , HA.class "w--fixed w--top-xl w--right-xl"
+        , HA.class "w--flex w--flex-col w--items-end w--gap-md"
+        , HA.class "w--w-full w--max-w-xs"
+        ]
+        (props.model.notifications
+            |> List.map
+                (\notification ->
+                    W.Notification.view
+                        [ W.Notification.primary
+                        , Attr.maybe (\x -> W.Notification.header [ H.text x ]) notification.data.header
+                        ]
+                        [ H.text notification.data.message ]
+                )
+        )
     ]
 
 
@@ -642,43 +712,79 @@ routePagePath (Page c) =
 
 
 {-| -}
-logAction : String -> Msg
-logAction =
+sendMsg : msg -> Msg msg
+sendMsg =
+    OnUserMsg
+
+
+type alias ActionData =
+    { header : Maybe String
+    , message : String
+    }
+
+
+{-| -}
+logAction : String -> Msg msg
+logAction message =
     LogAction
+        { header = Nothing
+        , message = message
+        }
 
 
 {-| -}
-logActionWith : (a -> String) -> String -> a -> Msg
+logActionWithHeader :
+    { message : String
+    , header : String
+    }
+    -> Msg msg
+logActionWithHeader props =
+    LogAction
+        { header = Just props.header
+        , message = props.message
+        }
+
+
+{-| -}
+logActionWith : (a -> String) -> String -> a -> Msg msg
 logActionWith fn label v =
-    LogAction (label ++ ": " ++ fn v)
+    logActionWithHeader
+        { header = label
+        , message = fn v
+        }
 
 
 {-| -}
-logActionWithBool : String -> Bool -> Msg
-logActionWithBool label v =
+logActionWithBool : String -> Bool -> Msg msg
+logActionWithBool =
+    logActionWith boolToString
+
+
+boolToString : Bool -> String
+boolToString v =
     if v then
-        LogAction (label ++ ": True")
+        "True"
 
     else
-        LogAction (label ++ ": False")
+        "False"
 
 
 {-| -}
-logActionWithString : String -> String -> Msg
-logActionWithString label v =
-    LogAction (label ++ ": \"" ++ v ++ "\"")
+logActionWithString : String -> String -> Msg msg
+logActionWithString =
+    logActionWith (\v -> "\"" ++ v ++ "\"")
 
 
 {-| -}
-logActionWithFloat : String -> Float -> Msg
-logActionWithFloat label v =
-    LogAction (label ++ ": \"" ++ String.fromFloat v ++ "\"")
+logActionWithFloat : String -> Float -> Msg msg
+logActionWithFloat =
+    logActionWith String.fromFloat
 
 
 {-| -}
-logActionWithInt : String -> Int -> Msg
-logActionWithInt label v =
-    LogAction (label ++ ": \"" ++ String.fromInt v ++ "\"")
+logActionWithInt : String -> Int -> Msg msg
+logActionWithInt =
+    logActionWith String.fromInt
 
 
 
@@ -746,9 +852,10 @@ mapOptionsMsg : (a -> b) -> Options model a -> Options model b
 mapOptionsMsg fn options =
     { theme = options.theme
     , darkMode = options.darkMode
-    , customHeader = Maybe.map (H.map fn) options.customHeader
-    , extraHtml = Maybe.map (List.map (H.map fn)) options.extraHtml
+    , customHeader = Maybe.map (mapHtml fn) options.customHeader
+    , extraHtml = Maybe.map (List.map (mapHtml fn)) options.extraHtml
     , model = options.model
+    , notificationsTimeout = options.notificationsTimeout
     }
 
 
@@ -796,10 +903,29 @@ type Page model msg
         , slug : String
         , chapterSlug : Maybe String
         , anchors : List { id : String, label : String }
-        , content : model -> List (H.Html msg)
-        , excerpt : model -> List (H.Html msg)
+        , content : model -> List (H.Html (Msg msg))
+        , excerpt : model -> List (H.Html (Msg msg))
         , tags : Set.Set String
         , meta : Dict.Dict String String
+        }
+
+
+{-| -}
+mapPage :
+    (pageMsg -> msg)
+    -> (model -> pageModel)
+    -> Page pageModel pageMsg
+    -> Page model msg
+mapPage fromMsg toModel (Page p) =
+    Page
+        { name = p.name
+        , slug = p.slug
+        , chapterSlug = p.chapterSlug
+        , anchors = p.anchors
+        , content = \m -> List.map (mapHtml fromMsg) (p.content (toModel m))
+        , excerpt = \m -> List.map (mapHtml fromMsg) (p.excerpt (toModel m))
+        , tags = p.tags
+        , meta = p.meta
         }
 
 
@@ -810,8 +936,8 @@ mapPageMsg fn (Page p) =
         , slug = p.slug
         , chapterSlug = p.chapterSlug
         , anchors = p.anchors
-        , content = \m -> List.map (H.map fn) (p.content m)
-        , excerpt = \m -> List.map (H.map fn) (p.excerpt m)
+        , content = \m -> List.map (mapHtml fn) (p.content m)
+        , excerpt = \m -> List.map (mapHtml fn) (p.excerpt m)
         , tags = p.tags
         , meta = p.meta
         }
@@ -985,7 +1111,7 @@ chapterPages (Chapter p) =
 
 
 {-| -}
-page : String -> List (H.Html msg) -> Page model msg
+page : String -> List (H.Html (Msg msg)) -> Page model msg
 page name content =
     Page
         { name = name
@@ -1000,7 +1126,7 @@ page name content =
 
 
 {-| -}
-pageInteractive : String -> (model -> List (H.Html msg)) -> Page model msg
+pageInteractive : String -> (model -> List (H.Html (Msg msg))) -> Page model msg
 pageInteractive name toContent =
     Page
         { name = name
@@ -1033,7 +1159,7 @@ pageSlug (Page c) =
 
 
 {-| -}
-pageContent : Page model msg -> model -> List (H.Html msg)
+pageContent : Page model msg -> model -> List (Html msg)
 pageContent (Page c) =
     c.content
 
@@ -1061,9 +1187,9 @@ viewNavigation :
     { url : Url.Url
     , rootBook : Book model msg
     , route : Route model msg
-    , right : List (H.Html msg)
+    , right : List (H.Html (Msg msg))
     }
-    -> H.Html (ApplicationMsg msg)
+    -> H.Html (Msg msg)
 viewNavigation props =
     let
         currentHref : String
@@ -1099,7 +1225,7 @@ viewNavigation props =
                     , W.Button.icon
                     , W.Button.extraSmall
                     ]
-                    { onClick = BookMsg CloseNav
+                    { onClick = CloseNav
                     , label = [ H.text "«" ]
                     }
                 ]
@@ -1191,7 +1317,6 @@ viewNavigation props =
                         )
                 )
             ]
-            |> H.map UserMsg
         ]
 
 
@@ -1219,7 +1344,7 @@ viewLink props =
         }
 
 
-viewWIPTag : Page model msg -> List (H.Html msg)
+viewWIPTag : Page model msg -> List (H.Html (Msg msg))
 viewWIPTag page_ =
     if pageHasTag "wip" page_ then
         [ W.Tag.view
@@ -1236,7 +1361,7 @@ viewBookTag =
     [ H.span [ HA.class "w--font-code w--text-subtle w--text-xl w--leading-none w--opacity-50" ] [ H.text "↠" ] ]
 
 
-viewShowcase : Book model msg -> model -> H.Html msg
+viewShowcase : Book model msg -> model -> H.Html (Msg msg)
 viewShowcase book_ model =
     H.div
         []

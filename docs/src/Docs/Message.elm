@@ -5,12 +5,12 @@ import Docs.UI
 import Html as H
 import W.Box
 import W.Message
+import W.Theme
 import W.Theme.Color
 import W.Theme.Spacing
-import W.Theme
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Message"
         ([ ( [], "Neutral" )

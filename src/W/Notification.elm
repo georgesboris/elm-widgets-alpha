@@ -4,6 +4,7 @@ module W.Notification exposing
     , primary, secondary, success, warning, danger
     , href, onClick, onClose
     , id
+    , header
     )
 
 {-|
@@ -37,6 +38,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Button
+import W.DataRow
 import W.Internal.Helpers as WH
 
 
@@ -51,8 +53,9 @@ type alias Attribute msg =
 
 type alias Attributes msg =
     { id : Maybe String
-    , icon : Maybe (List (H.Html msg))
-    , footer : Maybe (List (H.Html msg))
+    , icon : List (H.Html msg)
+    , header : List (H.Html msg)
+    , footer : List (H.Html msg)
     , theme : String
     , href : Maybe String
     , onClick : Maybe msg
@@ -63,8 +66,9 @@ type alias Attributes msg =
 defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
-    , icon = Nothing
-    , footer = Nothing
+    , icon = []
+    , header = []
+    , footer = []
     , theme = "w/base"
     , href = Nothing
     , onClick = Nothing
@@ -103,13 +107,19 @@ href v =
 {-| -}
 icon : List (H.Html msg) -> Attribute msg
 icon v =
-    Attr.attr (\attrs -> { attrs | icon = Just v })
+    Attr.attr (\attrs -> { attrs | icon = v })
+
+
+{-| -}
+header : List (H.Html msg) -> Attribute msg
+header v =
+    Attr.attr (\attrs -> { attrs | header = v })
 
 
 {-| -}
 footer : List (H.Html msg) -> Attribute msg
 footer v =
-    Attr.attr (\attrs -> { attrs | footer = Just v })
+    Attr.attr (\attrs -> { attrs | footer = v })
 
 
 {-| -}
@@ -159,57 +169,45 @@ view =
                 baseAttrs =
                     [ WH.maybeAttr HA.id attrs.id
                     , HA.class attrs.theme
+                    , HA.class "w__notification"
                     , HA.class "w--m-0 w--box-border w--relative w--text-left"
                     , HA.class "w--flex w--w-full w--items-center"
-                    , HA.class "w--font-base w--text-base w--font-medium"
-                    , HA.class "w--py-sm w--px-md"
+                    , HA.class "w--text-base"
                     , HA.class "w--min-h-[60px]"
                     , HA.class "w--bg w--rounded-md w--shadow-lg"
-                    , HA.class "w--border-solid w--border-tint w--border"
-                    , HA.class "w--border-t-8 w--border-t-accent-strong"
                     ]
 
                 children : H.Html msg
                 children =
-                    H.div
-                        [ HA.class "w--flex w--gap-md w--items-center w--w-full w--relative w--z-10"
-                        ]
-                        [ WH.maybeHtml (H.div [ HA.class "w--shrink-0 w--flex w--items-center w--text-default" ]) attrs.icon
-                        , H.div
-                            [ HA.class "w--grow w--flex w--flex-col" ]
-                            [ H.div [ HA.class "w--text-default" ] children_
-                            , WH.maybeHtml (H.div [ HA.class "w--text-sm w--font-normal w--text-subtle" ]) attrs.footer
-                            ]
-                        , WH.maybeHtml
-                            (\onClose_ ->
-                                H.div
-                                    [ HA.class "w--shrink-0 w--flex w--items-center" ]
+                    W.DataRow.viewExtra []
+                        { left = attrs.icon
+                        , header = attrs.header
+                        , main = children_
+                        , footer = attrs.footer
+                        , right =
+                            case attrs.onClose of
+                                Just onClose_ ->
                                     [ W.Button.view [ W.Button.invisible, W.Button.icon, W.Button.small ]
                                         { label = [ H.text "x" ]
                                         , onClick = onClose_
                                         }
                                     ]
-                            )
-                            attrs.onClose
-                        ]
+
+                                Nothing ->
+                                    []
+                        }
             in
             case ( attrs.onClick, attrs.href ) of
                 ( Just onClick_, _ ) ->
                     H.button
-                        (baseAttrs ++ [ interactiveClass, HE.onClick onClick_ ])
+                        (baseAttrs ++ [ HA.class "w/focus", HE.onClick onClick_ ])
                         [ children ]
 
                 ( Nothing, Just href_ ) ->
                     H.a
-                        (baseAttrs ++ [ interactiveClass, HA.href href_ ])
+                        (baseAttrs ++ [ HA.class "w/focus w--no-underline", HA.href href_ ])
                         [ children ]
 
                 _ ->
                     H.div baseAttrs [ children ]
         )
-
-
-interactiveClass : H.Attribute msg
-interactiveClass =
-    HA.class
-        "w--appearance-none w--bg-transparent w--no-underline w--focusable hover:before:w--opacity-[0.05] active:before:w--opacity-10"

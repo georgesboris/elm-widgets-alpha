@@ -9,7 +9,7 @@ import W.Heading
 import W.Theme.Spacing
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Heading"
         [ W.Box.view

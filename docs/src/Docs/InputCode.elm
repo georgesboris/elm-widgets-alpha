@@ -5,7 +5,7 @@ import Docs.UI
 import W.InputCode
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Input Code"
         (List.map Docs.UI.viewExample

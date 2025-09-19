@@ -3,13 +3,10 @@ module Docs.Notification exposing (view)
 import Book
 import Docs.UI
 import Html as H
-import W.Box
 import W.Notification
-import W.Theme.Spacing
-import W.Theme
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Notification"
         ([ ( [], "Neutral" )

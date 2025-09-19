@@ -5,7 +5,7 @@ import Docs.UI
 import W.InputFloat
 
 
-logAction : W.InputFloat.Value -> Book.Msg
+logAction : W.InputFloat.Value -> Book.Msg msg
 logAction v =
     W.InputFloat.toFloat v
         |> Maybe.map String.fromFloat
@@ -14,7 +14,7 @@ logAction v =
         |> Book.logActionWithString "onInput"
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Input Float"
         (List.map Docs.UI.viewExample

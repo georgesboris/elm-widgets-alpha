@@ -7,7 +7,7 @@ import W.InputColor
 import W.Internal.Color
 
 
-view : Book.Page model Book.Msg
+view : Book.Page model msg
 view =
     Book.page "Input Color"
         (List.map Docs.UI.viewExample
