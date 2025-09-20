@@ -1,10 +1,9 @@
 module W.Notification exposing
     ( view, Attribute
-    , icon, footer
+    , icon, header, footer
     , primary, secondary, success, warning, danger
     , href, onClick, onClose
     , id
-    , header
     )
 
 {-|
@@ -14,7 +13,7 @@ module W.Notification exposing
 
 # Content
 
-@docs icon, footer
+@docs icon, header, footer
 
 
 # Styles
