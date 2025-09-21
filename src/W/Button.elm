@@ -4,9 +4,9 @@ module W.Button exposing
     , outline, invisible, tint, subtle
     , rounded, radius
     , full, icon
-    , disabled
     , large, small, extraSmall
     , alignLeft, alignRight
+    , disabled, readOnly
     , id
     )
 
@@ -20,10 +20,10 @@ module W.Button exposing
 @docs rounded, radius
 @docs full, icon
 
-@docs disabled
 @docs large, small, extraSmall
 @docs alignLeft, alignRight
 
+@docs disabled, readOnly
 @docs id
 
 -}
@@ -49,6 +49,7 @@ type alias Attribute msg =
 type alias Attributes msg =
     { id : Maybe String
     , style : ButtonStyle
+    , readOnly : Bool
     , disabled : Bool
     , radius : Maybe String
     , size : ButtonSize
@@ -90,6 +91,7 @@ defaultAttrs =
     { id = Nothing
     , style = Basic
     , variant = Inherit
+    , readOnly = False
     , disabled = False
     , radius = Nothing
     , size = Medium
@@ -108,6 +110,12 @@ defaultAttrs =
 id : String -> Attribute msg
 id v =
     Attr.attr (\attrs -> { attrs | id = Just v })
+
+
+{-| -}
+readOnly : Attribute msg
+readOnly =
+    Attr.attr (\attrs -> { attrs | readOnly = True })
 
 
 {-| -}
@@ -371,7 +379,7 @@ htmlAttrs attrs =
 
                     Nothing ->
                         [ ( "border-radius", "0.5em" ) ]
-                , if attrs.disabled then
+                , if attrs.disabled && not attrs.readOnly then
                     [ ( "color", W.Theme.Color.textSubtle ) ]
 
                   else
@@ -389,10 +397,11 @@ htmlAttrs attrs =
     , HA.class attrs.alignClass
     , HA.classList
         [ ( "w--w-full", attrs.full )
-        , ( "w--cursor-pointer", not attrs.disabled )
+        , ( "w--cursor-pointer", not attrs.disabled && not attrs.readOnly )
         , ( "w--pointer-events-none w--opacity-50", attrs.disabled )
+        , ( "w--pointer-events-none", attrs.readOnly )
         ]
-    , HA.disabled attrs.disabled
+    , HA.disabled (attrs.disabled || attrs.readOnly)
     , W.Theme.styleList styles
 
     -- Font Size
@@ -408,7 +417,7 @@ htmlAttrs attrs =
 
     -- Spacing
     , if attrs.icon then
-        HA.class ""
+        HA.class "w--p-xs"
 
       else
         case attrs.size of

@@ -6,6 +6,7 @@ import Docs.Accordion
 import Docs.Avatar
 import Docs.Badge
 import Docs.Box
+import Docs.Breadcrumbs
 import Docs.Button
 import Docs.ButtonGroup
 import Docs.Colors
@@ -78,7 +79,7 @@ book =
                 , Docs.Divider.view
                 ]
             , Book.chapter "Tables & Lists"
-                [ Docs.UI.viewPlaceholder "Breadcrumbs"
+                [ Docs.Breadcrumbs.view
                 , Docs.UI.viewPlaceholder "DataList"
                 , Docs.Table.view
                 , Docs.Pagination.view

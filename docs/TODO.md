@@ -11,7 +11,6 @@
 - [x] Review Menu (redesign)
 - [x] Create ButtonGroup (check for generic group?)
 
-
 - [ ] Review theme colors (tint is too strong)
 - [ ] Review theme shadow (W.Box shadow is not appearing?)
 
@@ -90,14 +89,15 @@
 - [x] W.Tag [Review]
 - [x] W.Popover
 - [x] W.Tooltip
-- [ ] ~ W.Details
+- [x] W.Accordion
 
 
 ## Navigation
 
 - [x] W.Menu [Review]
-- [ ] ~ W.Breadcrumbs
+- [x] ~ W.Breadcrumbs
 - [x] W.Pagination
+
 
 ## Forms & Inputs
 
@@ -115,4 +115,5 @@
 - [ ] W.InputText
 - [ ] W.InputTextArea
 - [ ] W.InputTime
+
 

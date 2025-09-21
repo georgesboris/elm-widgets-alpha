@@ -6,7 +6,7 @@ module Book exposing
     , mapHtml, Html
     , Chapter, Page(..)
     , application, Application, Model, Msg(..)
-    , logAction, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
+    , logAction, logActionHref, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
     , mapMsg, mapBookMsg, mapChapterMsg, mapPageMsg
     , darkMode, extraHtml, header, mapPage, sendMsg, theme
     )
@@ -20,7 +20,7 @@ module Book exposing
 @docs mapHtml, Html
 @docs Chapter, Page
 @docs application, Application, Model, Msg
-@docs logAction, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
+@docs logAction, logActionHref, logActionWith, logActionWithBool, logActionWithString, logActionWithFloat, logActionWithInt
 @docs mapMsg, mapBookMsg, mapChapterMsg, mapPageMsg
 
 -}
@@ -38,6 +38,7 @@ import Set
 import Task
 import Time
 import Url
+import Url.Builder
 import W.Box
 import W.Button
 import W.DataRow
@@ -788,6 +789,12 @@ logActionCustom :
     -> Msg msg
 logActionCustom =
     LogAction
+
+
+{-| -}
+logActionHref : String -> String
+logActionHref content =
+    Url.Builder.absolute [ "logAction", slugify content ] []
 
 
 {-| -}
