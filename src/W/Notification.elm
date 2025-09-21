@@ -2,6 +2,7 @@ module W.Notification exposing
     ( view, Attribute
     , icon, header, footer
     , primary, secondary, success, warning, danger
+    , fadeIn, appearFromTop, appearFromBottom, appearFromLeft, appearFromRight
     , href, onClick, onClose
     , id
     )
@@ -19,6 +20,11 @@ module W.Notification exposing
 # Styles
 
 @docs primary, secondary, success, warning, danger
+
+
+# Animations
+
+@docs fadeIn, appearFromTop, appearFromBottom, appearFromLeft, appearFromRight
 
 
 # Actions
@@ -56,6 +62,7 @@ type alias Attributes msg =
     , header : List (H.Html msg)
     , footer : List (H.Html msg)
     , theme : String
+    , animation : Animation
     , href : Maybe String
     , onClick : Maybe msg
     , onClose : Maybe msg
@@ -69,6 +76,7 @@ defaultAttrs =
     , header = []
     , footer = []
     , theme = "w/base"
+    , animation = None
     , href = Nothing
     , onClick = Nothing
     , onClose = Nothing
@@ -152,6 +160,71 @@ danger =
 
 
 
+-- Attributes : Animations
+
+
+type Animation
+    = None
+    | FadeIn
+    | FromTop
+    | FromRight
+    | FromLeft
+    | FromBottom
+
+
+{-| -}
+fadeIn : Attribute msg
+fadeIn =
+    Attr.attr (\attrs -> { attrs | animation = FadeIn })
+
+
+{-| -}
+appearFromTop : Attribute msg
+appearFromTop =
+    Attr.attr (\attrs -> { attrs | animation = FromTop })
+
+
+{-| -}
+appearFromBottom : Attribute msg
+appearFromBottom =
+    Attr.attr (\attrs -> { attrs | animation = FromBottom })
+
+
+{-| -}
+appearFromLeft : Attribute msg
+appearFromLeft =
+    Attr.attr (\attrs -> { attrs | animation = FromLeft })
+
+
+{-| -}
+appearFromRight : Attribute msg
+appearFromRight =
+    Attr.attr (\attrs -> { attrs | animation = FromRight })
+
+
+animationClass : Animation -> String
+animationClass v =
+    case v of
+        None ->
+            ""
+
+        FadeIn ->
+            "w__m-animated w--animate-fade-in"
+
+        FromTop ->
+            "w__m-animated w--animate-fade-scale-y"
+
+        FromBottom ->
+            "w__m-animated w--animate-fade-scale-y w--origin-bottom"
+
+        FromLeft ->
+            "w__m-animated w--animate-fade-scale-x w--origin-left"
+
+        FromRight ->
+            "w__m-animated w--animate-fade-scale-x w--origin-right"
+
+
+
 -- Main
 
 
@@ -169,6 +242,7 @@ view =
                     [ WH.maybeAttr HA.id attrs.id
                     , HA.class attrs.theme
                     , HA.class "w__notification"
+                    , HA.class (animationClass attrs.animation)
                     , HA.class "w--m-0 w--box-border w--relative w--text-left"
                     , HA.class "w--flex w--w-full w--items-center"
                     , HA.class "w--text-base"

@@ -32,6 +32,8 @@ import Browser.Navigation
 import Dict
 import Html as H
 import Html.Attributes as HA
+import Html.Events as HE
+import Process
 import Set
 import Task
 import Time
@@ -81,6 +83,12 @@ mapUserMsg fn msg =
 
         LogActionWithTime data timestamp ->
             LogActionWithTime data timestamp
+
+        LogAction_MouseEnter ->
+            LogAction_MouseEnter
+
+        LogAction_MouseLeave ->
+            LogAction_MouseLeave
 
         MonitorNotifications timestamp ->
             MonitorNotifications timestamp
@@ -154,12 +162,13 @@ extraHtml v =
 type alias Model userModel =
     { navKey : Browser.Navigation.Key
     , url : Url.Url
-    , notifications :
+    , actions :
         List
             { data : ActionData
-            , timestamp : Time.Posix
+            , createdAt : Time.Posix
+            , dismissedAt : Time.Posix
             }
-    , notificationsTimeoutPaused : Bool
+    , isHoveringActions : Bool
     , isNavOpen : Bool
     , userModel : userModel
     }
@@ -171,6 +180,8 @@ type Msg userMsg
     | OnUrlRequest Browser.UrlRequest
     | LogAction ActionData
     | LogActionWithTime ActionData Time.Posix
+    | LogAction_MouseEnter
+    | LogAction_MouseLeave
     | MonitorNotifications Time.Posix
     | CloseNav
     | DoNothing
@@ -219,8 +230,8 @@ appInit props flags url navKey =
             (\userModel ->
                 { navKey = navKey
                 , url = url
-                , notifications = []
-                , notificationsTimeoutPaused = False
+                , actions = []
+                , isHoveringActions = False
                 , isNavOpen = True
                 , userModel = userModel
                 }
@@ -235,11 +246,8 @@ appSubscriptions :
     -> Model model
     -> Sub (Msg msg)
 appSubscriptions props model =
-    Sub.batch
-        [ Time.every 1000 MonitorNotifications
-        , props.subscriptions model.userModel
-            |> Sub.map OnUserMsg
-        ]
+    props.subscriptions model.userModel
+        |> Sub.map OnUserMsg
 
 
 appView : Book model msg -> Model model -> Browser.Document (Msg msg)
@@ -319,9 +327,10 @@ update props msg model =
                     if String.contains "logAction" urlString then
                         ( model
                         , logActionWithTime
-                            { header = Just "Browser Navigation"
-                            , message = url.path |> String.replace "/logAction" ""
-                            }
+                            (toLogActionWithLabel
+                                "Browser Navigation"
+                                (url.path |> String.replace "/logAction" "")
+                            )
                         )
 
                     else
@@ -365,8 +374,34 @@ update props msg model =
             )
 
         LogActionWithTime actionData now ->
-            ( { model | notifications = { data = actionData, timestamp = now } :: model.notifications }
+            ( { model
+                | actions =
+                    model.actions
+                        ++ [ { data = actionData
+                             , createdAt = now
+                             , dismissedAt =
+                                now
+                                    |> Time.posixToMillis
+                                    |> (+) options.notificationsTimeout
+                                    |> Time.millisToPosix
+                             }
+                           ]
+              }
+            , Process.sleep (toFloat options.notificationsTimeout)
+                |> Task.andThen (\_ -> Time.now)
+                |> Task.perform MonitorNotifications
+            )
+
+        LogAction_MouseEnter ->
+            ( { model | isHoveringActions = True }
             , Cmd.none
+            )
+
+        LogAction_MouseLeave ->
+            ( { model | isHoveringActions = False }
+            , Process.sleep (toFloat options.notificationsTimeout)
+                |> Task.andThen (\_ -> Time.now)
+                |> Task.perform MonitorNotifications
             )
 
         MonitorNotifications now ->
@@ -375,19 +410,15 @@ update props msg model =
                 currentTimestamp =
                     Time.posixToMillis now
             in
-            if model.notificationsTimeoutPaused then
+            if model.isHoveringActions then
                 ( model, Cmd.none )
 
             else
                 ( { model
-                    | notifications =
-                        model.notifications
+                    | actions =
+                        model.actions
                             |> List.filter
-                                (\notification ->
-                                    Time.posixToMillis notification.timestamp
-                                        + options.notificationsTimeout
-                                        >= currentTimestamp
-                                )
+                                (\action -> Time.posixToMillis action.dismissedAt > currentTimestamp)
                   }
                 , Cmd.none
                 )
@@ -495,15 +526,16 @@ view props =
         , HA.class "w--fixed w--top-xl w--right-xl"
         , HA.class "w--flex w--flex-col w--items-end w--gap-md"
         , HA.class "w--w-full w--max-w-xs"
+        , HE.onMouseEnter LogAction_MouseEnter
+        , HE.onMouseLeave LogAction_MouseLeave
         ]
-        (props.model.notifications
+        (props.model.actions
             |> List.map
-                (\notification ->
+                (\action ->
                     W.Notification.view
-                        [ W.Notification.primary
-                        , Attr.maybe (\x -> W.Notification.header [ H.text x ]) notification.data.header
-                        ]
-                        [ H.text notification.data.message ]
+                        (action.data.attrs ++ [ W.Notification.appearFromRight ])
+                        action.data.content
+                        |> H.map (\_ -> DoNothing)
                 )
         )
     ]
@@ -718,40 +750,50 @@ sendMsg =
 
 
 type alias ActionData =
-    { header : Maybe String
-    , message : String
+    { message : String
+    , content : List (H.Html Never)
+    , attrs : List (W.Notification.Attribute Never)
+    }
+
+
+toLogActionWithLabel : String -> String -> ActionData
+toLogActionWithLabel label content =
+    let
+        message : String
+        message =
+            label ++ ": " ++ content
+    in
+    { message = message
+    , content = [ H.text content ]
+    , attrs = [ W.Notification.header [ H.text label ] ]
     }
 
 
 {-| -}
 logAction : String -> Msg msg
 logAction message =
-    LogAction
-        { header = Nothing
-        , message = message
+    logActionCustom
+        { message = message
+        , content = [ H.text message ]
+        , attrs = []
         }
 
 
 {-| -}
-logActionWithHeader :
+logActionCustom :
     { message : String
-    , header : String
+    , content : List (H.Html Never)
+    , attrs : List (W.Notification.Attribute Never)
     }
     -> Msg msg
-logActionWithHeader props =
+logActionCustom =
     LogAction
-        { header = Just props.header
-        , message = props.message
-        }
 
 
 {-| -}
 logActionWith : (a -> String) -> String -> a -> Msg msg
 logActionWith fn label v =
-    logActionWithHeader
-        { header = label
-        , message = fn v
-        }
+    logActionCustom (toLogActionWithLabel label (fn v))
 
 
 {-| -}

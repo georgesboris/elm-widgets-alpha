@@ -23,7 +23,7 @@
 
 # Book
 
-- [ ] Review `logAction` -> should receive `List (LogAttribute msg)`
+- [x] Review `logAction` -> should receive `List (LogAttribute msg)`
 
 ---
 
@@ -32,7 +32,7 @@
 
 # Setup
 
-- [ ] W.Styles
+- [x] W.Styles
 
 
 ---

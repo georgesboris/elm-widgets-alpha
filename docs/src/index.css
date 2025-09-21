@@ -22,6 +22,63 @@
 
 /* 
  * ======================================================
+ * Animations
+ * ======================================================
+ */
+
+@keyframes w--fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes w--fade-scale-x {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes w--fade-scale-x {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes w--fade-scale-y {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@layer utilities {
+  .w--animate-fade-in {
+    animation: w--fade-in 0.2s ease-out;
+  }
+  .w--animate-fade-scale-x {
+    animation: w--fade-scale-x 0.2s ease-out;
+  }
+  .w--animate-fade-scale-y {
+    animation: w--fade-scale-y 0.2s ease-out;
+  }
+}
+
+
+/* 
+ * ======================================================
  * W.Accordion
  * ======================================================
  */
@@ -915,11 +972,11 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
 }
 
 .w--modal.w--modal--is-open>.w--modal-content {
-  animation: 0.2s ease-out forwards w--animation-fade-slide-scale;
+  animation: 0.2s ease-out forwards w--animation-fade-slide;
 }
 
 .w--modal-toggle:checked+.w--modal>.w--modal-content {
-  animation: 0.2s ease-out forwards w--animation-fade-slide-scale;
+  animation: 0.2s ease-out forwards w--animation-fade-slide;
 }
 
 /* 

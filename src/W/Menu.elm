@@ -236,7 +236,7 @@ view =
             H.div
                 [ HA.attribute "role" "menu"
                 , HA.class "w__menu"
-                , HA.class "w--bg w--font-base"
+                , HA.class "w--font-base"
                 , HA.classList
                     [ ( "w__m-small", attrs.small )
                     , ( "w__m-upper", attrs.uppercaseHeadings )
