@@ -977,7 +977,7 @@ mapPage fromMsg toModel (Page p) =
         , content = \m -> List.map (mapHtml fromMsg) (p.content (toModel m))
         , excerpt = \m -> List.map (mapHtml fromMsg) (p.excerpt (toModel m))
         , component = Maybe.map (W.Playground.map (mapHtml fromMsg)) p.component
-        , searchTerms = ""
+        , searchTerms = p.searchTerms
         , tags = p.tags
         , meta = p.meta
         }
