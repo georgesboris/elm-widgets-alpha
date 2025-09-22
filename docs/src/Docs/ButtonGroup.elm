@@ -70,7 +70,7 @@ view =
         items =
             [ "First", "Second", "Third", "Fourth" ]
     in
-    Book.pageInteractive "ButtonGroup"
+    Book.pageStateful "ButtonGroup"
         (\model ->
             Docs.UI.viewPlayground
                 { value = model.playground
@@ -132,16 +132,6 @@ view =
                             , options = items
                             , toLabel = \x -> [ H.text x ]
                             , onInput = Book.sendMsg << Optional_Selected
-                            }
-                        ]
-                      )
-                    , ( "Multiple"
-                      , [ W.ButtonGroup.viewMultiple
-                            []
-                            { value = model.multiple
-                            , options = items
-                            , toLabel = \x -> [ H.text x ]
-                            , onInput = Book.sendMsg << Multiple_Selected
                             }
                         ]
                       )
