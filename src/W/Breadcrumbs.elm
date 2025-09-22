@@ -1,4 +1,16 @@
-module W.Breadcrumbs exposing (id, maxItems, separator, small, view, viewButtons)
+module W.Breadcrumbs exposing
+    ( view, viewButtons, Attribute
+    , small, separator, maxItems
+    , id
+    )
+
+{-|
+
+@docs view, viewButtons, Attribute
+@docs small, separator, maxItems
+@docs id
+
+-}
 
 import Attr
 import Html as H
