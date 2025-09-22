@@ -3,6 +3,7 @@ module W.Playground exposing
     , succeed, bool, string, int, float
     , options, boolOption
     , attr, boolAttr
+    , map
     , init, view, toModel
     )
 
@@ -24,6 +25,11 @@ module W.Playground exposing
 ## Attribute Helpers
 
 @docs attr, boolAttr
+
+
+## Transformations
+
+@docs map
 
 
 ## Using the Playground
@@ -63,6 +69,15 @@ init (Playground playground) =
         |> List.map (\f -> ( f.name, f.initialValue ))
         |> Dict.fromList
         |> PlaygroundState
+
+
+{-| -}
+map : (a -> b) -> Playground a -> Playground b
+map fn (Playground playground) =
+    Playground
+        { model = \data -> fn (playground.model data)
+        , fields = playground.fields
+        }
 
 
 {-| -}

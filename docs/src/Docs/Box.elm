@@ -95,7 +95,7 @@ playground =
 
 view : Book.Page Model Msg
 view =
-    Book.pageInteractive "Box"
+    Book.pageStateful "Box"
         (\model ->
             W.Playground.view
                 { playground = playground

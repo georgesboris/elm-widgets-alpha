@@ -153,7 +153,7 @@ playground =
 
 view : Book.Page Model Msg
 view =
-    Book.pageInteractive "Button"
+    Book.pageStateful "Button"
         (\model ->
             [ W.Text.view
                 []

@@ -1,7 +1,7 @@
 module Book exposing
     ( Book(..), book, bookName, bookSlug, bookItems
     , chapter, chapterName, chapterPages, chapterSlug
-    , page, pageInteractive, pageContent, addTags, pageHasTag, pageName, pageSlug
+    , page, pageStateful, pageWithComponent, pageContent, addTags, pageHasTag, pageName, pageSlug
     , bookPage, bookRef, bookRefGroup, bookLink, BookContent(..)
     , mapHtml, Html
     , Chapter, Page(..)
@@ -15,7 +15,7 @@ module Book exposing
 
 @docs Book, book, bookName, bookSlug, bookItems
 @docs chapter, chapterName, chapterPages, chapterSlug
-@docs page, pageInteractive, pageContent, addTags, pageHasTag, pageName, pageSlug
+@docs page, pageStateful, pageWithComponent, pageContent, addTags, pageHasTag, pageName, pageSlug
 @docs bookPage, bookRef, bookRefGroup, bookLink, BookContent
 @docs mapHtml, Html
 @docs Chapter, Page
@@ -46,6 +46,7 @@ import W.Divider
 import W.Heading
 import W.Menu
 import W.Notification
+import W.Playground
 import W.Tag
 import W.Theme
 import W.Theme.Color
@@ -952,8 +953,10 @@ type Page model msg
         , slug : String
         , chapterSlug : Maybe String
         , anchors : List { id : String, label : String }
-        , content : model -> List (H.Html (Msg msg))
-        , excerpt : model -> List (H.Html (Msg msg))
+        , content : model -> List (Html msg)
+        , excerpt : model -> List (Html msg)
+        , component : Maybe (W.Playground.Playground (Html msg))
+        , searchTerms : String
         , tags : Set.Set String
         , meta : Dict.Dict String String
         }
@@ -973,6 +976,8 @@ mapPage fromMsg toModel (Page p) =
         , anchors = p.anchors
         , content = \m -> List.map (mapHtml fromMsg) (p.content (toModel m))
         , excerpt = \m -> List.map (mapHtml fromMsg) (p.excerpt (toModel m))
+        , component = Maybe.map (W.Playground.map (mapHtml fromMsg)) p.component
+        , searchTerms = p.searchTerms
         , tags = p.tags
         , meta = p.meta
         }
@@ -987,6 +992,8 @@ mapPageMsg fn (Page p) =
         , anchors = p.anchors
         , content = \m -> List.map (mapHtml fn) (p.content m)
         , excerpt = \m -> List.map (mapHtml fn) (p.excerpt m)
+        , component = Maybe.map (W.Playground.map (mapHtml fn)) p.component
+        , searchTerms = p.searchTerms
         , tags = p.tags
         , meta = p.meta
         }
@@ -1169,14 +1176,16 @@ page name content =
         , excerpt = \_ -> []
         , chapterSlug = Nothing
         , content = \_ -> content
+        , component = Nothing
+        , searchTerms = ""
         , tags = Set.empty
         , meta = Dict.empty
         }
 
 
 {-| -}
-pageInteractive : String -> (model -> List (H.Html (Msg msg))) -> Page model msg
-pageInteractive name toContent =
+pageStateful : String -> (model -> List (H.Html (Msg msg))) -> Page model msg
+pageStateful name toContent =
     Page
         { name = name
         , slug = slugify name
@@ -1184,6 +1193,30 @@ pageInteractive name toContent =
         , excerpt = \_ -> []
         , chapterSlug = Nothing
         , content = toContent
+        , component = Nothing
+        , searchTerms = ""
+        , tags = Set.empty
+        , meta = Dict.empty
+        }
+
+
+{-| -}
+pageWithComponent :
+    { name : String
+    , content : model -> List (H.Html (Msg msg))
+    , component : W.Playground.Playground (Html msg)
+    }
+    -> Page model msg
+pageWithComponent props =
+    Page
+        { name = props.name
+        , slug = slugify props.name
+        , anchors = []
+        , excerpt = \_ -> []
+        , chapterSlug = Nothing
+        , content = props.content
+        , component = Just props.component
+        , searchTerms = ""
         , tags = Set.empty
         , meta = Dict.empty
         }
@@ -1378,14 +1411,7 @@ viewLink :
     -> H.Html msg
 viewLink props =
     W.Menu.viewLink
-        [ if props.currentHref == props.href then
-            W.Menu.selected
-
-          else if props.currentHref /= "/" then
-            W.Menu.faded
-
-          else
-            Attr.none
+        [ Attr.if_ (props.currentHref == props.href) W.Menu.selected
         , W.Menu.right props.right
         ]
         { href = props.href
