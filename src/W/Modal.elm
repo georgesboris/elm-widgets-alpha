@@ -1,7 +1,9 @@
 module W.Modal exposing
     ( view, Attribute
     , viewToggle, viewTogglable
-    , absolute, maxWidth, noBlur, zIndex
+    , maxWidth, zIndex
+    , background, backgroundOpacity, noBlur
+    , absolute
     )
 
 {-|
@@ -28,7 +30,9 @@ If you don't want to manage your modal open state at all, use the togglable vers
 
 # Styles
 
-@docs absolute, maxWidth, noBlur, zIndex
+@docs maxWidth, zIndex
+@docs background, backgroundOpacity, noBlur
+@docs absolute
 
 -}
 
@@ -36,6 +40,7 @@ import Attr
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
+import W.Internal.Helpers as WH
 import W.Theme
 
 
@@ -52,6 +57,8 @@ type alias Attributes =
     { absolute : Bool
     , zIndex : Int
     , blur : Bool
+    , background : String
+    , backgroundOpacity : Float
     , maxWidth : Int
     }
 
@@ -61,6 +68,8 @@ defaultAttrs =
     { absolute = False
     , zIndex = 1000
     , blur = True
+    , background = "black"
+    , backgroundOpacity = 0.3
     , maxWidth = 480
     }
 
@@ -69,6 +78,18 @@ defaultAttrs =
 absolute : Attribute
 absolute =
     Attr.attr (\attrs -> { attrs | absolute = True })
+
+
+{-| -}
+background : String -> Attribute
+background v =
+    Attr.attr (\attrs -> { attrs | background = v })
+
+
+{-| -}
+backgroundOpacity : Float -> Attribute
+backgroundOpacity v =
+    Attr.attr (\attrs -> { attrs | backgroundOpacity = v })
 
 
 {-| -}
@@ -194,10 +215,10 @@ view_ =
                 wrapper =
                     H.div
                         [ HA.attribute "role" "dialog"
-                        , HA.class "w--modal w--hidden w--opacity-0 w--inset-0 w--border-0 w--bg-black/30"
-                        , HA.style "z-index" (String.fromInt attrs.zIndex)
+                        , HA.class "w--modal w--hidden w--opacity-0 w--inset-0 w--border-0"
                         , HA.classList
-                            [ ( "w--absolute", attrs.absolute )
+                            [ ( "w__m-blur", attrs.blur )
+                            , ( "w--absolute", attrs.absolute )
                             , ( "w--fixed", not attrs.absolute )
                             , ( "w--modal--is-open"
                               , case props of
@@ -208,11 +229,11 @@ view_ =
                                         False
                               )
                             ]
-                        , if attrs.blur then
-                            HA.style "backdrop-filter" "blur(1px)"
-
-                          else
-                            HA.class ""
+                        , W.Theme.styleList
+                            [ ( "--w_bg", attrs.background )
+                            , ( "--w_bg-opacity", WH.pct attrs.backgroundOpacity )
+                            , ( "z-index", String.fromInt attrs.zIndex )
+                            ]
                         ]
                         [ viewCloseTrigger
                         , H.div
@@ -228,7 +249,7 @@ view_ =
                                 , HA.style "width" (String.fromInt attrs.maxWidth ++ "px")
                                 ]
                                 [ H.div
-                                    [ HA.class "w/base"
+                                    [ HA.class "w/base w--bg"
                                     , HA.class "w--relative w--overflow-visible w--pointer-events-auto"
                                     , HA.class "w--w-full w--shadow-lg w--rounded-lg"
                                     ]

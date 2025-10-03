@@ -987,6 +987,14 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
  * ======================================================
  */
 
+.w--modal {
+  background: color-mix(in srgb, transparent, var(--w_bg) var(--w_bg-opacity));
+
+  &.w__m-blur {
+    backdrop-filter: blur(1px);
+  }
+}
+
 .w--modal.w--modal--is-open {
   display: block;
   opacity: 1;
