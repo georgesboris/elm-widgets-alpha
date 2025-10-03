@@ -120,7 +120,7 @@ baseAttrs attrs_ value =
     , HA.classList
         [ ( "w--toggle", attrs.style == Toggle )
         , ( "w__m-read-only", attrs.readOnly )
-        , ( "w--checkbox w--rounded before:w--rounded", attrs.style == Checkbox )
+        , ( "w--checkbox", attrs.style == Checkbox )
         , ( "w--small", attrs.small )
         , ( "w--colorful", attrs.colorful )
         ]
