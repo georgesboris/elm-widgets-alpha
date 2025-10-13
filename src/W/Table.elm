@@ -11,7 +11,8 @@ module W.Table exposing
     , groupSortBy, groupSortByDesc, groupSortWith
     , groupCollapsed
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
-    , noHeader, striped, highlight, maxHeight
+    , noHeader, highlight, maxHeight
+    , subtle, tint, striped
     , rowDetails, rowDetailsNoPadding
     , xPadding, yPadding, yHeaderPadding, yFooterPadding
     )
@@ -50,7 +51,8 @@ module W.Table exposing
 
 # Table Attributes
 
-@docs noHeader, striped, highlight, maxHeight
+@docs noHeader, highlight, maxHeight
+@docs subtle, tint, striped
 @docs rowDetails, rowDetailsNoPadding
 @docs xPadding, yPadding, yHeaderPadding, yFooterPadding
 
@@ -79,6 +81,7 @@ type alias Attribute msg a =
 type alias Attributes msg a =
     { showHeader : Bool
     , isStriped : Bool
+    , theme : TableTheme
     , styles : List ( String, String )
     , xPadding : W.Theme.Spacing.Spacing
     , yPadding : W.Theme.Spacing.Spacing
@@ -103,6 +106,7 @@ defaultAttrs : Attributes msg a
 defaultAttrs =
     { showHeader = True
     , isStriped = False
+    , theme = Default
     , styles = []
     , xPadding = W.Theme.Spacing.sm
     , yPadding = W.Theme.Spacing.sm
@@ -123,6 +127,12 @@ defaultAttrs =
     }
 
 
+type TableTheme
+    = Default
+    | Subtle
+    | Tint
+
+
 
 -- Table Attributes
 
@@ -131,6 +141,18 @@ defaultAttrs =
 noHeader : Attribute msg a
 noHeader =
     Attr.attr (\attrs -> { attrs | showHeader = False })
+
+
+{-| -}
+subtle : Attribute msg a
+subtle =
+    Attr.attr (\attrs -> { attrs | theme = Subtle })
+
+
+{-| -}
+tint : Attribute msg a
+tint =
+    Attr.attr (\attrs -> { attrs | theme = Tint })
 
 
 {-| -}
@@ -490,7 +512,16 @@ view attrs_ columns data =
         [ HA.class "w__table"
         , HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
         , HA.class "w--w-full w--overflow-auto"
-        , HA.class "w--bg-bg-color w--font-base w--text-default"
+        , HA.class "w--font-base w--text-default"
+        , case attrs.theme of
+            Default ->
+                HA.class ""
+
+            Subtle ->
+                HA.class "w__m-bg-subtle"
+
+            Tint ->
+                HA.class "w__m-bg-tint"
         , W.Theme.styleList (attrs.styles ++ paddingStyles attrs)
         ]
         [ -- Table Head
@@ -542,8 +573,8 @@ toGroupedRows attrs groupBy_ data =
 viewGroupHeader : Attributes msg a -> List (Column msg a) -> String -> a -> List a -> H.Html msg
 viewGroupHeader attrs columns groupLabel_ groupItem groupColumns =
     H.tr
-        [ HA.class "w--table-group-header"
-        , HA.class "w--p-0 w--font-semibold w--bg-tint-subtle"
+        [ HA.class "w__table__group-header"
+        , HA.class "w--p-0 w--font-semibold"
         , WH.maybeAttr (\fn -> HE.onClick (fn groupItem)) attrs.onGroupClick
         , WH.maybeAttr (\fn -> HE.onMouseEnter (fn groupItem)) attrs.onGroupMouseEnter
         , WH.maybeAttr HE.onMouseEnter attrs.onGroupMouseLeave
@@ -571,7 +602,7 @@ viewTableHeaderColumn (Column col) =
     H.th
         (columnStyles col
             ++ [ HA.class "w--sticky w--z-20 w--top-0"
-               , HA.class "w--bg"
+               , HA.class "w__table__header__column"
                , HA.class "w--border-b-2 w--border-solid w--border-0 w--border-tint-subtle"
                , HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle"
                ]

@@ -289,6 +289,40 @@
          background: rgb(var(--w-bg-subtle));
        }
      }
+
+     background: rgb(var(--w-bg));
+
+     .w__table__header__column {
+       background: rgb(var(--w-bg));
+     }
+
+     .w__table__group-header {
+       background: rgb(var(--w-bg-tint));
+     }
+
+     &.w__m-bg-subtle {
+       background: rgb(var(--w-bg-subtle));
+
+       .w__table__header__column {
+         background: rgb(var(--w-bg-subtle));
+       }
+
+       .w__table__group-header {
+         background: rgb(var(--w-bg));
+       }
+     }
+
+     &.w__m-bg-tint {
+       background: rgb(var(--w-bg-tint));
+
+       .w__table__header__column {
+         background: rgb(var(--w-bg-tint));
+       }
+
+       .w__table__group-header {
+         background: rgb(var(--w-bg-tint-strong));
+       }
+     }
    }
 }
 

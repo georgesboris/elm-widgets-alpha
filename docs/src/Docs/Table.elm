@@ -127,7 +127,8 @@ view =
               )
             , ( "Groups"
               , [ W.Table.view
-                    [ W.Table.groupBy .name
+                    [ W.Table.tint
+                    , W.Table.groupBy .name
                     , W.Table.groupCollapsed (\_ n -> n == "Janine Bonfadini")
                     , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
                     , W.Table.onGroupMouseEnter (\x -> Book.logAction ("onGroupMouseEnter: " ++ x.name))
