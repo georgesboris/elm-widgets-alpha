@@ -56,10 +56,19 @@ view =
             [ ( "Default"
               , [ W.Table.view
                     [ W.Table.onClick (\x -> Book.logAction ("onClick" ++ x.name))
-                    , W.Table.onMouseEnter (\x -> Book.logAction ("onMouseEnter" ++ x.name))
-                    , W.Table.onMouseLeave (Book.logAction "onMouseLeave")
+
+                    -- , W.Table.onMouseEnter (\x -> Book.logAction ("onMouseEnter" ++ x.name))
+                    -- , W.Table.onMouseLeave (Book.logAction "onMouseLeave")
                     , W.Table.striped
                     , W.Table.highlight (.age >> (==) 35)
+                    , W.Table.rowDetails
+                        (\item ->
+                            if item.name == "Georges Boris" then
+                                Just [ H.text "Row Details" ]
+
+                            else
+                                Nothing
+                        )
                     ]
                     [ W.Table.column
                         [ W.Table.width 60, W.Table.largeScreenOnly ]

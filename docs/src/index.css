@@ -267,6 +267,9 @@
      tfoot td {
        padding: var(--footer-padding-y) var(--padding-x);
      }
+     tbody tr.w__table__row.w__m-no-padding td {
+       padding: 0;
+     }
      tbody tr.w__table__row.w__m-interactive {
        cursor: pointer;
        &:hover {
@@ -276,16 +279,14 @@
          background: rgb(var(--w-bg));
        }
      }
-     &.w__table__striped {
-       tbody tr:nth-child(2n+1) {
-         background: rgb(var(--w-bg-subtle));
+     tbody tr.w__table__row.w__m-striped {
+       background: rgb(var(--w-bg-subtle));
 
-         &.w__m-interactive:hover {
-           background: rgb(var(--w-tint-subtle));
-         }
-         &.w__m-interactive:active {
-           background: rgb(var(--w-bg-subtle));
-         }
+       &.w__m-interactive:hover {
+         background: rgb(var(--w-tint-subtle));
+       }
+       &.w__m-interactive:active {
+         background: rgb(var(--w-bg-subtle));
        }
      }
    }

@@ -12,6 +12,7 @@ module W.Table exposing
     , groupCollapsed
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
     , noHeader, striped, highlight, maxHeight
+    , rowDetails, rowDetailsNoPadding
     , xPadding, yPadding, yHeaderPadding, yFooterPadding
     )
 
@@ -50,6 +51,7 @@ module W.Table exposing
 # Table Attributes
 
 @docs noHeader, striped, highlight, maxHeight
+@docs rowDetails, rowDetailsNoPadding
 @docs xPadding, yPadding, yHeaderPadding, yFooterPadding
 
 -}
@@ -86,6 +88,8 @@ type alias Attributes msg a =
     , groupSortBy : List ( String, a, List a ) -> List ( String, a, List a )
     , groupCollapsed : Maybe (a -> String -> Bool)
     , highlight : a -> Bool
+    , rowDetails : Maybe (a -> Maybe (List (H.Html msg)))
+    , rowDetailsNoPadding : Bool
     , onClick : Maybe (a -> msg)
     , onMouseEnter : Maybe (a -> msg)
     , onMouseLeave : Maybe msg
@@ -108,6 +112,8 @@ defaultAttrs =
     , groupSortBy = identity
     , groupCollapsed = Nothing
     , highlight = \_ -> False
+    , rowDetails = Nothing
+    , rowDetailsNoPadding = False
     , onClick = Nothing
     , onMouseEnter = Nothing
     , onMouseLeave = Nothing
@@ -125,6 +131,18 @@ defaultAttrs =
 noHeader : Attribute msg a
 noHeader =
     Attr.attr (\attrs -> { attrs | showHeader = False })
+
+
+{-| -}
+rowDetails : (a -> Maybe (List (H.Html msg))) -> Attribute msg a
+rowDetails v =
+    Attr.attr (\attrs -> { attrs | rowDetails = Just v })
+
+
+{-| -}
+rowDetailsNoPadding : Attribute msg a
+rowDetailsNoPadding =
+    Attr.attr (\attrs -> { attrs | rowDetailsNoPadding = True })
 
 
 {-| -}
@@ -428,6 +446,10 @@ groupLabel =
 view : List (Attribute msg a) -> List (Column msg a) -> List a -> H.Html msg
 view attrs_ columns data =
     let
+        numCols : Int
+        numCols =
+            List.length columns
+
         attrs : Attributes msg a
         attrs =
             Attr.toAttrs defaultAttrs attrs_
@@ -449,11 +471,16 @@ view attrs_ columns data =
                                             |> WH.or [] groupItems
                                 in
                                 viewGroupHeader attrs columns groupLabel_ groupItem groupItems
-                                    :: List.map (viewTableRow attrs columns) groupRows
+                                    :: (groupRows
+                                            |> List.indexedMap (viewTableRow attrs columns numCols)
+                                            |> List.concat
+                                       )
                             )
 
                 Nothing ->
-                    List.map (viewTableRow attrs columns) data
+                    data
+                        |> List.indexedMap (viewTableRow attrs columns numCols)
+                        |> List.concat
 
         hasFooter : Bool
         hasFooter =
@@ -464,7 +491,6 @@ view attrs_ columns data =
         , HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
         , HA.class "w--w-full w--overflow-auto"
         , HA.class "w--bg-bg-color w--font-base w--text-default"
-        , HA.classList [ ( "w__table__striped", attrs.isStriped ) ]
         , W.Theme.styleList (attrs.styles ++ paddingStyles attrs)
         ]
         [ -- Table Head
@@ -583,15 +609,22 @@ viewTableFooterColumn data (Column col) =
         ]
 
 
-viewTableRow : Attributes msg a -> List (Column msg a) -> a -> H.Html msg
-viewTableRow attrs columns datum =
+viewTableRow : Attributes msg a -> List (Column msg a) -> Int -> Int -> a -> List (H.Html msg)
+viewTableRow attrs columns numCols rowIndex datum =
     let
         isHighlighted : Bool
         isHighlighted =
             attrs.highlight datum
+
+        rowClass : H.Attribute msg
+        rowClass =
+            HA.classList
+                [ ( "w__table__row w--p-0", True )
+                , ( "w__m-striped", attrs.isStriped && modBy 2 rowIndex == 0 )
+                ]
     in
-    H.tr
-        [ HA.class "w__table__row w--p-0"
+    [ H.tr
+        [ rowClass
         , HA.classList
             [ ( "w__m-highlight", isHighlighted )
             , ( "w__m-interactive", attrs.onClick /= Nothing )
@@ -609,6 +642,19 @@ viewTableRow attrs columns datum =
                         [ col.toHtml datum ]
                 )
         )
+    , attrs.rowDetails
+        |> Maybe.andThen (\fn -> fn datum)
+        |> Maybe.map
+            (\children ->
+                H.tr
+                    [ rowClass
+                    , HA.classList [ ( "w__m-no-padding", attrs.rowDetailsNoPadding ) ]
+                    ]
+                    [ H.td [ HA.colspan numCols ] children
+                    ]
+            )
+        |> Maybe.withDefault (H.text "")
+    ]
 
 
 
