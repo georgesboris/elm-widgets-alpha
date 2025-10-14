@@ -82,6 +82,7 @@ type alias Attributes msg a =
     { showHeader : Bool
     , isStriped : Bool
     , styles : List ( String, String )
+    , theme : TableTheme
     , xPadding : W.Theme.Spacing.Spacing
     , yPadding : W.Theme.Spacing.Spacing
     , yHeaderPadding : Maybe W.Theme.Spacing.Spacing
@@ -106,6 +107,7 @@ defaultAttrs =
     { showHeader = True
     , isStriped = False
     , styles = []
+    , theme = Default
     , xPadding = W.Theme.Spacing.sm
     , yPadding = W.Theme.Spacing.sm
     , yHeaderPadding = Nothing
