@@ -12,7 +12,7 @@ module W.Table exposing
     , groupCollapsed
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
     , noHeader, highlight, maxHeight
-    , subtle, striped
+    , subtle, striped, noDividers
     , rowDetails, rowDetailsNoPadding
     , xPadding, yPadding, yHeaderPadding, yFooterPadding
     )
@@ -52,7 +52,7 @@ module W.Table exposing
 # Table Attributes
 
 @docs noHeader, highlight, maxHeight
-@docs subtle, striped
+@docs subtle, striped, noDividers
 @docs rowDetails, rowDetailsNoPadding
 @docs xPadding, yPadding, yHeaderPadding, yFooterPadding
 
@@ -81,6 +81,7 @@ type alias Attribute msg a =
 type alias Attributes msg a =
     { showHeader : Bool
     , isStriped : Bool
+    , withDividers : Bool
     , styles : List ( String, String )
     , theme : TableTheme
     , xPadding : W.Theme.Spacing.Spacing
@@ -106,6 +107,7 @@ defaultAttrs : Attributes msg a
 defaultAttrs =
     { showHeader = True
     , isStriped = False
+    , withDividers = True
     , styles = []
     , theme = Default
     , xPadding = W.Theme.Spacing.sm
@@ -146,6 +148,12 @@ noHeader =
 subtle : Attribute msg a
 subtle =
     Attr.attr (\attrs -> { attrs | theme = Subtle })
+
+
+{-| -}
+noDividers : Attribute msg a
+noDividers =
+    Attr.attr (\attrs -> { attrs | withDividers = False })
 
 
 {-| -}
@@ -465,11 +473,19 @@ view attrs_ columns data =
         numCols =
             List.length columns
 
+        hasGroups : Bool
+        hasGroups =
+            attrs.groupBy /= Nothing
+
         defaultGroupLabel : Bool
         defaultGroupLabel =
-            columns
-                |> List.any (\(Column c) -> c.toGroup /= Nothing)
-                |> not
+            if hasGroups then
+                columns
+                    |> List.any (\(Column c) -> c.toGroup /= Nothing)
+                    |> not
+
+            else
+                True
 
         attrs : Attributes msg a
         attrs =
@@ -515,40 +531,45 @@ view attrs_ columns data =
         hasFooter =
             List.any (\(Column c) -> c.toFooter /= Nothing) columns
     in
-    H.table
+    H.div
         [ HA.class "w__table"
-        , HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
-        , HA.class "w--w-full w--overflow-auto"
-        , HA.class "w--font-base w--text-default"
-        , HA.classList
-            [ ( "w__m-striped", attrs.isStriped )
-            , ( "w__m-interactive", attrs.onClick /= Nothing )
-            , ( "w__m-group-interactive", attrs.onGroupClick /= Nothing )
-            ]
         , case attrs.theme of
             Default ->
                 HA.class ""
 
             Subtle ->
                 HA.class "w__m-subtle"
-        , W.Theme.styleList (attrs.styles ++ paddingStyles attrs)
+        , HA.classList
+            [ ( "w__m-striped", attrs.isStriped )
+            , ( "w__m-interactive", attrs.onClick /= Nothing )
+            , ( "w__m-group", hasGroups )
+            , ( "w__m-group-interactive", attrs.onGroupClick /= Nothing )
+            , ( "w__m-dividers", attrs.withDividers )
+            ]
         ]
-        [ -- Table Head
-          if attrs.showHeader then
-            H.thead [] [ H.tr [] (List.map viewTableHeaderColumn columns) ]
+        [ H.table
+            [ HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
+            , HA.class "w--w-full w--overflow-auto"
+            , HA.class "w--font-base w--text-default"
+            , W.Theme.styleList (attrs.styles ++ paddingStyles attrs)
+            ]
+            [ -- Table Head
+              if attrs.showHeader then
+                H.thead [ HA.class "w__table__header" ] [ H.tr [] (List.map viewTableHeaderColumn columns) ]
 
-          else
-            H.text ""
-        , --  Table Body
-          H.tbody
-            [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
-            rows
-        , -- Table Footer
-          if hasFooter then
-            H.tfoot [] [ H.tr [] (List.map (viewTableFooterColumn data) columns) ]
+              else
+                H.text ""
+            , --  Table Body
+              H.tbody
+                [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
+                rows
+            , -- Table Footer
+              if hasFooter then
+                H.tfoot [ HA.class "w__table__footer" ] [ H.tr [] (List.map (viewTableFooterColumn data) columns) ]
 
-          else
-            H.text ""
+              else
+                H.text ""
+            ]
         ]
 
 
@@ -591,7 +612,7 @@ viewGroupHeader :
     -> H.Html msg
 viewGroupHeader props =
     H.tr
-        [ HA.class "w__table__group-header"
+        [ HA.class "w__table__group"
         , HA.class "w--p-0 w--font-semibold"
         , WH.maybeAttr (\fn -> HE.onClick (fn props.groupItem)) props.attrs.onGroupClick
         , WH.maybeAttr (\fn -> HE.onMouseEnter (fn props.groupItem)) props.attrs.onGroupMouseEnter
@@ -625,7 +646,7 @@ viewGroupHeader props =
 
 columnHtmlAttrs : ColumnAttributes msg a -> List (H.Attribute msg)
 columnHtmlAttrs col =
-    HA.class "w--shrink-0 w--m-0 w--break-words" :: columnStyles col
+    HA.class "w__table__group__column w--shrink-0 w--m-0 w--break-words" :: columnStyles col
 
 
 viewTableHeaderColumn : Column msg a -> H.Html msg

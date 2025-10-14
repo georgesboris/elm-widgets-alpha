@@ -1,5 +1,6 @@
 module Docs.Table exposing (view)
 
+import Attr
 import Book
 import Docs.UI
 import Html as H
@@ -33,7 +34,7 @@ data =
       , picture = "https://picsum.photos/120"
       }
     ]
-        |> List.repeat 10
+        |> List.repeat 3
         |> List.concat
         |> List.indexedMap
             (\index x ->
@@ -125,51 +126,78 @@ view =
              ]
            )
          , ( "Groups"
-           , [ W.Table.view
-                [ W.Table.groupBy .name
-                , W.Table.striped
-                , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
-
-                -- , W.Table.highlight (\a -> a.score == 40)
-                -- , W.Table.groupCollapsed (\_ n -> n == "Janine Bonfadini")
-                -- , W.Table.onGroupMouseEnter (\x -> Book.logAction ("onGroupMouseEnter: " ++ x.name))
-                -- , W.Table.onGroupMouseLeave (Book.logAction "onGroupMouseLeave")
-                , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
-                , W.Table.maxHeight 32
-                ]
-                -- [ W.Table.column
-                --     [ W.Table.width 60, W.Table.largeScreenOnly ]
-                --     { label = "Image"
-                --     , content =
-                --         \{ picture } ->
-                --             H.div
-                --                 [ HA.class "w--bg-tint w--bg-cover w--rounded"
-                --                 , HA.style "width" "45px"
-                --                 , HA.style "height" "45px"
-                --                 , HA.style "background-image" ("url(\"" ++ picture ++ "\")")
-                --                 ]
-                --                 []
-                --     }
-                [ W.Table.string []
-                    { label = "Name"
-                    , value = .name
-                    }
-                , W.Table.int
-                    [ W.Table.width 80
+           , [ Docs.UI.viewTwoColumnsSection
+                { title = ""
+                , left =
+                    [ W.Table.view
+                        [ Attr.if_ True (W.Table.groupBy .name)
+                        , W.Table.striped
+                        , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
+                        , W.Table.highlight (\a -> a.score == 40)
+                        , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
+                        , W.Table.maxHeight 32
+                        ]
+                        [ W.Table.string []
+                            { label = "Name"
+                            , value = .name
+                            }
+                        , W.Table.int [ W.Table.width 60 ]
+                            { label = "Age"
+                            , value = .age
+                            }
+                        , W.Table.float
+                            [ W.Table.width 60
+                            , W.Table.footer
+                                (\items ->
+                                    items
+                                        |> List.map .score
+                                        |> List.sum
+                                        |> String.fromFloat
+                                        |> H.text
+                                )
+                            ]
+                            { label = "Score"
+                            , value = .score
+                            }
+                        ]
+                        data
                     ]
-                    { label = "Age"
-                    , value = .age
-                    }
-                , W.Table.float [ W.Table.width 80 ]
-                    { label = "Score"
-                    , value = .score
-                    }
-                , W.Table.bool [ W.Table.width 80 ]
-                    { label = "Ready?"
-                    , value = .ready
-                    }
-                ]
-                data
+                , right =
+                    [ W.Table.view
+                        [ Attr.if_ False (W.Table.groupBy .name)
+                        , W.Table.striped
+                        , W.Table.subtle
+                        , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
+                        , W.Table.highlight (\a -> a.score == 40)
+                        , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
+                        , W.Table.maxHeight 32
+                        ]
+                        [ W.Table.string []
+                            { label = "Name"
+                            , value = .name
+                            }
+                        , W.Table.int [ W.Table.width 60 ]
+                            { label = "Age"
+                            , value = .age
+                            }
+                        , W.Table.float
+                            [ W.Table.width 60
+                            , W.Table.footer
+                                (\items ->
+                                    items
+                                        |> List.map .score
+                                        |> List.sum
+                                        |> String.fromFloat
+                                        |> H.text
+                                )
+                            ]
+                            { label = "Score"
+                            , value = .score
+                            }
+                        ]
+                        data
+                    ]
+                }
              ]
            )
          , ( "Custom Column Label"
