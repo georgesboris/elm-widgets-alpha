@@ -11,7 +11,8 @@ module W.Table exposing
     , groupSortBy, groupSortByDesc, groupSortWith
     , groupCollapsed
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
-    , noHeader, striped, highlight, maxHeight
+    , noHeader, highlight, maxHeight
+    , subtle, striped
     , rowDetails, rowDetailsNoPadding
     , xPadding, yPadding, yHeaderPadding, yFooterPadding
     )
@@ -50,7 +51,8 @@ module W.Table exposing
 
 # Table Attributes
 
-@docs noHeader, striped, highlight, maxHeight
+@docs noHeader, highlight, maxHeight
+@docs subtle, striped
 @docs rowDetails, rowDetailsNoPadding
 @docs xPadding, yPadding, yHeaderPadding, yFooterPadding
 
@@ -123,6 +125,11 @@ defaultAttrs =
     }
 
 
+type TableTheme
+    = Default
+    | Subtle
+
+
 
 -- Table Attributes
 
@@ -131,6 +138,12 @@ defaultAttrs =
 noHeader : Attribute msg a
 noHeader =
     Attr.attr (\attrs -> { attrs | showHeader = False })
+
+
+{-| -}
+subtle : Attribute msg a
+subtle =
+    Attr.attr (\attrs -> { attrs | theme = Subtle })
 
 
 {-| -}
@@ -450,6 +463,12 @@ view attrs_ columns data =
         numCols =
             List.length columns
 
+        defaultGroupLabel : Bool
+        defaultGroupLabel =
+            columns
+                |> List.any (\(Column c) -> c.toGroup /= Nothing)
+                |> not
+
         attrs : Attributes msg a
         attrs =
             Attr.toAttrs defaultAttrs attrs_
@@ -470,7 +489,15 @@ view attrs_ columns data =
                                             |> Maybe.withDefault False
                                             |> WH.or [] groupItems
                                 in
-                                viewGroupHeader attrs columns groupLabel_ groupItem groupItems
+                                viewGroupHeader
+                                    { attrs = attrs
+                                    , columns = columns
+                                    , defaultGroupLabel = defaultGroupLabel
+                                    , numCols = numCols
+                                    , groupLabel_ = groupLabel_
+                                    , groupItem = groupItem
+                                    , groupColumns = groupItems
+                                    }
                                     :: (groupRows
                                             |> List.indexedMap (viewTableRow attrs columns numCols)
                                             |> List.concat
@@ -490,7 +517,18 @@ view attrs_ columns data =
         [ HA.class "w__table"
         , HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
         , HA.class "w--w-full w--overflow-auto"
-        , HA.class "w--bg-bg-color w--font-base w--text-default"
+        , HA.class "w--font-base w--text-default"
+        , HA.classList
+            [ ( "w__m-striped", attrs.isStriped )
+            , ( "w__m-interactive", attrs.onClick /= Nothing )
+            , ( "w__m-group-interactive", attrs.onGroupClick /= Nothing )
+            ]
+        , case attrs.theme of
+            Default ->
+                HA.class ""
+
+            Subtle ->
+                HA.class "w__m-subtle"
         , W.Theme.styleList (attrs.styles ++ paddingStyles attrs)
         ]
         [ -- Table Head
@@ -539,31 +577,53 @@ toGroupedRows attrs groupBy_ data =
         |> attrs.groupSortBy
 
 
-viewGroupHeader : Attributes msg a -> List (Column msg a) -> String -> a -> List a -> H.Html msg
-viewGroupHeader attrs columns groupLabel_ groupItem groupColumns =
+viewGroupHeader :
+    { attrs : Attributes msg a
+    , columns : List (Column msg a)
+    , defaultGroupLabel : Bool
+    , numCols : Int
+    , groupLabel_ : String
+    , groupItem : a
+    , groupColumns : List a
+    }
+    -> H.Html msg
+viewGroupHeader props =
     H.tr
-        [ HA.class "w--table-group-header"
-        , HA.class "w--p-0 w--font-semibold w--bg-tint-subtle"
-        , WH.maybeAttr (\fn -> HE.onClick (fn groupItem)) attrs.onGroupClick
-        , WH.maybeAttr (\fn -> HE.onMouseEnter (fn groupItem)) attrs.onGroupMouseEnter
-        , WH.maybeAttr HE.onMouseEnter attrs.onGroupMouseLeave
-        , HA.classList
-            [ ( "hover:w--bg-tint active:w--bg", attrs.onGroupClick /= Nothing )
-            ]
+        [ HA.class "w__table__group-header"
+        , HA.class "w--p-0 w--font-semibold"
+        , WH.maybeAttr (\fn -> HE.onClick (fn props.groupItem)) props.attrs.onGroupClick
+        , WH.maybeAttr (\fn -> HE.onMouseEnter (fn props.groupItem)) props.attrs.onGroupMouseEnter
+        , WH.maybeAttr HE.onMouseEnter props.attrs.onGroupMouseLeave
         ]
-        (columns
-            |> List.map
-                (\(Column col) ->
-                    H.td
-                        (columnStyles col
-                            ++ [ HA.class "w--shrink-0 w--m-0 w--break-words" ]
-                        )
-                        [ col.toGroup
-                            |> Maybe.map (\fn -> fn groupLabel_ groupItem groupColumns)
-                            |> Maybe.withDefault (H.text "")
+        (if props.defaultGroupLabel then
+            props.columns
+                |> List.head
+                |> Maybe.map
+                    (\(Column col) ->
+                        [ H.td
+                            (HA.colspan props.numCols :: columnHtmlAttrs col)
+                            [ H.text props.groupLabel_ ]
                         ]
-                )
+                    )
+                |> Maybe.withDefault []
+
+         else
+            props.columns
+                |> List.map
+                    (\(Column col) ->
+                        H.td
+                            (columnHtmlAttrs col)
+                            [ col.toGroup
+                                |> Maybe.map (\fn -> fn props.groupLabel_ props.groupItem props.groupColumns)
+                                |> Maybe.withDefault (H.text "")
+                            ]
+                    )
         )
+
+
+columnHtmlAttrs : ColumnAttributes msg a -> List (H.Attribute msg)
+columnHtmlAttrs col =
+    HA.class "w--shrink-0 w--m-0 w--break-words" :: columnStyles col
 
 
 viewTableHeaderColumn : Column msg a -> H.Html msg
@@ -571,8 +631,7 @@ viewTableHeaderColumn (Column col) =
     H.th
         (columnStyles col
             ++ [ HA.class "w--sticky w--z-20 w--top-0"
-               , HA.class "w--bg"
-               , HA.class "w--border-b-2 w--border-solid w--border-0 w--border-tint-subtle"
+               , HA.class "w__table__header__column"
                , HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle"
                ]
         )
@@ -598,8 +657,7 @@ viewTableFooterColumn data (Column col) =
     H.td
         (columnStyles col
             ++ [ HA.class "w--sticky w--z-10 w--bottom-0"
-               , HA.class "w--bg"
-               , HA.class "w--border-t-2 w--border-solid w--border-0 w--border-tint-subtle"
+               , HA.class "w__table__footer__column"
                , HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle"
                ]
         )
@@ -620,14 +678,13 @@ viewTableRow attrs columns numCols rowIndex datum =
         rowClass =
             HA.classList
                 [ ( "w__table__row w--p-0", True )
-                , ( "w__m-striped", attrs.isStriped && modBy 2 rowIndex == 0 )
+                , ( "w__m-striped", attrs.isStriped && modBy 2 rowIndex == 1 )
                 ]
     in
     [ H.tr
         [ rowClass
         , HA.classList
             [ ( "w__m-highlight", isHighlighted )
-            , ( "w__m-interactive", attrs.onClick /= Nothing )
             ]
         , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
         , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter

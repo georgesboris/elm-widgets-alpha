@@ -251,13 +251,19 @@
 }
 
 /* 
- * ======================================================
+ * =============================================================================
  * W.Table
- * ======================================================
+ * =============================================================================
  */
 
 @layer components {
-   .w__table {
+  .w__table {
+    /* 
+     * -------------------------------------------------------------------------
+     * W.Table - Spacing
+     * -------------------------------------------------------------------------
+     */
+
      thead th {
        padding: var(--header-padding-y) var(--padding-x);
      }
@@ -270,26 +276,133 @@
      tbody tr.w__table__row.w__m-no-padding td {
        padding: 0;
      }
-     tbody tr.w__table__row.w__m-interactive {
-       cursor: pointer;
-       &:hover {
-         background: rgb(var(--w-tint-subtle));
-       }
-       &:active {
-         background: rgb(var(--w-bg));
-       }
-     }
-     tbody tr.w__table__row.w__m-striped {
-       background: rgb(var(--w-bg-subtle));
 
-       &.w__m-interactive:hover {
-         background: rgb(var(--w-tint-subtle));
-       }
-       &.w__m-interactive:active {
-         background: rgb(var(--w-bg-subtle));
-       }
-     }
-   }
+    /* 
+     * -------------------------------------------------------------------------
+     * W.Table - Themes
+     * -------------------------------------------------------------------------
+     */
+
+    --w__table-bg: rgb(var(--w-bg));
+    --w__table-bg-hover: rgb(var(--w-tint-subtle));
+
+    --w__table-bg-striped: rgb(var(--w-bg-subtle));
+    --w__table-bg-striped-hover: rgb(var(--w-tint-subtle));
+
+    --w__table-bg-highlight: rgb(var(--w-tint));
+    --w__table-bg-highlight-hover: rgb(var(--w-tint));
+
+    --w__table-group: rgb(var(--w-tint));
+    --w__table-group-hover: rgb(var(--w-tint-strong));
+
+    --w__table-divider: rgb(var(--w-tint));
+    --w__table-divider-strong: rgb(var(--w-tint-strong));
+
+    &.w__m-subtle {
+      --w__table-bg: rgb(var(--w-bg-subtle));
+      --w__table-bg-hover: rgb(var(--w-bg));
+
+      --w__table-bg-striped: rgb(var(--w-bg));
+      --w__table-bg-striped-hover: rgb(var(--w-tint-subtle));
+
+      --w__table-bg-highlight: rgb(var(--w-tint-subtle));
+      --w__table-bg-highlight-hover: rgb(var(--w-tint));
+
+      --w__table-group: rgb(var(--w-tint));
+      --w__table-group-hover: rgb(var(--w-tint-strong));
+
+      --w__table-divider: rgb(var(--w-bg));
+      --w__table-divider-strong: rgb(var(--w-tint));
+    }
+
+    &:not(.w__m-striped) tbody tr {
+      border-top: 1px solid var(--w__table-divider);
+    }
+
+    .w__table__header__column,
+    .w__table__footer__column {
+      &:after {
+        pointer-events: none;
+        display: block;
+        content: "";
+        position: absolute;
+        inset: 0;
+      }
+    }
+
+    .w__table__header__column {
+      background: var(--w__table-bg);
+      &:after {
+        border-bottom: 1px solid var(--w__table-divider-strong);
+      }
+    }
+
+    .w__table__footer__column {
+      background: var(--w__table-bg);
+      &:after {
+        border-top: 1px solid var(--w__table-divider-strong);
+      }
+    }
+
+    .w__table__row {
+      background: var(--w__table-bg);
+
+      &.w__m-striped {
+        background: var(--w__table-bg-striped);
+      }
+      &.w__m-highlight {
+        background: var(--w__table-bg-highlight);
+      }
+    }
+
+    &.w__m-interactive {
+      .w__table__row {
+        cursor: pointer;
+        &:hover {
+          background: var(--w__table-bg-hover);
+        }
+        &:active {
+          background: var(--w__table-bg);
+        }
+
+        &.w__m-striped {
+          &:hover {
+            background: var(--w__table-bg-striped-hover);
+          }
+          &:active {
+            background: var(--w__table-bg-striped);
+          }
+        }
+
+        &.w__m-highlight {
+          &:hover {
+            background: var(--w__table-bg-highlight-hover);
+          }
+          &:active {
+            background: var(--w__table-bg-highlight);
+          }
+        }
+      }
+    }
+
+    .w__table__group-header {
+      background: var(--w__table-group);
+      border-top: 1px solid var(--w__table-divider-strong);
+      border-bottom: 1px solid var(--w__table-divider-strong);
+    }
+
+    &.w__m-group-interactive {
+      .w__table__group-header {
+        cursor: pointer;
+        &:hover {
+          background: var(--w__table-group-hover);
+        }
+        &:active {
+          background: var(--w__table-group);
+        }
+      }
+    }
+  }
 }
 
 
