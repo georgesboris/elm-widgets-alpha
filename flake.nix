@@ -19,10 +19,6 @@
         devShells.default = pkgs.mkShell {
           buildInputs = [
             pkgs.nodejs_24
-            pkgs.pnpm
-            pkgs.elmPackages.elm
-            pkgs.elmPackages.elm-format
-            pkgs.elmPackages.elm-json
             pkgs.elmPackages.elm-language-server
           ];
           shellHook = "";
