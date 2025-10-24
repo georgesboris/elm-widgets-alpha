@@ -5,7 +5,11 @@ import Book
 import Docs.UI
 import Html as H
 import Html.Attributes as HA
+import W.Box
 import W.Table
+import W.Tag
+import W.Text
+import W.Theme.Spacing
 import W.Tooltip
 
 
@@ -131,22 +135,59 @@ view =
                 , left =
                     [ W.Table.view
                         [ Attr.if_ True (W.Table.groupBy .name)
-                        , W.Table.striped
+
+                        -- , W.Table.striped
+                        , W.Table.card
                         , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
                         , W.Table.highlight (\a -> a.score == 40)
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
                         , W.Table.maxHeight 32
                         ]
-                        [ W.Table.string []
+                        [ W.Table.string
+                            [ W.Table.groupValue
+                                (\groupName _ ->
+                                    W.Box.view
+                                        [ W.Box.flex [ W.Box.yCenter ]
+                                        , W.Box.gap W.Theme.Spacing.md
+                                        ]
+                                        [ W.Text.view [ W.Text.small, W.Text.bold ] [ H.text groupName ]
+                                        , W.Tag.view [ W.Tag.outline, W.Tag.success, W.Tag.small ] [ H.text "New" ]
+                                        ]
+                                )
+                            ]
                             { label = "Name"
                             , value = .name
                             }
-                        , W.Table.int [ W.Table.width 60 ]
+                        , W.Table.int
+                            [ W.Table.width 60 ]
                             { label = "Age"
                             , value = .age
                             }
                         , W.Table.float
                             [ W.Table.width 60
+                            , W.Table.groupValue
+                                (\_ items ->
+                                    let
+                                        numItems : Int
+                                        numItems =
+                                            List.length items
+
+                                        itemsSum : Float
+                                        itemsSum =
+                                            items
+                                                |> List.map .score
+                                                |> List.sum
+                                    in
+                                    if numItems > 0 then
+                                        itemsSum
+                                            / toFloat numItems
+                                            |> Basics.round
+                                            |> String.fromInt
+                                            |> H.text
+
+                                    else
+                                        H.text ""
+                                )
                             , W.Table.footer
                                 (\items ->
                                     items
@@ -164,9 +205,12 @@ view =
                     ]
                 , right =
                     [ W.Table.view
-                        [ Attr.if_ False (W.Table.groupBy .name)
-                        , W.Table.striped
+                        [ Attr.if_ True (W.Table.groupBy .name)
+
+                        -- , W.Table.striped
                         , W.Table.subtle
+                        , W.Table.noHeaderBackground
+                        , W.Table.card
                         , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
                         , W.Table.highlight (\a -> a.score == 40)
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))

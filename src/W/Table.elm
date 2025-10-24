@@ -11,8 +11,9 @@ module W.Table exposing
     , groupSortBy, groupSortByDesc, groupSortWith
     , groupCollapsed
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
-    , noHeader, highlight, maxHeight
-    , subtle, striped, noDividers
+    , highlight, maxHeight
+    , noHeader
+    , subtle, card, striped, noDividers, noHeaderBackground
     , rowDetails, rowDetailsNoPadding
     , xPadding, yPadding, yHeaderPadding, yFooterPadding
     )
@@ -51,8 +52,9 @@ module W.Table exposing
 
 # Table Attributes
 
-@docs noHeader, highlight, maxHeight
-@docs subtle, striped, noDividers
+@docs highlight, maxHeight
+@docs noHeader
+@docs subtle, card, striped, noDividers, noHeaderBackground
 @docs rowDetails, rowDetailsNoPadding
 @docs xPadding, yPadding, yHeaderPadding, yFooterPadding
 
@@ -79,7 +81,9 @@ type alias Attribute msg a =
 
 
 type alias Attributes msg a =
-    { showHeader : Bool
+    { card : Bool
+    , showHeader : Bool
+    , headerBackground : Bool
     , isStriped : Bool
     , withDividers : Bool
     , styles : List ( String, String )
@@ -105,7 +109,9 @@ type alias Attributes msg a =
 
 defaultAttrs : Attributes msg a
 defaultAttrs =
-    { showHeader = True
+    { card = False
+    , showHeader = True
+    , headerBackground = True
     , isStriped = False
     , withDividers = True
     , styles = []
@@ -139,9 +145,21 @@ type TableTheme
 
 
 {-| -}
+card : Attribute msg a
+card =
+    Attr.attr (\attrs -> { attrs | card = True })
+
+
+{-| -}
 noHeader : Attribute msg a
 noHeader =
     Attr.attr (\attrs -> { attrs | showHeader = False })
+
+
+{-| -}
+noHeaderBackground : Attribute msg a
+noHeaderBackground =
+    Attr.attr (\attrs -> { attrs | headerBackground = False })
 
 
 {-| -}
@@ -545,13 +563,16 @@ view attrs_ columns data =
             , ( "w__m-group", hasGroups )
             , ( "w__m-group-interactive", attrs.onGroupClick /= Nothing )
             , ( "w__m-dividers", attrs.withDividers )
+            , ( "w__m-header-bg", attrs.headerBackground )
+            , ( "w__m-card", attrs.card )
             ]
+        , W.Theme.styleList (paddingStyles attrs)
         ]
         [ H.table
             [ HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
             , HA.class "w--w-full w--overflow-auto"
             , HA.class "w--font-base w--text-default"
-            , W.Theme.styleList (attrs.styles ++ paddingStyles attrs)
+            , W.Theme.styleList attrs.styles
             ]
             [ -- Table Head
               if attrs.showHeader then

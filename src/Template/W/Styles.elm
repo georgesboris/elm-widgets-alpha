@@ -3,7 +3,7 @@ module Template.W.Styles exposing
     , lightTheme, darkTheme, lightAndDarkTheme, customTheme
     , borderWidth
     , buttonLinksDecoration
-    , clickArea, clickAreaSmall
+    , clickArea, clickAreaSmall, clickAreaLarge
     )
 
 {-|
@@ -12,7 +12,7 @@ module Template.W.Styles exposing
 @docs lightTheme, darkTheme, lightAndDarkTheme, customTheme
 @docs borderWidth
 @docs buttonLinksDecoration
-@docs clickArea, clickAreaSmall
+@docs clickArea, clickAreaSmall, clickAreaLarge
 
 -}
 
@@ -36,6 +36,7 @@ type alias Attributes msg =
     , borderWidth : Int
     , clickArea : Float
     , clickAreaSmall : Float
+    , clickAreaLarge : Float
     , theme : Maybe (H.Html msg)
     }
 
@@ -44,6 +45,7 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { buttonLinksDecoration = False
     , borderWidth = 2
+    , clickAreaLarge = 2.125
     , clickArea = 1.75
     , clickAreaSmall = 1.25
     , theme = Nothing
@@ -63,6 +65,13 @@ This value is used for things like input, select boxes and other elements.
 borderWidth : Int -> Attribute msg
 borderWidth v =
     Attr.attr (\attrs -> { attrs | borderWidth = v })
+
+
+{-| Default size for the larger variation of clickable inputs such as buttons and tags.
+-}
+clickAreaLarge : Float -> Attribute msg
+clickAreaLarge v =
+    Attr.attr (\attrs -> { attrs | clickAreaLarge = v })
 
 
 {-| Default size for clickable inputs such as checkboxes and radio buttons.
@@ -174,6 +183,7 @@ view =
     --w-cfg-border: """ ++ WH.px attrs.borderWidth ++ """;
     --w-cfg-click: """ ++ WH.rem attrs.clickArea ++ """;
     --w-cfg-click-sm: """ ++ WH.rem attrs.clickAreaSmall ++ """;
+    --w-cfg-click-lg: """ ++ WH.rem attrs.clickAreaLarge ++ """;
 }      
 """)
                     , H.text <| Debug.todo "STYLES"

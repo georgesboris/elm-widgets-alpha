@@ -1,6 +1,8 @@
 module W.Tag exposing
     ( view, viewButton, viewLink, Attribute
     , large, small
+    , solid, outline
+    , compact
     , primary, secondary, success, warning, danger, color
     , id
     )
@@ -13,6 +15,16 @@ module W.Tag exposing
 # Sizes
 
 @docs large, small
+
+
+# Styles
+
+@docs solid, outline
+
+
+# Shapes
+
+@docs compact
 
 
 # Colors
@@ -46,7 +58,9 @@ type alias Attribute msg =
 type alias Attributes msg =
     { id : Maybe String
     , theme : String
+    , styleClass : String
     , customTheme : Maybe { text : String, background : String }
+    , compact : Bool
     , size : Size
     , href : Maybe String
     , onClick : Maybe msg
@@ -63,7 +77,9 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
     , theme = "w/base"
+    , styleClass = "w/tint"
     , customTheme = Nothing
+    , compact = False
     , size = Medium
     , href = Nothing
     , onClick = Nothing
@@ -101,6 +117,24 @@ onClick v =
 href : String -> Attribute msg
 href v =
     Attr.attr (\attrs -> { attrs | href = Just v })
+
+
+{-| -}
+compact : Attribute msg
+compact =
+    Attr.attr (\attrs -> { attrs | compact = True })
+
+
+{-| -}
+solid : Attribute msg
+solid =
+    Attr.attr (\attrs -> { attrs | styleClass = "w/solid" })
+
+
+{-| -}
+outline : Attribute msg
+outline =
+    Attr.attr (\attrs -> { attrs | styleClass = "w__m-outline w/tint w--border w--border-solid w--border-accent" })
 
 
 {-| -}
@@ -164,35 +198,42 @@ view =
     Attr.withAttrs defaultAttrs
         (\attrs children ->
             let
-                baseAttrs : List (H.Attribute msg)
-                baseAttrs =
+                rootAttrs : List (H.Attribute msg)
+                rootAttrs =
                     [ WH.maybeAttr HA.id attrs.id
-                    , HA.class "w--tag"
-                    , HA.class "w/tint"
-                    , HA.class "w--m-0 w--box-border w--relative w--inline-flex w--items-center w--leading-none w--font-base w--font-medium w--tracking-wider"
-                    , HA.class "w--rounded-full w--border-0"
-                    , WH.maybeAttr
-                        (\_ -> HA.class "w--tag--custom-theme")
-                        attrs.customTheme
-                    , case attrs.customTheme of
+                    , HA.class "w__tag"
+                    , HA.classList
+                        [ ( "w__m-compact", attrs.compact ) ]
+                    , case attrs.size of
+                        Large ->
+                            HA.class "w__m-lg"
+
+                        Medium ->
+                            HA.class ""
+
+                        Small ->
+                            HA.class "w__m-sm"
+                    ]
+
+                themeAttrs : List (H.Attribute msg)
+                themeAttrs =
+                    case attrs.customTheme of
                         Nothing ->
-                            HA.class attrs.theme
+                            [ HA.class attrs.theme
+                            , HA.class attrs.styleClass
+                            ]
 
                         Just theme ->
-                            W.Theme.styleList
+                            [ HA.class "w__m-custom-theme"
+                            , W.Theme.styleList
                                 [ ( "--fg", theme.text )
                                 , ( "--bg", theme.background )
                                 ]
-                    , case attrs.size of
-                        Large ->
-                            HA.class "w--h-[32px] w--px-lg w--text-base"
+                            ]
 
-                        Medium ->
-                            HA.class "w--h-[28px] w--px-md w--text-sm"
-
-                        Small ->
-                            HA.class "w--h-[20px] w--px-sm w--text-xs"
-                    ]
+                baseAttrs : List (H.Attribute msg)
+                baseAttrs =
+                    rootAttrs ++ themeAttrs
             in
             case ( attrs.onClick, attrs.href ) of
                 ( Just onClick_, _ ) ->

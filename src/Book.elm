@@ -464,6 +464,7 @@ view props =
         { theme = options.theme
         , darkMode = options.darkMode
         }
+    , W.Theme.themeComponents
 
     -- Main Layout
     , W.Box.view

@@ -290,7 +290,7 @@
       --w__table-bg-highlight-hover: rgb(var(--w-tint));
 
       --w__table-group: rgb(var(--w-tint-subtle));
-      --w__table-group-hover: rgb(var(--w-tint-strong));
+      --w__table-group-hover: rgb(var(--w-tint));
 
       --w__table-divider: rgb(var(--w-tint));
       --w__table-divider-strong: rgb(var(--w-tint-strong));
@@ -302,14 +302,24 @@
      * -------------------------------------------------------------------------
      */
 
-     thead th {
-       padding: var(--header-padding-y) var(--padding-x);
+     padding: var(--header-padding-y) 0;
+
+     table {
+       background: var(--w__table-bg);
      }
+
+     thead th {
+       padding: 0 var(--padding-x) var(--header-padding-y) ;
+     }
+     tfoot td {
+       padding: var(--footer-padding-y) var(--padding-x) 0;
+     }
+
      tbody td, tbody th {
        padding: var(--padding-y) var(--padding-x);
      }
-     tfoot td {
-       padding: var(--footer-padding-y) var(--padding-x);
+     tbody .w__table__group td {
+       padding-top: var(--padding-y);
      }
      tbody tr.w__table__row.w__m-no-padding td {
        padding: 0;
@@ -322,6 +332,12 @@
      */
 
     background: var(--w__table-bg);
+    @apply w--rounded-md;
+
+    &.w__m-card {
+      @apply w--rounded-md w--border w--border-solid w--shadow-md;
+      border-color: var(--w__table-divider-strong);
+    }
 
     &.w__m-dividers .w__table__row:not(:first-child) {
       border-top: 1px solid var(--w__table-divider);
@@ -333,9 +349,15 @@
     }
 
     &.w__m-group {
-      .w__table__header__column,
-      .w__table__footer__column,
       .w__table__group {
+        background: var(--w__table-group);
+      }
+    }
+
+    &.w__m-header-bg {
+      background: var(--w__table-group);
+      .w__table__header__column,
+      .w__table__footer__column {
         background: var(--w__table-group);
       }
     }
@@ -1264,18 +1286,55 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
  * ======================================================
  */
 
-.w--tag.w--tag--custom-theme {
-  color: var(--fg);
-  background-color: var(--bg);
-  &:hover {
-    opacity: 0.85;
-    color: var(--fg);
-    background-color: var(--bg);
-  }
-  &:active {
-    opacity: 0.7;
-  }
-  &:focus-visible {
-    box-shadow: 0 0 0 1px rgb(var(--w-bg)), 0 0 0 5px rgb(var(--w-bg) / 0.35), 0 0 0 4px var(--bg) !important;
+@layer components {
+  .w__tag {
+    @apply w--m-0 w--box-border w--relative;
+    @apply w--inline-flex w--items-center;
+    @apply w--leading-none w--font-text w--font-medium w--tracking-wider;
+    @apply w--rounded-full w--border-none;
+
+    @apply w--px-md w--text-sm;
+    height: var(--w-cfg-click);
+
+
+    &.w__m-lg {
+      height: var(--w-cfg-click-lg);
+      @apply w--px-lg w--text-base;
+    }
+    &.w__m-sm {
+      height: var(--w-cfg-click-sm);
+      @apply w--px-sm w--text-xs;
+    }
+
+    &.w__m-compact {
+      @apply w--rounded w--px-sm;
+    }
+    &.w__m-compact.w__m-lg {
+      @apply w--px-sm;
+    }
+    &.w__m-compact.w__m-sm {
+      @apply w--px-xs;
+    }
+
+    &.w__m-custom-theme {
+      color: var(--fg);
+      background-color: var(--bg);
+
+      &.w__m-outline {
+        background: color-mix(in srgb, var(--bg), rgb(var(--w-bg)) 50%);
+      }
+
+      &:hover {
+        opacity: 0.85;
+        color: var(--fg);
+        background-color: var(--bg);
+      }
+      &:active {
+        opacity: 0.7;
+      }
+      &:focus-visible {
+        box-shadow: 0 0 0 1px rgb(var(--w-bg)), 0 0 0 5px rgb(var(--w-bg) / 0.35), 0 0 0 4px var(--bg) !important;
+      }
+    }
   }
 }

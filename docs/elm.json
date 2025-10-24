@@ -17,7 +17,7 @@
             "elm/url": "1.0.0",
             "elmcraft/core-extra": "2.0.0",
             "georgesboris/elm-attributes": "1.0.0",
-            "georgesboris/elm-theme": "1.0.0",
+            "georgesboris/elm-theme": "1.0.2",
             "justinmimbs/date": "4.1.0",
             "justinmimbs/time-extra": "1.2.0",
             "lydell/elm-app-url": "1.0.4",
