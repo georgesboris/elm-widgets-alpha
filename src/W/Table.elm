@@ -15,7 +15,9 @@ module W.Table exposing
     , noHeader
     , subtle, card, striped, noDividers, noHeaderBackground
     , rowDetails, rowDetailsNoPadding
-    , xPadding, yPadding, yHeaderPadding, yFooterPadding
+    , xPadding, yPadding
+    , yHeaderPadding, yFooterPadding
+    , yGroupPadding, topGroupPadding
     )
 
 {-|
@@ -56,7 +58,9 @@ module W.Table exposing
 @docs noHeader
 @docs subtle, card, striped, noDividers, noHeaderBackground
 @docs rowDetails, rowDetailsNoPadding
-@docs xPadding, yPadding, yHeaderPadding, yFooterPadding
+@docs xPadding, yPadding
+@docs yHeaderPadding, yFooterPadding
+@docs yGroupPadding, topGroupPadding
 
 -}
 
@@ -92,6 +96,8 @@ type alias Attributes msg a =
     , yPadding : W.Theme.Spacing.Spacing
     , yHeaderPadding : Maybe W.Theme.Spacing.Spacing
     , yFooterPadding : Maybe W.Theme.Spacing.Spacing
+    , yGroupPadding : Maybe W.Theme.Spacing.Spacing
+    , topGroupPadding : Maybe W.Theme.Spacing.Spacing
     , groupBy : Maybe (a -> String)
     , groupSortBy : List ( String, a, List a ) -> List ( String, a, List a )
     , groupCollapsed : Maybe (a -> String -> Bool)
@@ -120,6 +126,8 @@ defaultAttrs =
     , yPadding = W.Theme.Spacing.sm
     , yHeaderPadding = Nothing
     , yFooterPadding = Nothing
+    , yGroupPadding = Nothing
+    , topGroupPadding = Nothing
     , groupBy = Nothing
     , groupSortBy = identity
     , groupCollapsed = Nothing
@@ -229,8 +237,26 @@ yFooterPadding v =
     Attr.attr (\attrs -> { attrs | yFooterPadding = Just v })
 
 
+{-| -}
+yGroupPadding : W.Theme.Spacing.Spacing -> Attribute msg a
+yGroupPadding v =
+    Attr.attr (\attrs -> { attrs | yGroupPadding = Just v })
+
+
+{-| -}
+topGroupPadding : W.Theme.Spacing.Spacing -> Attribute msg a
+topGroupPadding v =
+    Attr.attr (\attrs -> { attrs | topGroupPadding = Just v })
+
+
 paddingStyles : Attributes msg a -> List ( String, String )
 paddingStyles attrs =
+    let
+        yGroupPadding_ : W.Theme.Spacing.Spacing
+        yGroupPadding_ =
+            attrs.yGroupPadding
+                |> Maybe.withDefault attrs.yPadding
+    in
     [ ( "--padding-x", W.Theme.Spacing.toCSS attrs.xPadding )
     , ( "--padding-y", W.Theme.Spacing.toCSS attrs.yPadding )
     , ( "--header-padding-y"
@@ -241,6 +267,14 @@ paddingStyles attrs =
     , ( "--footer-padding-y"
       , attrs.yFooterPadding
             |> Maybe.withDefault attrs.yPadding
+            |> W.Theme.Spacing.toCSS
+      )
+    , ( "--group-padding-y"
+      , W.Theme.Spacing.toCSS yGroupPadding_
+      )
+    , ( "--group-padding-top"
+      , attrs.topGroupPadding
+            |> Maybe.withDefault yGroupPadding_
             |> W.Theme.Spacing.toCSS
       )
     ]

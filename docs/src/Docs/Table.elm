@@ -138,6 +138,7 @@ view =
 
                         -- , W.Table.striped
                         , W.Table.card
+                        , W.Table.topGroupPadding W.Theme.Spacing.xl
                         , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
                         , W.Table.highlight (\a -> a.score == 40)
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))

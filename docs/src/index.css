@@ -319,7 +319,8 @@
        padding: var(--padding-y) var(--padding-x);
      }
      tbody .w__table__group td {
-       padding-top: var(--padding-y);
+       padding: var(--group-padding-y) var(--padding-x);
+       padding-top: var(--group-padding-top);
      }
      tbody tr.w__table__row.w__m-no-padding td {
        padding: 0;
