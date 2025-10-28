@@ -143,6 +143,13 @@ view =
                         , W.Table.highlight (\a -> a.score == 40)
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
                         , W.Table.maxHeight 32
+                        , W.Table.groupIndentWidth 1
+                        , W.Table.groupIndentCustom
+                            (\_ ->
+                                H.div
+                                    [ HA.class "w--absolute w--inset-0 w--bg-subtle" ]
+                                    []
+                            )
                         ]
                         [ W.Table.string
                             [ W.Table.groupValue

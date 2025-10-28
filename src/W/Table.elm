@@ -10,6 +10,7 @@ module W.Table exposing
     , groupBy, groupValue, groupValueCustom
     , groupSortBy, groupSortByDesc, groupSortWith
     , groupCollapsed
+    , groupIndent, groupIndentCustom, groupIndentWidth
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
     , highlight, maxHeight
     , noHeader
@@ -49,6 +50,7 @@ module W.Table exposing
 @docs groupBy, groupValue, groupValueCustom
 @docs groupSortBy, groupSortByDesc, groupSortWith
 @docs groupCollapsed
+@docs groupIndent, groupIndentCustom, groupIndentWidth
 @docs onGroupClick, onGroupMouseEnter, onGroupMouseLeave
 
 
@@ -101,6 +103,8 @@ type alias Attributes msg a =
     , groupBy : Maybe (a -> String)
     , groupSortBy : List ( String, a, List a ) -> List ( String, a, List a )
     , groupCollapsed : Maybe (a -> String -> Bool)
+    , groupIndent : Maybe (a -> H.Html msg)
+    , groupIndentWidth : Float
     , highlight : a -> Bool
     , rowDetails : Maybe (a -> Maybe (List (H.Html msg)))
     , rowDetailsNoPadding : Bool
@@ -131,6 +135,8 @@ defaultAttrs =
     , groupBy = Nothing
     , groupSortBy = identity
     , groupCollapsed = Nothing
+    , groupIndent = Nothing
+    , groupIndentWidth = 0.5
     , highlight = \_ -> False
     , rowDetails = Nothing
     , rowDetailsNoPadding = False
@@ -277,6 +283,10 @@ paddingStyles attrs =
             |> Maybe.withDefault yGroupPadding_
             |> W.Theme.Spacing.toCSS
       )
+    , ( "--group-indent-width"
+      , attrs.groupIndentWidth
+            |> WH.em
+      )
     ]
 
 
@@ -323,6 +333,24 @@ groupSortWith fn =
 groupCollapsed : (a -> String -> Bool) -> Attribute msg a
 groupCollapsed fn =
     Attr.attr (\attrs -> { attrs | groupCollapsed = Just fn })
+
+
+{-| -}
+groupIndent : Attribute msg a
+groupIndent =
+    Attr.attr (\attrs -> { attrs | groupIndent = Just (\_ -> H.div [ HA.class "w__table__group-indent__default" ] []) })
+
+
+{-| -}
+groupIndentWidth : Float -> Attribute msg a
+groupIndentWidth v =
+    Attr.attr (\attrs -> { attrs | groupIndentWidth = v })
+
+
+{-| -}
+groupIndentCustom : (a -> H.Html msg) -> Attribute msg a
+groupIndentCustom fn =
+    Attr.attr (\attrs -> { attrs | groupIndent = Just fn })
 
 
 {-| -}
@@ -558,6 +586,11 @@ view attrs_ columns data =
                                             |> Maybe.map (\fn -> fn groupItem groupLabel_)
                                             |> Maybe.withDefault False
                                             |> WH.or [] groupItems
+
+                                    groupIndentElement : Maybe (H.Html msg)
+                                    groupIndentElement =
+                                        attrs.groupIndent
+                                            |> Maybe.map (\fn -> fn groupItem)
                                 in
                                 viewGroupHeader
                                     { attrs = attrs
@@ -569,14 +602,14 @@ view attrs_ columns data =
                                     , groupColumns = groupItems
                                     }
                                     :: (groupRows
-                                            |> List.indexedMap (viewTableRow attrs columns numCols)
+                                            |> List.indexedMap (viewTableRow attrs columns groupIndentElement numCols)
                                             |> List.concat
                                        )
                             )
 
                 Nothing ->
                     data
-                        |> List.indexedMap (viewTableRow attrs columns numCols)
+                        |> List.indexedMap (viewTableRow attrs columns Nothing numCols)
                         |> List.concat
 
         hasFooter : Bool
@@ -603,7 +636,7 @@ view attrs_ columns data =
         , W.Theme.styleList (paddingStyles attrs)
         ]
         [ H.table
-            [ HA.class "w--table w--table-fixed w--indent-0 w--border-collapse"
+            [ HA.class "w--table w--table-fixed w--inset-0 w--border-collapse"
             , HA.class "w--w-full w--overflow-auto"
             , HA.class "w--font-base w--text-default"
             , W.Theme.styleList attrs.styles
@@ -745,8 +778,8 @@ viewTableFooterColumn data (Column col) =
         ]
 
 
-viewTableRow : Attributes msg a -> List (Column msg a) -> Int -> Int -> a -> List (H.Html msg)
-viewTableRow attrs columns numCols rowIndex datum =
+viewTableRow : Attributes msg a -> List (Column msg a) -> Maybe (H.Html msg) -> Int -> Int -> a -> List (H.Html msg)
+viewTableRow attrs columns groupIndentElement numCols rowIndex datum =
     let
         isHighlighted : Bool
         isHighlighted =
@@ -768,13 +801,28 @@ viewTableRow attrs columns numCols rowIndex datum =
         , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
         ]
         (columns
-            |> List.map
-                (\(Column col) ->
-                    H.td
-                        (columnStyles col
-                            ++ [ HA.class "w--shrink-0 w--m-0 w--break-words" ]
-                        )
-                        [ col.toHtml datum ]
+            |> List.indexedMap
+                (\index (Column col) ->
+                    case ( index, groupIndentElement ) of
+                        ( 0, Just groupIndent_ ) ->
+                            H.td
+                                (columnStyles col
+                                    ++ [ HA.class "w--shrink-0 w--m-0 w--break-words w__table__group-indent-cell" ]
+                                )
+                                [ H.span
+                                    [ HA.class "w__table__group-indent" ]
+                                    [ groupIndent_ ]
+                                , H.span
+                                    []
+                                    [ col.toHtml datum ]
+                                ]
+
+                        _ ->
+                            H.td
+                                (columnStyles col
+                                    ++ [ HA.class "w--shrink-0 w--m-0 w--break-words" ]
+                                )
+                                [ col.toHtml datum ]
                 )
         )
     , attrs.rowDetails

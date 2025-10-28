@@ -328,6 +328,30 @@
 
     /* 
      * -------------------------------------------------------------------------
+     * W.Table - Indent
+     * -------------------------------------------------------------------------
+     */
+
+    .w__table__group-indent-cell {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .w__table__group-indent {
+      position: relative;
+      width: var(--group-indent-width);
+      margin: calc(var(--padding-x) * -1);
+      margin-right: var(--padding-x);
+    }
+
+    .w__table__group-indent__default {
+      height: 100%;
+      width: 100%;
+      background: var(--w__table-bg-highlight);
+    }
+
+    /* 
+     * -------------------------------------------------------------------------
      * W.Table - Colors
      * -------------------------------------------------------------------------
      */
