@@ -362,6 +362,7 @@
     }
 
     .w__table__group-indent-cell {
+      @apply w--flex w--items-center;
       padding-left: var(--group-indent-width);
     }
 
