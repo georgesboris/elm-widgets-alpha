@@ -13,8 +13,9 @@ module W.Table exposing
     , groupIndent, groupIndentCustom, groupIndentWidth
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
     , highlight, maxHeight
-    , noHeader
+    , noHeader, labelBaseClass
     , subtle, card, striped, noDividers, noHeaderBackground
+    , extraHeader, extraHeaderNoPadding, extraHeaderNoDivider
     , rowDetails, rowDetailsNoPadding
     , xPadding, yPadding
     , yHeaderPadding, yFooterPadding
@@ -57,8 +58,9 @@ module W.Table exposing
 # Table Attributes
 
 @docs highlight, maxHeight
-@docs noHeader
+@docs noHeader, labelBaseClass
 @docs subtle, card, striped, noDividers, noHeaderBackground
+@docs extraHeader, extraHeaderNoPadding, extraHeaderNoDivider
 @docs rowDetails, rowDetailsNoPadding
 @docs xPadding, yPadding
 @docs yHeaderPadding, yFooterPadding
@@ -93,7 +95,11 @@ type alias Attributes msg a =
     , isStriped : Bool
     , withDividers : Bool
     , styles : List ( String, String )
+    , labelBaseClass : String
     , theme : TableTheme
+    , extraHeader : Maybe (List (H.Html msg))
+    , extraHeaderNoPadding : Bool
+    , extraHeaderNoDivider : Bool
     , xPadding : W.Theme.Spacing.Spacing
     , yPadding : W.Theme.Spacing.Spacing
     , yHeaderPadding : Maybe W.Theme.Spacing.Spacing
@@ -125,7 +131,11 @@ defaultAttrs =
     , isStriped = False
     , withDividers = True
     , styles = []
+    , labelBaseClass = ""
     , theme = Default
+    , extraHeader = Nothing
+    , extraHeaderNoPadding = False
+    , extraHeaderNoDivider = False
     , xPadding = W.Theme.Spacing.sm
     , yPadding = W.Theme.Spacing.sm
     , yHeaderPadding = Nothing
@@ -186,6 +196,30 @@ subtle =
 noDividers : Attribute msg a
 noDividers =
     Attr.attr (\attrs -> { attrs | withDividers = False })
+
+
+{-| -}
+labelBaseClass : String -> Attribute msg a
+labelBaseClass v =
+    Attr.attr (\attrs -> { attrs | labelBaseClass = v })
+
+
+{-| -}
+extraHeader : List (H.Html msg) -> Attribute msg a
+extraHeader v =
+    Attr.attr (\attrs -> { attrs | extraHeader = Just v })
+
+
+{-| -}
+extraHeaderNoPadding : Attribute msg a
+extraHeaderNoPadding =
+    Attr.attr (\attrs -> { attrs | extraHeaderNoPadding = True })
+
+
+{-| -}
+extraHeaderNoDivider : Attribute msg a
+extraHeaderNoDivider =
+    Attr.attr (\attrs -> { attrs | extraHeaderNoDivider = True })
 
 
 {-| -}
@@ -635,7 +669,8 @@ view attrs_ columns data =
             ]
         , W.Theme.styleList (paddingStyles attrs)
         ]
-        [ H.table
+        [ viewExtraHeader attrs
+        , H.table
             [ HA.class "w--table w--table-fixed w--inset-0 w--border-collapse"
             , HA.class "w--w-full w--overflow-auto"
             , HA.class "w--font-base w--text-default"
@@ -643,7 +678,7 @@ view attrs_ columns data =
             ]
             [ -- Table Head
               if attrs.showHeader then
-                H.thead [ HA.class "w__table__header" ] [ H.tr [] (List.map viewTableHeaderColumn columns) ]
+                H.thead [ HA.class "w__table__header" ] [ H.tr [] (List.map (viewTableHeaderColumn attrs) columns) ]
 
               else
                 H.text ""
@@ -659,6 +694,23 @@ view attrs_ columns data =
                 H.text ""
             ]
         ]
+
+
+viewExtraHeader : Attributes msg a -> H.Html msg
+viewExtraHeader attrs =
+    case attrs.extraHeader of
+        Just extraHeader_ ->
+            H.div
+                [ HA.class "w__table__extra-header"
+                , HA.classList
+                    [ ( "w__m-no-padding", attrs.extraHeaderNoPadding )
+                    , ( "w__m-no-divider", attrs.extraHeaderNoDivider )
+                    ]
+                ]
+                extraHeader_
+
+        Nothing ->
+            H.text ""
 
 
 toGroupedRows : Attributes msg a -> (a -> String) -> List a -> List ( String, a, List a )
@@ -737,8 +789,8 @@ columnHtmlAttrs col =
     HA.class "w__table__group__column w--shrink-0 w--m-0 w--break-words" :: columnStyles col
 
 
-viewTableHeaderColumn : Column msg a -> H.Html msg
-viewTableHeaderColumn (Column col) =
+viewTableHeaderColumn : Attributes msg a -> Column msg a -> H.Html msg
+viewTableHeaderColumn attrs (Column col) =
     H.th
         (columnStyles col
             ++ [ HA.class "w--sticky w--z-20 w--top-0"
@@ -748,6 +800,7 @@ viewTableHeaderColumn (Column col) =
         )
         [ H.div
             [ HA.class "w--flex w--items-center gap-1"
+            , HA.class attrs.labelBaseClass
             , HA.class col.labelClass
             ]
             [ col.customLeft

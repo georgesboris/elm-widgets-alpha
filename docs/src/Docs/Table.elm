@@ -216,6 +216,8 @@ view =
                         [ Attr.if_ True (W.Table.groupBy .name)
 
                         -- , W.Table.striped
+                        , W.Table.extraHeader [ H.text "Extra header. Not a caption." ]
+                        , W.Table.extraHeaderNoPadding
                         , W.Table.subtle
                         , W.Table.noHeaderBackground
                         , W.Table.card
