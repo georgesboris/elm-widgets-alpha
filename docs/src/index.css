@@ -357,22 +357,26 @@
      * -------------------------------------------------------------------------
      */
 
+    .w__table__row td {
+      position: relative;
+    }
+
     .w__table__group-indent-cell {
-      display: flex;
-      align-items: stretch;
+      padding-left: var(--group-indent-width);
     }
 
     .w__table__group-indent {
-      position: relative;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
       width: var(--group-indent-width);
-      margin: calc(var(--padding-x) * -1);
-      margin-right: var(--padding-x);
     }
 
     .w__table__group-indent__default {
       height: 100%;
       width: 100%;
-      background: var(--w__table-bg-highlight);
+      background: var(--w__table-bg-striped);
     }
 
     /* 

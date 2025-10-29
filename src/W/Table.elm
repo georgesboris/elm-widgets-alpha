@@ -856,26 +856,22 @@ viewTableRow attrs columns groupIndentElement numCols rowIndex datum =
         (columns
             |> List.indexedMap
                 (\index (Column col) ->
-                    case ( index, groupIndentElement ) of
-                        ( 0, Just groupIndent_ ) ->
-                            H.td
-                                (columnStyles col
-                                    ++ [ HA.class "w--shrink-0 w--m-0 w--break-words w__table__group-indent-cell" ]
-                                )
+                    H.td
+                        (columnStyles col
+                            ++ [ HA.class "w--shrink-0 w--m-0 w--break-words" ]
+                        )
+                        (case ( index, groupIndentElement ) of
+                            ( 0, Just groupIndent_ ) ->
                                 [ H.span
-                                    [ HA.class "w__table__group-indent" ]
-                                    [ groupIndent_ ]
-                                , H.span
-                                    []
-                                    [ col.toHtml datum ]
+                                    [ HA.class "w__table__group-indent-cell" ]
+                                    [ H.span [ HA.class "w__table__group-indent" ] [ groupIndent_ ]
+                                    , H.span [] [ col.toHtml datum ]
+                                    ]
                                 ]
 
-                        _ ->
-                            H.td
-                                (columnStyles col
-                                    ++ [ HA.class "w--shrink-0 w--m-0 w--break-words" ]
-                                )
+                            _ ->
                                 [ col.toHtml datum ]
+                        )
                 )
         )
     , attrs.rowDetails

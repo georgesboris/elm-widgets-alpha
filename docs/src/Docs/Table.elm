@@ -136,20 +136,14 @@ view =
                     [ W.Table.view
                         [ Attr.if_ True (W.Table.groupBy .name)
 
-                        -- , W.Table.striped
+                        , W.Table.striped
                         , W.Table.card
                         , W.Table.topGroupPadding W.Theme.Spacing.xl
                         , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
                         , W.Table.highlight (\a -> a.score == 40)
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
                         , W.Table.maxHeight 32
-                        , W.Table.groupIndentWidth 1
-                        , W.Table.groupIndentCustom
-                            (\_ ->
-                                H.div
-                                    [ HA.class "w--absolute w--inset-0 w--bg-subtle" ]
-                                    []
-                            )
+                        , W.Table.groupIndent
                         ]
                         [ W.Table.string
                             [ W.Table.groupValue
@@ -166,10 +160,13 @@ view =
                             { label = "Name"
                             , value = .name
                             }
-                        , W.Table.int
+                        , W.Table.column
                             [ W.Table.width 60 ]
                             { label = "Age"
-                            , value = .age
+                            , content = \x ->
+                                H.div
+                                    [ HA.style "height" "48px" ]
+                                    [ H.text (String.fromInt x.age) ]
                             }
                         , W.Table.float
                             [ W.Table.width 60
