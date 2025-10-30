@@ -1343,6 +1343,7 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
 @layer components {
   .w__tag {
     @apply w--m-0 w--box-border w--relative;
+    @apply w--shrink-0;
     @apply w--inline-flex w--items-center;
     @apply w--leading-none w--font-text w--font-medium w--tracking-wider;
     @apply w--rounded-full w--border-none;

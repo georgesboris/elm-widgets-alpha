@@ -10,6 +10,7 @@ module W.Internal.Helpers exposing
     , maybeHtml
     , nearestFloats
     , nearestInts
+    , onClickStopPropagation
     , onEnter
     , or
     , paddingXY
@@ -129,6 +130,11 @@ enterDecoder a =
 onEnter : msg -> H.Attribute msg
 onEnter msg =
     HE.on "keyup" (enterDecoder msg)
+
+
+onClickStopPropagation : msg -> H.Attribute msg
+onClickStopPropagation msg =
+    HE.stopPropagationOn "click" (D.succeed ( msg, True ))
 
 
 

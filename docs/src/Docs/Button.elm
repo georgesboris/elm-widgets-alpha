@@ -43,7 +43,7 @@ update msg model =
 --
 
 
-playground : W.Playground.Playground (H.Html msg)
+playground : W.Playground.Playground (Book.Html msg)
 playground =
     W.Playground.succeed
         (\content contentType size style color alignment fullWidth disabled rounded ->
@@ -59,7 +59,7 @@ playground =
                         ExtraSmall ->
                             ( W.Button.extraSmall, 12 )
             in
-            W.Button.viewDummy
+            W.Button.view
                 [ sizeAttr
                 , style
                 , color
@@ -69,22 +69,25 @@ playground =
                 , Attr.if_ rounded W.Button.rounded
                 , Attr.if_ (contentType == Icon) W.Button.icon
                 ]
-                (case contentType of
-                    Text ->
-                        [ H.text content ]
+                { onClick = Book.logAction "On Click"
+                , label = 
+                    (case contentType of
+                        Text ->
+                            [ H.text content ]
 
-                    Icon ->
-                        [ W.Internal.Icons.check { size = iconSize }
-                        ]
-
-                    IconAndText ->
-                        [ H.span
-                            [ HA.class "w--flex w--items-center w--gap-md" ]
+                        Icon ->
                             [ W.Internal.Icons.check { size = iconSize }
-                            , H.span [] [ H.text content ]
                             ]
-                        ]
-                )
+
+                        IconAndText ->
+                            [ H.span
+                                [ HA.class "w--flex w--items-center w--gap-md" ]
+                                [ W.Internal.Icons.check { size = iconSize }
+                                , H.span [] [ H.text content ]
+                                ]
+                            ]
+                    )
+                }
         )
         |> W.Playground.string
             { name = "Label"

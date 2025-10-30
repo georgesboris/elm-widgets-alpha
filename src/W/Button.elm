@@ -4,6 +4,7 @@ module W.Button exposing
     , outline, invisible, tint, subtle
     , rounded, radius
     , full, icon
+    , flexGrow
     , large, small, extraSmall
     , alignLeft, alignRight
     , disabled, readOnly
@@ -19,6 +20,7 @@ module W.Button exposing
 
 @docs rounded, radius
 @docs full, icon
+@docs flexGrow
 
 @docs large, small, extraSmall
 @docs alignLeft, alignRight
@@ -31,7 +33,6 @@ module W.Button exposing
 import Attr
 import Html as H
 import Html.Attributes as HA
-import Html.Events as HE
 import W.Internal.Helpers as WH
 import W.Theme
 import W.Theme.Color
@@ -56,6 +57,7 @@ type alias Attributes msg =
     , icon : Bool
     , full : Bool
     , variant : ButtonVariant
+    , flexClass : String
     , alignClass : String
     , msg : Maybe msg
     }
@@ -97,6 +99,7 @@ defaultAttrs =
     , size = Medium
     , icon = False
     , full = False
+    , flexClass = "w--shrink-0"
     , alignClass = "w--justify-center"
     , msg = Nothing
     }
@@ -257,6 +260,12 @@ full =
 
 
 {-| -}
+flexGrow : Attribute msg
+flexGrow =
+    Attr.attr (\attrs -> { attrs | flexClass = "w--shrink-0 w--grow" })
+
+
+{-| -}
 icon : Attribute msg
 icon =
     Attr.attr (\attrs -> { attrs | icon = True })
@@ -278,7 +287,7 @@ view =
     Attr.withAttrs defaultAttrs
         (\attrs props ->
             H.button
-                (HE.onClick props.onClick :: HA.type_ "button" :: htmlAttrs attrs)
+                (WH.onClickStopPropagation props.onClick :: HA.type_ "button" :: htmlAttrs attrs)
                 (toLabel attrs props.label)
         )
 
@@ -395,6 +404,7 @@ htmlAttrs attrs =
     , HA.class "w--font-semibold"
     , HA.class "w--border-2 w--border-solid"
     , HA.class attrs.alignClass
+    , HA.class attrs.flexClass
     , HA.classList
         [ ( "w--w-full", attrs.full )
         , ( "w--cursor-pointer", not attrs.disabled && not attrs.readOnly )
