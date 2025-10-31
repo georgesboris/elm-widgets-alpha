@@ -116,6 +116,7 @@ playground =
                 [ ( "Outline", W.Button.outline )
                 , ( "Tint", W.Button.tint )
                 , ( "Invisible", W.Button.invisible )
+                , ( "Subtle", W.Button.subtle )
                 ]
             }
         |> W.Playground.attr

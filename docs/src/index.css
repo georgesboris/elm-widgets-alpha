@@ -12,13 +12,63 @@
   border: var(--w-cfg-border) solid rgb(var(--w-accent));
 }
 
-.w\/inherit {
-  @apply w--text-default;
-}
+/* 
+ * ======================================================
+ * Overrides for elm-theme
+ * ======================================================
+ */
 
 .w\/focus:hover {
   cursor: pointer;
 }
+
+.w\/inherit {
+  @apply w--text-default;
+}
+
+.w--text-subtle:is(.w\/inherit,.w\/base,.w\/primary,.w\/secondary,.w\/success,.w\/warning,.w\/danger) {
+  color: rgb(var(--w-text-subtle));
+}
+
+.w--bg-subtle:is(.w\/tint,.w\/solid) {
+  background-color: rgb(var(--w-bg-subtle));
+}
+.w--bg-tint-subtle:is(.w\/tint,.w\/solid) {
+  background-color: rgb(var(--w-tint-subtle));
+}
+.w--bg-tint:is(.w\/tint,.w\/solid) {
+  background-color: rgb(var(--w-tint));
+}
+.w--bg-tint-strong:is(.w\/tint,.w\/solid) {
+  background-color: rgb(var(--w-tint-strong));
+}
+
+@layer utilities {
+  .w\/tint:is(a,button,input[type="submit"],input[type="button"],[role="button"]) {
+    &:hover {
+      @apply w--bg-tint-strong;
+    }
+    &:active {
+      @apply w--bg-tint-subtle;
+    }
+  }
+  .w\/solid:is(a,button,input[type="submit"],input[type="button"],[role="button"]) {
+    &:hover {
+      @apply w--bg-solid-strong;
+    }
+    &:active {
+      @apply w--bg-solid-subtle;
+    }
+  }
+  :is(.w\/tint,.w\/solid):is(a,button,input[type="submit"],input[type="button"],[role="button"]) {
+    &:focus-visible {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 1px rgb(var(--w-bg)), 0 0 0 4px rgb(var(--w-accent-subtle));
+    }
+  }
+}
+
 
 /* 
  * ======================================================
@@ -870,8 +920,8 @@
 
     &.w--is-small {
       input[type="color"] {
-        width: var(--w-cfg-click-small);
-        height: var(--w-cfg-click-small);
+        width: var(--w-cfg-click-sm);
+        height: var(--w-cfg-click-sm);
       }
 
       &::after {

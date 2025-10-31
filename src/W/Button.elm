@@ -288,7 +288,7 @@ view =
         (\attrs props ->
             H.button
                 (WH.onClickStopPropagation props.onClick :: HA.type_ "button" :: htmlAttrs attrs)
-                (toLabel attrs props.label)
+                props.label
         )
 
 
@@ -302,7 +302,7 @@ viewSubmit =
         (\attrs label ->
             H.button
                 (HA.type_ "submit" :: htmlAttrs attrs)
-                (toLabel attrs label)
+                label
         )
 
 
@@ -316,7 +316,7 @@ viewDummy =
         (\attrs label ->
             H.div
                 (HA.attribute "role" "button" :: HA.tabindex 0 :: htmlAttrs attrs)
-                (toLabel attrs label)
+                label
         )
 
 
@@ -333,27 +333,12 @@ viewLink =
         (\attrs props ->
             H.a
                 (HA.href props.href :: htmlAttrs attrs)
-                (toLabel attrs props.label)
+                props.label
         )
 
 
 
 -- Views : Helpers
-
-
-toLabel : Attributes msg -> List (H.Html msg) -> List (H.Html msg)
-toLabel attrs children =
-    [ H.div
-        [ HA.class "w--flex w--items-center"
-        , case attrs.style of
-            Subtle ->
-                HA.class "w--text-subtle group-hover/btn:w--text-default group-active/btn:w--text-subtle"
-
-            _ ->
-                HA.class ""
-        ]
-        children
-    ]
 
 
 htmlAttrs : Attributes msg -> List (H.Attribute msg)
@@ -399,7 +384,7 @@ htmlAttrs attrs =
     , HA.class "w__button"
     , HA.class "w--group/btn"
     , HA.class "w--box-border w--relative"
-    , HA.class "w--inline-flex w--items-center "
+    , HA.class "w--inline-flex w--items-center"
     , HA.class "w--no-underline"
     , HA.class "w--font-semibold"
     , HA.class "w--border-2 w--border-solid"
@@ -481,9 +466,16 @@ htmlAttrs attrs =
         Tint ->
             HA.class "w/tint w--border-transparent"
 
-        _ ->
+        Invisible ->
             HA.class
                 ("w/focus w--border-transparent w--bg-transparent"
+                    ++ " hover:w--bg-tint active:w--bg-tint-subtle"
+                )
+
+        Subtle ->
+            HA.class
+                ("w/focus w--text-subtle group-hover/btn:w--text-default group-active/btn:w--text-subtle"
+                    ++ " w--border-transparent w--bg-transparent"
                     ++ " hover:w--bg-tint active:w--bg-tint-subtle"
                 )
     ]
