@@ -4,7 +4,7 @@ module W.Button exposing
     , outline, invisible, tint, subtle
     , rounded, radius
     , full, icon
-    , flexGrow
+    , flexGrow, noShrink
     , large, small, extraSmall
     , alignLeft, alignRight
     , disabled, readOnly
@@ -20,7 +20,7 @@ module W.Button exposing
 
 @docs rounded, radius
 @docs full, icon
-@docs flexGrow
+@docs flexGrow, noShrink
 
 @docs large, small, extraSmall
 @docs alignLeft, alignRight
@@ -99,7 +99,7 @@ defaultAttrs =
     , size = Medium
     , icon = False
     , full = False
-    , flexClass = "w--shrink-0"
+    , flexClass = ""
     , alignClass = "w--justify-center"
     , msg = Nothing
     }
@@ -262,7 +262,13 @@ full =
 {-| -}
 flexGrow : Attribute msg
 flexGrow =
-    Attr.attr (\attrs -> { attrs | flexClass = "w--shrink-0 w--grow" })
+    Attr.attr (\attrs -> { attrs | flexClass = attrs.flexClass ++ " w--grow" })
+
+
+{-| -}
+noShrink : Attribute msg
+noShrink =
+    Attr.attr (\attrs -> { attrs | flexClass = attrs.flexClass ++ " w--shrink-0" })
 
 
 {-| -}

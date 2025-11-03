@@ -171,75 +171,69 @@ The description of the Button component.
                 , onUpdate = Book.sendMsg << UpdatePlayground
                 }
                 model.playground
-            , Docs.UI.viewTwoColumnsSection
-                { title = "Variants"
-                , left = []
-                , right =
-                    [ W.Box.view
-                        [ W.Box.gap W.Theme.Spacing.lg ]
-                        (List.concat
-                            [ [ ( "Default", Attr.none )
-                              , ( "Outline", W.Button.outline )
-                              , ( "Tint", W.Button.tint )
-                              , ( "Invisible", W.Button.invisible )
-                              , ( "Subtle", W.Button.subtle )
-                              ]
-                                |> List.map
-                                    (\( label, attr ) ->
-                                        Docs.UI.viewDetailedExample
-                                            { label = label
-                                            , description = Just ("This is the " ++ String.toLower label ++ " variant for the Button component")
-                                            , content =
-                                                [ Docs.UI.viewHorizontal
-                                                    [ W.Button.viewDummy [ attr, W.Button.large, W.Button.radius 0.5 ] [ H.text "Button" ]
-                                                    , W.Button.viewDummy [ attr, W.Button.primary ] [ H.text "Button" ]
-                                                    , W.Button.viewDummy [ attr, W.Button.warning, W.Button.disabled ] [ H.text "Button" ]
-                                                    , W.Button.viewDummy [ attr, W.Button.success, W.Button.small ] [ H.text "Button" ]
-                                                    , W.Button.viewDummy [ attr, W.Button.icon, W.Button.small, W.Button.rounded ] [ H.text "λ" ]
-                                                    , W.Button.viewDummy [ attr, W.Button.danger, W.Button.extraSmall ] [ H.text "Button" ]
-                                                    ]
-                                                ]
-                                            , code = Nothing
-                                            }
-                                    )
-                            , [ Docs.UI.viewDetailedExample
-                                    { label = "Full width"
-                                    , description = Nothing
+            , W.Box.view
+                [ W.Box.gap W.Theme.Spacing.lg ]
+                (List.concat
+                    [ [ ( "Default", Attr.none )
+                      , ( "Outline", W.Button.outline )
+                      , ( "Tint", W.Button.tint )
+                      , ( "Invisible", W.Button.invisible )
+                      , ( "Subtle", W.Button.subtle )
+                      ]
+                        |> List.map
+                            (\( label, attr ) ->
+                                Docs.UI.viewDetailedExample
+                                    { label = label
+                                    , description = Just ("This is the " ++ String.toLower label ++ " variant for the Button component")
                                     , content =
-                                        [ Docs.UI.viewVertical
-                                            [ W.Button.viewDummy [ W.Button.primary, W.Button.rounded, W.Button.full ] [ H.text "Button" ]
-                                            , W.Button.viewDummy [ W.Button.primary, W.Button.full, W.Button.disabled ] [ H.text "Button" ]
+                                        [ Docs.UI.viewHorizontal
+                                            [ W.Button.viewDummy [ attr, W.Button.large, W.Button.radius 0.5 ] [ H.text "Button" ]
+                                            , W.Button.viewDummy [ attr, W.Button.primary ] [ H.text "Button" ]
+                                            , W.Button.viewDummy [ attr, W.Button.warning, W.Button.disabled ] [ H.text "Button" ]
+                                            , W.Button.viewDummy [ attr, W.Button.success, W.Button.small ] [ H.text "Button" ]
+                                            , W.Button.viewDummy [ attr, W.Button.icon, W.Button.small, W.Button.rounded ] [ H.text "λ" ]
+                                            , W.Button.viewDummy [ attr, W.Button.danger, W.Button.extraSmall ] [ H.text "Button" ]
                                             ]
                                         ]
                                     , code = Nothing
                                     }
-                              ]
-                            , [ Docs.UI.viewDetailedExample
-                                    { label = "Multiline & Different Alignments"
-                                    , description = Nothing
-                                    , content =
-                                        [ Docs.UI.viewVertical
-                                            [ W.Button.viewDummy
-                                                [ W.Button.alignLeft
-                                                , W.Button.primary
-                                                , W.Button.full
-                                                ]
-                                                [ H.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
-                                            , W.Button.viewDummy
-                                                [ W.Button.alignRight
-                                                , W.Button.primary
-                                                , W.Button.full
-                                                ]
-                                                [ H.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
-                                            ]
+                            )
+                    , [ Docs.UI.viewDetailedExample
+                            { label = "Full width"
+                            , description = Nothing
+                            , content =
+                                [ Docs.UI.viewVertical
+                                    [ W.Button.viewDummy [ W.Button.primary, W.Button.rounded, W.Button.full ] [ H.text "Button" ]
+                                    , W.Button.viewDummy [ W.Button.primary, W.Button.full, W.Button.disabled ] [ H.text "Button" ]
+                                    ]
+                                ]
+                            , code = Nothing
+                            }
+                      ]
+                    , [ Docs.UI.viewDetailedExample
+                            { label = "Multiline & Different Alignments"
+                            , description = Nothing
+                            , content =
+                                [ Docs.UI.viewVertical
+                                    [ W.Button.viewDummy
+                                        [ W.Button.alignLeft
+                                        , W.Button.primary
+                                        , W.Button.full
                                         ]
-                                    , code = Nothing
-                                    }
-                              ]
-                            ]
-                        )
+                                        [ H.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+                                    , W.Button.viewDummy
+                                        [ W.Button.alignRight
+                                        , W.Button.primary
+                                        , W.Button.full
+                                        ]
+                                        [ H.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." ]
+                                    ]
+                                ]
+                            , code = Nothing
+                            }
+                      ]
                     ]
-                }
+                )
             ]
         )
 
