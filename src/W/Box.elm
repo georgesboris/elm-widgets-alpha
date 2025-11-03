@@ -776,13 +776,13 @@ danger =
 {-| -}
 bg : Attribute msg
 bg =
-    Attr.attr (\attrs -> { attrs | background = W.Theme.Color.bg })
+    Attr.attr (\attrs -> { attrs | themeClass = "w/bg" })
 
 
 {-| -}
 subtle : Attribute msg
 subtle =
-    Attr.attr (\attrs -> { attrs | background = W.Theme.Color.bgSubtle })
+    Attr.attr (\attrs -> { attrs | themeClass = "w/bg-subtle" })
 
 
 {-| -}

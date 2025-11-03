@@ -44,6 +44,36 @@
 }
 
 @layer utilities {
+  .w\/bg {
+    background-color: rgb(var(--w-bg));
+  }
+  .w\/bg-subtle {
+    background-color: rgb(var(--w-bg-subtle));
+  }
+  .w\/bg:is(a,button,input[type="submit"],input[type="button"],[role="button"]) {
+    &:hover {
+      @apply w--bg-tint-subtle;
+    }
+    &:active {
+      @apply w--bg-subtle;
+    }
+  }
+  .w\/bg-subtle:is(a,button,input[type="submit"],input[type="button"],[role="button"]) {
+    &:hover {
+      @apply w--bg;
+    }
+    &:active {
+      @apply w--bg-subtle;
+    }
+  }
+  .w\/tint:is(a,button,input[type="submit"],input[type="button"],[role="button"]) {
+    &:hover {
+      @apply w--bg-tint-strong;
+    }
+    &:active {
+      @apply w--bg-tint-subtle;
+    }
+  }
   .w\/tint:is(a,button,input[type="submit"],input[type="button"],[role="button"]) {
     &:hover {
       @apply w--bg-tint-strong;

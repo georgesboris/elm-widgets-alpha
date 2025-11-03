@@ -181,7 +181,7 @@ view =
                             , W.Box.flex [ W.Box.wrap, W.Box.yStretch ]
                             , W.Box.gap W.Theme.Spacing.md
                             ]
-                            ([ W.Box.view
+                            ([ W.Box.viewLink
                                 [ W.Box.flex []
                                 , W.Box.cardSmall
                                 , W.Box.width 6
@@ -190,16 +190,37 @@ view =
                                 , W.Box.shadowLarge
                                 , W.Box.padding W.Theme.Spacing.md
                                 , W.Box.primary
-                                , W.Box.solid
                                 ]
-                                [ square, square ]
-                             , W.Box.view
+                                { href = "#"
+                                , content = [ square, square ]
+                                }
+                             , W.Box.viewLink
                                 [ W.Box.card
                                 , W.Box.width 6
                                 , W.Box.squareRatio
                                 , W.Box.solid
                                 ]
-                                []
+                                { href = "#"
+                                , content = []
+                                }
+                             , W.Box.viewLink
+                                [ W.Box.card
+                                , W.Box.width 6
+                                , W.Box.squareRatio
+                                , W.Box.bg
+                                ]
+                                { href = "#"
+                                , content = []
+                                }
+                             , W.Box.viewLink
+                                [ W.Box.card
+                                , W.Box.width 6
+                                , W.Box.squareRatio
+                                , W.Box.subtle
+                                ]
+                                { href = "#"
+                                , content = []
+                                }
                              , W.Box.viewLink
                                 [ W.Box.cardLarge
                                 , W.Box.width 6
