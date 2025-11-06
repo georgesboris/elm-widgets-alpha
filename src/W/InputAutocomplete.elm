@@ -2,12 +2,11 @@ module W.InputAutocomplete exposing
     ( view, viewSync
     , init, reset, toString, toValue, onChange, stringChanged, valueChanged, Value
     , viewCustom, viewSyncCustom, optionsHeader
-    , isLoading, autofocus, disabled, readOnly
+    , loading, autofocus, disabled, readOnly
     , small, placeholder, prefix, suffix
     , required
     , onEnter, onDone, onDelete, onBlur, onFocus
     , htmlAttrs, noAttr, Attribute
-    , loading
     )
 
 {-|
@@ -27,7 +26,7 @@ module W.InputAutocomplete exposing
 
 # States
 
-@docs isLoading, autofocus, disabled, readOnly
+@docs loading, autofocus, disabled, readOnly
 
 
 # Styles
@@ -587,10 +586,10 @@ viewCustom attrs_ props =
             , maskInput = ""
             }
             (if showLoading then
-                W.Loading.dots [ W.Loading.size 20 ]
+                W.Loading.view [ W.Loading.size 20 ]
 
              else
-                W.Internal.Icons.chevronDown
+                W.Internal.Icons.chevronDown { class = "", size = 20 }
             )
         |> (\x ->
                 H.div [ HA.class "ew-relative" ]

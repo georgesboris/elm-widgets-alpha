@@ -44,6 +44,12 @@
 }
 
 @layer utilities {
+  .w--scrollable {
+    overflow: auto;
+    scrollbar-color: rgb(var(--w-accent)) rgb(var(--w-bg-subtle));
+    scrollbar-width: thin;
+  }
+  
   .w\/bg {
     background-color: rgb(var(--w-bg));
   }
@@ -336,8 +342,29 @@
  * =============================================================================
  */
 
+.w__table .w--md-only,
+.w__table .w--lg-only {
+  display: none;
+}
+
+@container --w-table (width >= 32rem) {
+  .w__table .w--md-only {
+    display: table-cell;
+  }
+}
+
+@container --w-table (width >= 56rem) {
+  .w__table .w--lg-only {
+    display: table-cell;
+  }
+}
+
 @layer components {
   .w__table {
+    overflow: auto;
+    max-width: 100%;
+    container: --w-table / inline-size;
+
     /* 
      * -------------------------------------------------------------------------
      * W.Table - Themes
@@ -382,19 +409,20 @@
      * -------------------------------------------------------------------------
      */
 
-     padding: var(--header-padding-y) 0;
-
      table {
        background: var(--w__table-bg);
      }
 
-     thead th {
+     thead th,
+     tbody .w__table__group td {
+       vertical-align: bottom;
+     }
+
+     thead th,
+     tfoot td {
        @apply w--font-semibold w--text-sm w--text-subtle;
 
-       padding: 0 var(--padding-x) var(--header-padding-y);
-     }
-     tfoot td {
-       padding: var(--footer-padding-y) var(--padding-x) 0;
+       padding: var(--header-padding-y) var(--padding-x);
      }
 
      tbody td, tbody th {
@@ -416,19 +444,17 @@
 
     .w__table__extra-header {
       @apply w--text-sm w--text-subtle;
-      padding: 0 var(--padding-x) var(--padding-y);
-      margin-bottom: var(--padding-y);
+      padding: var(--header-padding-y) var(--padding-x);
       border-bottom: 1px solid var(--w__table-divider-strong);
-    }
-
-    &:has(.w__table__extra-header.w__m-no-padding) {
-      padding-top: 0;
     }
     .w__table__extra-header.w__m-no-padding {
       padding: 0;
     }
-    .w__table__extra-header.w__m-no-divider{
+    .w__table__extra-header.w__m-no-divider {
       border-bottom: 0;
+    }
+    .w__table__extra-header.w__m-no-divider:not(.w__m-no-padding) {
+      padding-bottom: 0;
     }
 
     /* 
@@ -505,6 +531,9 @@
         content: "";
         position: absolute;
         inset: 0;
+      }
+      &:empty {
+        padding: 0;
       }
     }
 

@@ -4,7 +4,8 @@ module W.Table exposing
     , customLabel, labelClass, labelLeft, labelRight
     , groupLabel, footer
     , alignRight, alignCenter
-    , width, relativeWidth
+    , width, relativeWidth, minWidth
+    , mediumContainerOnly, largeContainerOnly
     , largeScreenOnly
     , onClick, onMouseEnter, onMouseLeave
     , groupBy, groupValue, groupValueCustom
@@ -37,7 +38,8 @@ module W.Table exposing
 @docs customLabel, labelClass, labelLeft, labelRight
 @docs groupLabel, footer
 @docs alignRight, alignCenter
-@docs width, relativeWidth
+@docs width, relativeWidth, minWidth
+@docs mediumContainerOnly, largeContainerOnly
 @docs largeScreenOnly
 
 
@@ -94,7 +96,7 @@ type alias Attributes msg a =
     , headerBackground : Bool
     , isStriped : Bool
     , withDividers : Bool
-    , styles : List ( String, String )
+    , maxHeight : Maybe Float
     , labelBaseClass : String
     , theme : TableTheme
     , extraHeader : Maybe (List (H.Html msg))
@@ -130,7 +132,7 @@ defaultAttrs =
     , headerBackground = True
     , isStriped = False
     , withDividers = True
-    , styles = []
+    , maxHeight = Nothing
     , labelBaseClass = ""
     , theme = Default
     , extraHeader = Nothing
@@ -250,7 +252,7 @@ footer v =
 -}
 maxHeight : Float -> Attribute msg a
 maxHeight v =
-    Attr.attr (\attrs -> { attrs | styles = ( "max-height", WH.rem v ) :: attrs.styles })
+    Attr.attr (\attrs -> { attrs | maxHeight = Just v })
 
 
 {-| -}
@@ -451,6 +453,9 @@ type alias ColumnAttributes msg a =
     , customRight : Maybe (List (H.Html msg))
     , alignment : H.Attribute msg
     , width : H.Attribute msg
+    , minWidth : Maybe Int
+    , mediumContainerOnly : Bool
+    , largeContainerOnly : Bool
     , largeScreenOnly : Bool
     , toHtml : a -> H.Html msg
     , toGroup : Maybe (String -> a -> List a -> H.Html msg)
@@ -472,6 +477,9 @@ columnAttrs label toHtml =
     , customRight = Nothing
     , alignment = HA.class "w--text-left"
     , width = HA.class ""
+    , minWidth = Just 160
+    , mediumContainerOnly = False
+    , largeContainerOnly = False
     , largeScreenOnly = False
     , toHtml = toHtml
     , toGroup = Nothing
@@ -483,8 +491,13 @@ columnStyles : ColumnAttributes msg a -> List (H.Attribute msg)
 columnStyles attrs =
     [ attrs.alignment
     , attrs.width
+    , attrs.minWidth
+        |> WH.maybeAttr (\v -> HA.style "min-width" (WH.px v))
     , HA.classList
-        [ ( "w--hidden lg:w--table-cell", attrs.largeScreenOnly ) ]
+        [ ( "w--hidden lg:w--table-cell", attrs.largeScreenOnly )
+        , ( "w--lg-only", attrs.largeContainerOnly )
+        , ( "w--md-only", attrs.mediumContainerOnly )
+        ]
     ]
 
 
@@ -542,7 +555,7 @@ alignCenter =
 {-| -}
 width : Int -> ColumnAttribute msg a
 width v =
-    Attr.attr (\attrs -> { attrs | width = HA.style "width" (WH.px v) })
+    Attr.attr (\attrs -> { attrs | width = HA.style "width" (WH.px v), minWidth = Just v })
 
 
 {-| -}
@@ -552,6 +565,32 @@ relativeWidth v =
 
 
 {-| -}
+minWidth : Int -> ColumnAttribute msg a
+minWidth v =
+    if v > 0 then
+        Attr.attr (\attrs -> { attrs | minWidth = Just v })
+
+    else
+        Attr.attr (\attrs -> { attrs | minWidth = Nothing })
+
+
+{-| -}
+largeContainerOnly : ColumnAttribute msg a
+largeContainerOnly =
+    Attr.attr (\attrs -> { attrs | largeContainerOnly = True })
+
+
+{-| -}
+mediumContainerOnly : ColumnAttribute msg a
+mediumContainerOnly =
+    Attr.attr (\attrs -> { attrs | mediumContainerOnly = True })
+
+
+{-| @deprecated
+
+Please use `largeContainerOnly`.
+
+-}
 largeScreenOnly : ColumnAttribute msg a
 largeScreenOnly =
     Attr.attr (\attrs -> { attrs | largeScreenOnly = True })
@@ -586,6 +625,17 @@ view attrs_ columns data =
         numCols : Int
         numCols =
             List.length columns
+
+        tableMinWidth : Int
+        tableMinWidth =
+            columns
+                |> List.foldl
+                    (\(Column col) acc ->
+                        col.minWidth
+                            |> Maybe.map ((+) acc)
+                            |> Maybe.withDefault acc
+                    )
+                    0
 
         hasGroups : Bool
         hasGroups =
@@ -651,7 +701,7 @@ view attrs_ columns data =
             List.any (\(Column c) -> c.toFooter /= Nothing) columns
     in
     H.div
-        [ HA.class "w__table"
+        [ HA.class "w__table w--scrollable"
         , case attrs.theme of
             Default ->
                 HA.class ""
@@ -667,14 +717,20 @@ view attrs_ columns data =
             , ( "w__m-header-bg", attrs.headerBackground )
             , ( "w__m-card", attrs.card )
             ]
-        , W.Theme.styleList (paddingStyles attrs)
+        , [ paddingStyles attrs
+          , attrs.maxHeight
+                |> Maybe.map (\v -> [ ( "max-height", WH.rem v ) ])
+                |> Maybe.withDefault []
+          ]
+            |> List.concat
+            |> W.Theme.styleList
         ]
         [ viewExtraHeader attrs
         , H.table
             [ HA.class "w--table w--table-fixed w--inset-0 w--border-collapse"
             , HA.class "w--w-full w--overflow-auto"
             , HA.class "w--font-base w--text-default"
-            , W.Theme.styleList attrs.styles
+            , HA.style "min-width" (WH.px tableMinWidth)
             ]
             [ -- Table Head
               if attrs.showHeader then

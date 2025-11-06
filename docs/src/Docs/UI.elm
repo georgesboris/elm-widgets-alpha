@@ -72,7 +72,7 @@ viewTwoColumnsSection :
 viewTwoColumnsSection props =
     W.Box.view
         [ W.Box.gap W.Theme.Spacing.lg
-        , W.Box.grid [ W.Box.columns 2 ]
+        , W.Box.grid [ W.Box.columns 1 ]
         ]
         [ W.Box.view
             []

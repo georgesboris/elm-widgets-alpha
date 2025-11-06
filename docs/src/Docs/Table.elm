@@ -157,11 +157,13 @@ view =
                                         ]
                                 )
                             ]
-                            { label = "Name"
+                            { label = ""
                             , value = .name
                             }
                         , W.Table.column
-                            [ W.Table.width 60 ]
+                            [ W.Table.width 60
+                            , W.Table.mediumContainerOnly
+                            ]
                             { label = "Age"
                             , content = \x ->
                                 H.div
@@ -170,6 +172,7 @@ view =
                             }
                         , W.Table.float
                             [ W.Table.width 60
+                            , W.Table.largeContainerOnly
                             , W.Table.groupValue
                                 (\_ items ->
                                     let
@@ -211,17 +214,16 @@ view =
                 , right =
                     [ W.Table.view
                         [ Attr.if_ True (W.Table.groupBy .name)
-
-                        -- , W.Table.striped
                         , W.Table.extraHeader [ H.text "Extra header. Not a caption." ]
-                        , W.Table.extraHeaderNoPadding
+                        -- , W.Table.extraHeaderNoPadding
+                        , W.Table.extraHeaderNoDivider
                         , W.Table.subtle
                         , W.Table.noHeaderBackground
-                        , W.Table.card
+                        , W.Table.maxHeight 16
+                        -- , W.Table.card
                         , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
                         , W.Table.highlight (\a -> a.score == 40)
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
-                        , W.Table.maxHeight 32
                         ]
                         [ W.Table.string []
                             { label = "Name"
