@@ -4,6 +4,7 @@ module W.Table exposing
     , customLabel, labelClass, labelLeft, labelRight
     , groupLabel, footer
     , alignRight, alignCenter
+    , colBorders
     , width, relativeWidth, minWidth
     , mediumContainerOnly, largeContainerOnly
     , largeScreenOnly
@@ -15,7 +16,7 @@ module W.Table exposing
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
     , highlight, maxHeight
     , noHeader, labelBaseClass
-    , subtle, card, striped, noDividers, noHeaderBackground
+    , subtle, card, borders, striped, noDividers, noHeaderBackground
     , extraHeader, extraHeaderNoPadding, extraHeaderNoDivider
     , rowDetails, rowDetailsNoPadding
     , xPadding, yPadding
@@ -38,6 +39,7 @@ module W.Table exposing
 @docs customLabel, labelClass, labelLeft, labelRight
 @docs groupLabel, footer
 @docs alignRight, alignCenter
+@docs colBorders
 @docs width, relativeWidth, minWidth
 @docs mediumContainerOnly, largeContainerOnly
 @docs largeScreenOnly
@@ -61,7 +63,7 @@ module W.Table exposing
 
 @docs highlight, maxHeight
 @docs noHeader, labelBaseClass
-@docs subtle, card, striped, noDividers, noHeaderBackground
+@docs subtle, card, borders, striped, noDividers, noHeaderBackground
 @docs extraHeader, extraHeaderNoPadding, extraHeaderNoDivider
 @docs rowDetails, rowDetailsNoPadding
 @docs xPadding, yPadding
@@ -95,6 +97,7 @@ type alias Attributes msg a =
     , showHeader : Bool
     , headerBackground : Bool
     , isStriped : Bool
+    , withBorders : Bool
     , withDividers : Bool
     , maxHeight : Maybe Float
     , labelBaseClass : String
@@ -131,6 +134,7 @@ defaultAttrs =
     , showHeader = True
     , headerBackground = True
     , isStriped = False
+    , withBorders = False
     , withDividers = True
     , maxHeight = Nothing
     , labelBaseClass = ""
@@ -240,6 +244,12 @@ rowDetailsNoPadding =
 striped : Attribute msg a
 striped =
     Attr.attr (\attrs -> { attrs | isStriped = True })
+
+
+{-| -}
+borders : Attribute msg a
+borders =
+    Attr.attr (\attrs -> { attrs | withBorders = True })
 
 
 {-| -}
@@ -448,6 +458,7 @@ type alias ColumnAttribute msg a =
 type alias ColumnAttributes msg a =
     { label : String
     , labelClass : String
+    , withBorders : Bool
     , customLabel : Maybe (List (H.Html msg))
     , customLeft : Maybe (List (H.Html msg))
     , customRight : Maybe (List (H.Html msg))
@@ -472,6 +483,7 @@ columnAttrs : String -> (a -> H.Html msg) -> ColumnAttributes msg a
 columnAttrs label toHtml =
     { label = label
     , labelClass = ""
+    , withBorders = False
     , customLabel = Nothing
     , customLeft = Nothing
     , customRight = Nothing
@@ -497,6 +509,7 @@ columnStyles attrs =
         [ ( "w--hidden lg:w--table-cell", attrs.largeScreenOnly )
         , ( "w--lg-only", attrs.largeContainerOnly )
         , ( "w--md-only", attrs.mediumContainerOnly )
+        , ( "w__m-borders", attrs.withBorders )
         ]
     ]
 
@@ -538,6 +551,12 @@ labelRight value =
 labelLeft : List (H.Html msg) -> ColumnAttribute msg a
 labelLeft value =
     Attr.attr (\attrs -> { attrs | customLeft = Just value })
+
+
+{-| -}
+colBorders : ColumnAttribute msg a
+colBorders =
+    Attr.attr (\attrs -> { attrs | withBorders = True })
 
 
 {-| -}
@@ -710,6 +729,7 @@ view attrs_ columns data =
                 HA.class "w__m-subtle"
         , HA.classList
             [ ( "w__m-striped", attrs.isStriped )
+            , ( "w__m-borders", attrs.withBorders )
             , ( "w__m-interactive", attrs.onClick /= Nothing )
             , ( "w__m-group", hasGroups )
             , ( "w__m-group-interactive", attrs.onGroupClick /= Nothing )

@@ -135,8 +135,8 @@ view =
                 , left =
                     [ W.Table.view
                         [ Attr.if_ True (W.Table.groupBy .name)
-
                         , W.Table.striped
+                        , W.Table.borders
                         , W.Table.card
                         , W.Table.topGroupPadding W.Theme.Spacing.xl
                         , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
@@ -215,12 +215,10 @@ view =
                     [ W.Table.view
                         [ Attr.if_ True (W.Table.groupBy .name)
                         , W.Table.extraHeader [ H.text "Extra header. Not a caption." ]
-                        -- , W.Table.extraHeaderNoPadding
                         , W.Table.extraHeaderNoDivider
                         , W.Table.subtle
                         , W.Table.noHeaderBackground
                         , W.Table.maxHeight 16
-                        -- , W.Table.card
                         , W.Table.onGroupClick (\x -> Book.logAction ("onGroupClick: " ++ x.name))
                         , W.Table.highlight (\a -> a.score == 40)
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
