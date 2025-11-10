@@ -6,16 +6,20 @@ module W.Table exposing
     , alignRight, alignCenter
     , colBorders
     , width, relativeWidth, minWidth
+    , colGroupAlignTop, colGroupAlignBottom
+    , colHeaderAlignTop, colHeaderAlignBottom
     , mediumContainerOnly, largeContainerOnly
     , largeScreenOnly
     , onClick, onMouseEnter, onMouseLeave
     , groupBy, groupValue, groupValueCustom
     , groupSortBy, groupSortByDesc, groupSortWith
     , groupCollapsed
+    , groupAlignTop, groupAlignBottom
     , groupIndent, groupIndentCustom, groupIndentWidth
     , onGroupClick, onGroupMouseEnter, onGroupMouseLeave
     , highlight, maxHeight
     , noHeader, labelBaseClass
+    , headerAlignTop, headerAlignBottom
     , subtle, card, borders, striped, noDividers, noHeaderBackground
     , extraHeader, extraHeaderNoPadding, extraHeaderNoDivider
     , rowDetails, rowDetailsNoPadding
@@ -41,6 +45,8 @@ module W.Table exposing
 @docs alignRight, alignCenter
 @docs colBorders
 @docs width, relativeWidth, minWidth
+@docs colGroupAlignTop, colGroupAlignBottom
+@docs colHeaderAlignTop, colHeaderAlignBottom
 @docs mediumContainerOnly, largeContainerOnly
 @docs largeScreenOnly
 
@@ -55,6 +61,7 @@ module W.Table exposing
 @docs groupBy, groupValue, groupValueCustom
 @docs groupSortBy, groupSortByDesc, groupSortWith
 @docs groupCollapsed
+@docs groupAlignTop, groupAlignBottom
 @docs groupIndent, groupIndentCustom, groupIndentWidth
 @docs onGroupClick, onGroupMouseEnter, onGroupMouseLeave
 
@@ -63,6 +70,7 @@ module W.Table exposing
 
 @docs highlight, maxHeight
 @docs noHeader, labelBaseClass
+@docs headerAlignTop, headerAlignBottom
 @docs subtle, card, borders, striped, noDividers, noHeaderBackground
 @docs extraHeader, extraHeaderNoPadding, extraHeaderNoDivider
 @docs rowDetails, rowDetailsNoPadding
@@ -96,6 +104,8 @@ type alias Attributes msg a =
     { card : Bool
     , showHeader : Bool
     , headerBackground : Bool
+    , headerAlignClass : Maybe String
+    , groupAlignClass : Maybe String
     , isStriped : Bool
     , withBorders : Bool
     , withDividers : Bool
@@ -133,6 +143,8 @@ defaultAttrs =
     { card = False
     , showHeader = True
     , headerBackground = True
+    , headerAlignClass = Nothing
+    , groupAlignClass = Nothing
     , isStriped = False
     , withBorders = False
     , withDividers = True
@@ -250,6 +262,30 @@ striped =
 borders : Attribute msg a
 borders =
     Attr.attr (\attrs -> { attrs | withBorders = True })
+
+
+{-| -}
+headerAlignBottom : Attribute msg a
+headerAlignBottom =
+    Attr.attr (\attrs -> { attrs | headerAlignClass = Just "w--align-bottom" })
+
+
+{-| -}
+headerAlignTop : Attribute msg a
+headerAlignTop =
+    Attr.attr (\attrs -> { attrs | headerAlignClass = Just "w--align-top" })
+
+
+{-| -}
+groupAlignBottom : Attribute msg a
+groupAlignBottom =
+    Attr.attr (\attrs -> { attrs | groupAlignClass = Just "w--align-bottom" })
+
+
+{-| -}
+groupAlignTop : Attribute msg a
+groupAlignTop =
+    Attr.attr (\attrs -> { attrs | groupAlignClass = Just "w--align-top" })
 
 
 {-| -}
@@ -458,6 +494,8 @@ type alias ColumnAttribute msg a =
 type alias ColumnAttributes msg a =
     { label : String
     , labelClass : String
+    , headerAlignClass : Maybe String
+    , groupAlignClass : Maybe String
     , withBorders : Bool
     , customLabel : Maybe (List (H.Html msg))
     , customLeft : Maybe (List (H.Html msg))
@@ -483,6 +521,8 @@ columnAttrs : String -> (a -> H.Html msg) -> ColumnAttributes msg a
 columnAttrs label toHtml =
     { label = label
     , labelClass = ""
+    , headerAlignClass = Nothing
+    , groupAlignClass = Nothing
     , withBorders = False
     , customLabel = Nothing
     , customLeft = Nothing
@@ -557,6 +597,30 @@ labelLeft value =
 colBorders : ColumnAttribute msg a
 colBorders =
     Attr.attr (\attrs -> { attrs | withBorders = True })
+
+
+{-| -}
+colHeaderAlignBottom : ColumnAttribute msg a
+colHeaderAlignBottom =
+    Attr.attr (\attrs -> { attrs | headerAlignClass = Just "w--align-bottom" })
+
+
+{-| -}
+colHeaderAlignTop : ColumnAttribute msg a
+colHeaderAlignTop =
+    Attr.attr (\attrs -> { attrs | headerAlignClass = Just "w--align-top" })
+
+
+{-| -}
+colGroupAlignBottom : ColumnAttribute msg a
+colGroupAlignBottom =
+    Attr.attr (\attrs -> { attrs | groupAlignClass = Just "w--align-bottom" })
+
+
+{-| -}
+colGroupAlignTop : ColumnAttribute msg a
+colGroupAlignTop =
+    Attr.attr (\attrs -> { attrs | groupAlignClass = Just "w--align-top" })
 
 
 {-| -}
@@ -840,7 +904,7 @@ viewGroupHeader props =
                 |> Maybe.map
                     (\(Column col) ->
                         [ H.td
-                            (HA.colspan props.numCols :: columnHtmlAttrs col)
+                            (HA.colspan props.numCols :: columnHtmlAttrs props.attrs col)
                             [ H.text props.groupLabel_ ]
                         ]
                     )
@@ -851,7 +915,7 @@ viewGroupHeader props =
                 |> List.map
                     (\(Column col) ->
                         H.td
-                            (columnHtmlAttrs col)
+                            (columnHtmlAttrs props.attrs col)
                             [ col.toGroup
                                 |> Maybe.map (\fn -> fn props.groupLabel_ props.groupItem props.groupColumns)
                                 |> Maybe.withDefault (H.text "")
@@ -860,9 +924,14 @@ viewGroupHeader props =
         )
 
 
-columnHtmlAttrs : ColumnAttributes msg a -> List (H.Attribute msg)
-columnHtmlAttrs col =
-    HA.class "w__table__group__column w--shrink-0 w--m-0 w--break-words" :: columnStyles col
+columnHtmlAttrs : Attributes msg a -> ColumnAttributes msg a -> List (H.Attribute msg)
+columnHtmlAttrs attrs col =
+    HA.class "w__table__group__column w--shrink-0 w--m-0 w--break-words"
+        :: (col.groupAlignClass
+                |> WH.maybeOr attrs.groupAlignClass
+                |> WH.maybeAttr HA.class
+           )
+        :: columnStyles col
 
 
 viewTableHeaderColumn : Attributes msg a -> Column msg a -> H.Html msg
@@ -872,6 +941,9 @@ viewTableHeaderColumn attrs (Column col) =
             ++ [ HA.class "w--sticky w--z-20 w--top-0"
                , HA.class "w__table__header__column"
                , HA.class "w--m-0 w--font-semibold w--text-sm w--text-subtle"
+               , col.headerAlignClass
+                    |> WH.maybeOr attrs.headerAlignClass
+                    |> WH.maybeAttr HA.class
                ]
         )
         [ H.div

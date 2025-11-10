@@ -8,6 +8,7 @@ module W.Internal.Helpers exposing
     , maybeAttr
     , maybeFilter
     , maybeHtml
+    , maybeOr
     , nearestFloats
     , nearestInts
     , onClickStopPropagation
@@ -108,6 +109,16 @@ maybeFilter fn ma =
                 else
                     Nothing
             )
+
+
+maybeOr : Maybe a -> Maybe a -> Maybe a
+maybeOr fallback first =
+    case first of
+        Nothing ->
+            fallback
+
+        Just _ ->
+            first
 
 
 

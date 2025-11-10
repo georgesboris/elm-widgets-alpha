@@ -144,6 +144,8 @@ view =
                         , W.Table.onClick (\x -> Book.logAction ("onClick " ++ x.name))
                         , W.Table.maxHeight 32
                         , W.Table.groupIndent
+                        , W.Table.headerAlignTop
+                        -- , W.Table.groupAlignTop
                         ]
                         [ W.Table.string
                             [ W.Table.groupValue
@@ -151,18 +153,22 @@ view =
                                     W.Box.view
                                         [ W.Box.flex [ W.Box.yCenter ]
                                         , W.Box.gap W.Theme.Spacing.md
+                                        , W.Box.topPadding W.Theme.Spacing.xl
                                         ]
                                         [ W.Text.view [ W.Text.small, W.Text.bold ] [ H.text groupName ]
                                         , W.Tag.view [ W.Tag.outline, W.Tag.success, W.Tag.small ] [ H.text "New" ]
                                         ]
                                 )
+                            , W.Table.labelClass "w--pt-3xl"
                             ]
                             { label = ""
                             , value = .name
                             }
                         , W.Table.column
                             [ W.Table.width 60
+                            , W.Table.colHeaderAlignBottom
                             , W.Table.mediumContainerOnly
+                            , W.Table.groupValue (\groupName _ -> H.text "group")
                             ]
                             { label = "Age"
                             , content = \x ->

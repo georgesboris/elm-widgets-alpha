@@ -414,11 +414,6 @@
      }
 
      thead th,
-     tbody .w__table__group td {
-       vertical-align: bottom;
-     }
-
-     thead th,
      tfoot td {
        @apply w--font-semibold w--text-sm w--text-subtle;
 
@@ -431,6 +426,7 @@
      tbody .w__table__group td {
        padding: var(--group-padding-y) var(--padding-x);
        padding-top: var(--group-padding-top);
+       border: none;
      }
      tbody tr.w__table__row.w__m-no-padding td {
        padding: 0;
@@ -463,10 +459,8 @@
      * -------------------------------------------------------------------------
      */
 
-    &.w__m-borders th,
     &.w__m-borders td,
-    td.w__m-borders,
-    th.w__m-borders {
+    td.w__m-borders {
       border-style: solid;
       border-color: var(--w__table-divider);
       border-width: 0 1px;
