@@ -1469,7 +1469,7 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
     @apply w--shrink-0;
     @apply w--inline-flex w--items-center;
     @apply w--leading-none w--font-text w--font-medium w--tracking-wider;
-    @apply w--rounded-full w--border-none;
+    @apply w--rounded-full w--border w--border-solid w--border-transparent;
 
     @apply w--px-md w--text-sm;
     height: var(--w-cfg-click);
