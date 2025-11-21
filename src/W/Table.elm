@@ -26,6 +26,7 @@ module W.Table exposing
     , xPadding, yPadding
     , yHeaderPadding, yFooterPadding
     , yGroupPadding, topGroupPadding
+    , id, keyed
     )
 
 {-|
@@ -78,6 +79,8 @@ module W.Table exposing
 @docs yHeaderPadding, yFooterPadding
 @docs yGroupPadding, topGroupPadding
 
+@docs id, keyed
+
 -}
 
 import Attr
@@ -85,6 +88,7 @@ import Dict
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
+import Html.Keyed
 import W.InputCheckbox
 import W.Internal.Helpers as WH
 import W.Theme
@@ -101,7 +105,8 @@ type alias Attribute msg a =
 
 
 type alias Attributes msg a =
-    { card : Bool
+    { id : Maybe String
+    , card : Bool
     , showHeader : Bool
     , headerBackground : Bool
     , headerAlignClass : Maybe String
@@ -126,6 +131,7 @@ type alias Attributes msg a =
     , groupCollapsed : Maybe (a -> String -> Bool)
     , groupIndent : Maybe (a -> H.Html msg)
     , groupIndentWidth : Float
+    , toKey : Maybe (a -> String)
     , highlight : a -> Bool
     , rowDetails : Maybe (a -> Maybe (List (H.Html msg)))
     , rowDetailsNoPadding : Bool
@@ -140,7 +146,8 @@ type alias Attributes msg a =
 
 defaultAttrs : Attributes msg a
 defaultAttrs =
-    { card = False
+    { id = Nothing
+    , card = False
     , showHeader = True
     , headerBackground = True
     , headerAlignClass = Nothing
@@ -165,6 +172,7 @@ defaultAttrs =
     , groupCollapsed = Nothing
     , groupIndent = Nothing
     , groupIndentWidth = 0.5
+    , toKey = Nothing
     , highlight = \_ -> False
     , rowDetails = Nothing
     , rowDetailsNoPadding = False
@@ -184,6 +192,12 @@ type TableTheme
 
 
 -- Table Attributes
+
+
+{-| -}
+id : String -> Attribute msg a
+id v =
+    Attr.attr (\attrs -> { attrs | id = Just v })
 
 
 {-| -}
@@ -262,6 +276,12 @@ striped =
 borders : Attribute msg a
 borders =
     Attr.attr (\attrs -> { attrs | withBorders = True })
+
+
+{-| -}
+keyed : (a -> String) -> Attribute msg a
+keyed v =
+    Attr.attr (\attrs -> { attrs | toKey = Just v })
 
 
 {-| -}
@@ -738,7 +758,7 @@ view attrs_ columns data =
         attrs =
             Attr.toAttrs defaultAttrs attrs_
 
-        rows : List (H.Html msg)
+        rows : List ( ( a, String ), H.Html msg )
         rows =
             case attrs.groupBy of
                 Just groupBy_ ->
@@ -759,7 +779,8 @@ view attrs_ columns data =
                                         attrs.groupIndent
                                             |> Maybe.map (\fn -> fn groupItem)
                                 in
-                                viewGroupHeader
+                                ( ( groupItem, "group" )
+                                , viewGroupHeader
                                     { attrs = attrs
                                     , columns = columns
                                     , defaultGroupLabel = defaultGroupLabel
@@ -768,6 +789,7 @@ view attrs_ columns data =
                                     , groupItem = groupItem
                                     , groupColumns = groupItems
                                     }
+                                )
                                     :: (groupRows
                                             |> List.indexedMap (viewTableRow attrs columns groupIndentElement numCols)
                                             |> List.concat
@@ -784,7 +806,8 @@ view attrs_ columns data =
             List.any (\(Column c) -> c.toFooter /= Nothing) columns
     in
     H.div
-        [ HA.class "w__table w--scrollable"
+        [ WH.maybeAttr HA.id attrs.id
+        , HA.class "w__table w--scrollable"
         , case attrs.theme of
             Default ->
                 HA.class ""
@@ -823,9 +846,16 @@ view attrs_ columns data =
               else
                 H.text ""
             , --  Table Body
-              H.tbody
-                [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
-                rows
+              case attrs.toKey of
+                Just toKey ->
+                    Html.Keyed.node "tbody"
+                        [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
+                        (List.map (Tuple.mapFirst (\( item, prefix ) -> prefix ++ "__" ++ toKey item)) rows)
+
+                Nothing ->
+                    H.tbody
+                        [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
+                        (List.map Tuple.second rows)
             , -- Table Footer
               if hasFooter then
                 H.tfoot [ HA.class "w__table__footer" ] [ H.tr [] (List.map (viewTableFooterColumn data) columns) ]
@@ -979,7 +1009,7 @@ viewTableFooterColumn data (Column col) =
         ]
 
 
-viewTableRow : Attributes msg a -> List (Column msg a) -> Maybe (H.Html msg) -> Int -> Int -> a -> List (H.Html msg)
+viewTableRow : Attributes msg a -> List (Column msg a) -> Maybe (H.Html msg) -> Int -> Int -> a -> List ( ( a, String ), H.Html msg )
 viewTableRow attrs columns groupIndentElement numCols rowIndex datum =
     let
         isHighlighted : Bool
@@ -993,47 +1023,51 @@ viewTableRow attrs columns groupIndentElement numCols rowIndex datum =
                 , ( "w__m-striped", attrs.isStriped && modBy 2 rowIndex == 1 )
                 ]
     in
-    [ H.tr
-        [ rowClass
-        , HA.classList
-            [ ( "w__m-highlight", isHighlighted )
+    [ ( ( datum, "" )
+      , H.tr
+            [ rowClass
+            , HA.classList
+                [ ( "w__m-highlight", isHighlighted )
+                ]
+            , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
+            , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
             ]
-        , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
-        , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
-        ]
-        (columns
-            |> List.indexedMap
-                (\index (Column col) ->
-                    H.td
-                        (columnStyles col
-                            ++ [ HA.class "w--shrink-0 w--m-0 w--break-words" ]
-                        )
-                        (case ( index, groupIndentElement ) of
-                            ( 0, Just groupIndent_ ) ->
-                                [ H.span
-                                    [ HA.class "w__table__group-indent-cell" ]
-                                    [ H.span [ HA.class "w__table__group-indent" ] [ groupIndent_ ]
-                                    , H.span [] [ col.toHtml datum ]
+            (columns
+                |> List.indexedMap
+                    (\index (Column col) ->
+                        H.td
+                            (columnStyles col
+                                ++ [ HA.class "w--shrink-0 w--m-0 w--break-words" ]
+                            )
+                            (case ( index, groupIndentElement ) of
+                                ( 0, Just groupIndent_ ) ->
+                                    [ H.span
+                                        [ HA.class "w__table__group-indent-cell" ]
+                                        [ H.span [ HA.class "w__table__group-indent" ] [ groupIndent_ ]
+                                        , H.span [] [ col.toHtml datum ]
+                                        ]
                                     ]
-                                ]
 
-                            _ ->
-                                [ col.toHtml datum ]
-                        )
-                )
-        )
-    , attrs.rowDetails
-        |> Maybe.andThen (\fn -> fn datum)
-        |> Maybe.map
-            (\children ->
-                H.tr
-                    [ rowClass
-                    , HA.classList [ ( "w__m-no-padding", attrs.rowDetailsNoPadding ) ]
-                    ]
-                    [ H.td [ HA.colspan numCols ] children
-                    ]
+                                _ ->
+                                    [ col.toHtml datum ]
+                            )
+                    )
             )
-        |> Maybe.withDefault (H.text "")
+      )
+    , ( ( datum, "row-details" )
+      , attrs.rowDetails
+            |> Maybe.andThen (\fn -> fn datum)
+            |> Maybe.map
+                (\children ->
+                    H.tr
+                        [ rowClass
+                        , HA.classList [ ( "w__m-no-padding", attrs.rowDetailsNoPadding ) ]
+                        ]
+                        [ H.td [ HA.colspan numCols ] children
+                        ]
+                )
+            |> Maybe.withDefault (H.text "")
+      )
     ]
 
 

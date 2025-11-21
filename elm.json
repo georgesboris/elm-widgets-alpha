@@ -3,7 +3,7 @@
     "name": "georgesboris/elm-widgets-alpha",
     "summary": "Development package for elm-widgets. Constant breaking changes.",
     "license": "MPL-2.0",
-    "version": "4.15.2",
+    "version": "4.16.0",
     "exposed-modules": [
         "W.Accordion",
         "W.Avatar",
