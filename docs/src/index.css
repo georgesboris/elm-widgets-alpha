@@ -26,6 +26,10 @@
   @apply w--text-default;
 }
 
+.w\/inherit.w--text-subtle {
+  color: rgb(var(--w-text-subtle));
+}
+
 .w--text-subtle:is(.w\/inherit,.w\/base,.w\/primary,.w\/secondary,.w\/success,.w\/warning,.w\/danger) {
   color: rgb(var(--w-text-subtle));
 }
@@ -292,6 +296,9 @@
     }
     &.w__m-large {
       @apply w--text-base;
+    }
+    &.w__m-subtle {
+      @apply w--border-accent-subtle;
     }
   }
   .w__button-group__main {

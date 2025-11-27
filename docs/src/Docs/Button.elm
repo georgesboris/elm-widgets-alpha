@@ -189,6 +189,7 @@ The description of the Button component.
                                         [ Docs.UI.viewHorizontal
                                             [ W.Button.viewDummy [ attr, W.Button.large, W.Button.radius 0.5 ] [ H.text "Button" ]
                                             , W.Button.viewDummy [ attr, W.Button.primary ] [ H.text "Button" ]
+                                            , W.Button.viewLink [ attr ] { label = [ H.text "Button" ], href = "/logAction/" }
                                             , W.Button.viewDummy [ attr, W.Button.warning, W.Button.disabled ] [ H.text "Button" ]
                                             , W.Button.viewDummy [ attr, W.Button.success, W.Button.small ] [ H.text "Button" ]
                                             , W.Button.viewDummy [ attr, W.Button.icon, W.Button.small, W.Button.rounded ] [ H.text "λ" ]

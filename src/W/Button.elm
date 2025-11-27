@@ -488,6 +488,6 @@ htmlAttrs attrs =
             HA.class
                 ("w/focus w--text-subtle group-hover/btn:w--text-default group-active/btn:w--text-subtle"
                     ++ " w--border-transparent w--bg-transparent"
-                    ++ " hover:w--bg-tint active:w--bg-tint-subtle"
+                    ++ " hover:w--text-default hover:w--bg-tint active:w--bg-tint-subtle"
                 )
     ]

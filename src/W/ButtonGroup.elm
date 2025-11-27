@@ -362,6 +362,7 @@ view_ attrs children =
                 [ ( "w--w-full", attrs.full )
                 , ( "w__m-small", attrs.size == Small )
                 , ( "w__m-large", attrs.size == Large )
+                , ( "w__m-subtle", attrs.style == Subtle )
                 ]
             , W.Theme.styleList
                 [ ( "border-radius", W.Theme.Radius.toCSS attrs.radius )

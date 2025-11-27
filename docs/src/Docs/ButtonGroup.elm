@@ -193,5 +193,18 @@ view =
                             )
                         ]
                       )
+                    , ( "Subtle"
+                      , [ W.ButtonGroup.viewLinks [ W.ButtonGroup.subtle ]
+                            (items
+                                |> List.map
+                                    (\item ->
+                                        { label = [ H.text item ]
+                                        , href = "/logAction/" ++ item
+                                        , attrs = []
+                                        }
+                                    )
+                            )
+                        ]
+                      )
                     ]
         )
