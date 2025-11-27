@@ -285,6 +285,18 @@
     @apply w--inline-flex w--items-center;
     @apply w--p-xs w--gap-xs;
     @apply w--bg w--border w--border-solid w--border-accent;
+    @apply w--text-sm;
+
+    &.w__m-small {
+      @apply w--text-xs;
+    }
+    &.w__m-large {
+      @apply w--text-base;
+    }
+  }
+  .w__button-group__main {
+    @apply w--grow;
+    @apply w--inline-flex w--items-center w--gap-xs;
   }
 }
 

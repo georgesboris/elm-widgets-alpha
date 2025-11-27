@@ -245,7 +245,7 @@ view_ =
                             ]
                             [ H.div
                                 [ HA.class "w--relative w--overflow-visible"
-                                , HA.class "w--m-auto w--max-w-full w--p-4"
+                                , HA.class "w--m-auto w--max-w-full w--p-lg"
                                 , HA.style "width" (String.fromInt attrs.maxWidth ++ "px")
                                 ]
                                 [ H.div

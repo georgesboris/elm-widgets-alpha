@@ -4,6 +4,7 @@ import Attr
 import Book
 import Docs.UI
 import Html as H
+import Html.Attributes as HA
 import W.Button
 import W.ButtonGroup
 import W.Playground
@@ -77,11 +78,14 @@ view =
                 , onUpdate = Playground_Update
                 , playground =
                     W.Playground.succeed
-                        (\fullAttr sizeAttr roundedAttr ->
+                        (\fullAttr prefixAttr suffixAttr styleAttr sizeAttr roundedAttr ->
                             W.ButtonGroup.view
                                 [ fullAttr
                                 , sizeAttr
                                 , roundedAttr
+                                , prefixAttr
+                                , suffixAttr
+                                , styleAttr
                                 ]
                                 { value = model.playgroundValue
                                 , options = items
@@ -94,6 +98,24 @@ view =
                             , description = ""
                             , default = False
                             , attr = W.ButtonGroup.full
+                            }
+                        |> W.Playground.boolAttr
+                            { name = "Prefix"
+                            , description = ""
+                            , default = False
+                            , attr = W.ButtonGroup.prefix [ H.span [ HA.class "w--px-sm w--text-subtle" ] [ H.text "Label" ] ]
+                            }
+                        |> W.Playground.boolAttr
+                            { name = "Suffix"
+                            , description = ""
+                            , default = False
+                            , attr = W.ButtonGroup.suffix [ H.span [] [ H.text "Extra" ] ]
+                            }
+                        |> W.Playground.boolAttr
+                            { name = "Subtle"
+                            , description = ""
+                            , default = False
+                            , attr = W.ButtonGroup.subtle
                             }
                         |> W.Playground.attr
                             { name = "Size"

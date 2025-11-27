@@ -1,7 +1,7 @@
 module W.Button exposing
     ( view, viewLink, viewSubmit, viewDummy, Attribute
     , base, primary, secondary, success, warning, danger
-    , outline, invisible, tint, subtle
+    , outline, invisible, tint, subtle, default
     , rounded, radius
     , full, icon
     , flexGrow, noShrink
@@ -16,7 +16,7 @@ module W.Button exposing
 @docs view, viewLink, viewSubmit, viewDummy, Attribute
 
 @docs base, primary, secondary, success, warning, danger
-@docs outline, invisible, tint, subtle
+@docs outline, invisible, tint, subtle, default
 
 @docs rounded, radius
 @docs full, icon
@@ -181,6 +181,12 @@ outline =
 tint : Attribute msg
 tint =
     Attr.attr (\attrs -> { attrs | style = Tint })
+
+
+{-| -}
+default : Attribute msg
+default =
+    Attr.attr (\attrs -> { attrs | style = Basic })
 
 
 {-| -}

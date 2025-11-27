@@ -2,7 +2,9 @@ module W.ButtonGroup exposing
     ( view, viewOptional, viewMultiple, Attribute
     , viewLinks, viewButtons
     , full, small, large
+    , subtle
     , rounded, radius
+    , prefix, suffix
     )
 
 {-|
@@ -10,7 +12,9 @@ module W.ButtonGroup exposing
 @docs view, viewOptional, viewMultiple, Attribute
 @docs viewLinks, viewButtons
 @docs full, small, large
+@docs subtle
 @docs rounded, radius
+@docs prefix, suffix
 
 -}
 
@@ -33,20 +37,35 @@ type alias Attribute msg =
 
 type alias Attributes msg =
     { id : Maybe String
-    , buttonSizeAttr : W.Button.Attribute msg
     , buttonAttrs : List (W.Button.Attribute msg)
+    , buttonStyleAttr : W.Button.Attribute msg
     , radius : W.Theme.Radius.Radius
     , full : Bool
+    , size : Size
+    , style : Style
     , prefix : List (H.Html msg)
     , suffix : List (H.Html msg)
     }
 
 
+type Size
+    = Small
+    | Medium
+    | Large
+
+
+type Style
+    = Default
+    | Subtle
+
+
 defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
-    , buttonSizeAttr = W.Button.small
+    , size = Medium
+    , style = Default
     , buttonAttrs = []
+    , buttonStyleAttr = W.Button.invisible
     , radius = W.Theme.Radius.xl
     , full = False
     , prefix = []
@@ -57,13 +76,31 @@ defaultAttrs =
 {-| -}
 large : Attribute msg
 large =
-    Attr.attr (\a -> { a | buttonSizeAttr = Attr.none })
+    Attr.attr (\a -> { a | size = Large })
 
 
 {-| -}
 small : Attribute msg
 small =
-    Attr.attr (\a -> { a | buttonSizeAttr = W.Button.extraSmall })
+    Attr.attr (\a -> { a | size = Small })
+
+
+{-| -}
+subtle : Attribute msg
+subtle =
+    Attr.attr (\a -> { a | style = Subtle, buttonStyleAttr = W.Button.subtle })
+
+
+{-| -}
+prefix : List (H.Html msg) -> Attribute msg
+prefix v =
+    Attr.attr (\a -> { a | prefix = v })
+
+
+{-| -}
+suffix : List (H.Html msg) -> Attribute msg
+suffix v =
+    Attr.attr (\a -> { a | suffix = v })
 
 
 {-| -}
@@ -122,14 +159,22 @@ view =
             props.options
                 |> List.map
                     (\option ->
+                        let
+                            isActive : Bool
+                            isActive =
+                                props.value == option
+                        in
                         { onClick = props.onInput option
                         , label = props.toLabel option
                         , attrs =
-                            if props.value == option then
-                                []
+                            if isActive && attrs.style == Subtle then
+                                [ W.Button.tint ]
+
+                            else if isActive then
+                                [ W.Button.default ]
 
                             else
-                                [ W.Button.invisible ]
+                                []
                         }
                     )
                 |> viewButtons_ attrs
@@ -167,11 +212,14 @@ viewOptional =
                                 )
                         , label = props.toLabel option
                         , attrs =
-                            if isActive then
-                                []
+                            if isActive && attrs.style == Subtle then
+                                [ W.Button.tint ]
+
+                            else if isActive then
+                                [ W.Button.default ]
 
                             else
-                                [ W.Button.invisible ]
+                                []
                         }
                     )
                 |> viewButtons_ attrs
@@ -209,11 +257,14 @@ viewMultiple =
                                 )
                         , label = props.toLabel option
                         , attrs =
-                            if isActive then
-                                []
+                            if isActive && attrs.style == Subtle then
+                                [ W.Button.tint ]
+
+                            else if isActive then
+                                [ W.Button.default ]
 
                             else
-                                [ W.Button.invisible ]
+                                []
                         }
                     )
                 |> viewButtons_ attrs
@@ -237,7 +288,7 @@ viewLinks =
                 (items
                     |> List.map
                         (\item ->
-                            W.Button.viewLink (attrs.buttonSizeAttr :: attrs.buttonAttrs ++ item.attrs)
+                            W.Button.viewLink (buttonSizeAttr attrs.size :: attrs.buttonStyleAttr :: attrs.buttonAttrs ++ item.attrs)
                                 { href = item.href
                                 , label = item.label
                                 }
@@ -275,12 +326,25 @@ viewButtons_ attrs items =
         (items
             |> List.map
                 (\item ->
-                    W.Button.view (attrs.buttonSizeAttr :: attrs.buttonAttrs ++ item.attrs)
+                    W.Button.view (buttonSizeAttr attrs.size :: attrs.buttonStyleAttr :: attrs.buttonAttrs ++ item.attrs)
                         { onClick = item.onClick
                         , label = item.label
                         }
                 )
         )
+
+
+buttonSizeAttr : Size -> W.Button.Attribute msg
+buttonSizeAttr v =
+    case v of
+        Large ->
+            Attr.none
+
+        Medium ->
+            W.Button.small
+
+        Small ->
+            W.Button.extraSmall
 
 
 view_ :
@@ -296,9 +360,22 @@ view_ attrs children =
             [ HA.class "w__button-group"
             , HA.classList
                 [ ( "w--w-full", attrs.full )
+                , ( "w__m-small", attrs.size == Small )
+                , ( "w__m-large", attrs.size == Large )
                 ]
             , W.Theme.styleList
                 [ ( "border-radius", W.Theme.Radius.toCSS attrs.radius )
                 ]
             ]
-            children
+            [ if List.isEmpty attrs.prefix then
+                H.text ""
+
+              else
+                H.div [ HA.class "w__button-group__aside" ] attrs.prefix
+            , H.div [ HA.class "w__button-group__main" ] children
+            , if List.isEmpty attrs.suffix then
+                H.text ""
+
+              else
+                H.div [ HA.class "w__button-group__aside" ] attrs.suffix
+            ]
