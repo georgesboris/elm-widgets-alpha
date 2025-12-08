@@ -111,6 +111,7 @@ book =
                 , Docs.InputRadio.view
                 , Docs.InputSelect.view
                 , Docs.InputSlider.view
+                    |> Book.mapPage InputSliderMsg .inputSlider
                 , Docs.InputCode.view
                 , Docs.InputColor.view
                 ]
@@ -426,6 +427,7 @@ type alias Model =
     { box : Docs.Box.Model
     , button : Docs.Button.Model
     , buttonGroup : Docs.ButtonGroup.Model
+    , inputSlider : Docs.InputSlider.Model
     }
 
 
@@ -433,6 +435,7 @@ type Msg
     = BoxMsg Docs.Box.Msg
     | ButtonGroupMsg Docs.ButtonGroup.Msg
     | ButtonMsg Docs.Button.Msg
+    | InputSliderMsg Docs.InputSlider.Msg
 
 
 init : flags -> url -> navKey -> ( Model, Cmd Msg )
@@ -440,6 +443,7 @@ init _ _ _ =
     ( { box = Docs.Box.init
       , button = Docs.Button.init
       , buttonGroup = Docs.ButtonGroup.init
+      , inputSlider = Docs.InputSlider.init
       }
     , Cmd.none
     )
@@ -462,6 +466,11 @@ update msg model =
             Docs.ButtonGroup.update subMsg model.buttonGroup
                 |> Tuple.mapFirst (\m -> { model | buttonGroup = m })
                 |> Tuple.mapSecond (Cmd.map ButtonGroupMsg)
+
+        InputSliderMsg subMsg ->
+            Docs.InputSlider.update subMsg model.inputSlider
+                |> Tuple.mapFirst (\m -> { model | inputSlider = m })
+                |> Tuple.mapSecond (Cmd.map InputSliderMsg)
 
 
 subscriptions : Model -> Sub Msg

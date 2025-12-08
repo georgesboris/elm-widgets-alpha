@@ -1132,6 +1132,14 @@
  * ======================================================
  */
 
+.w__slider {
+  --w-track: 0.25rem;
+  --w-track-m: -0.125rem;
+  --w-track-active: 6px;
+  --w-track-active-m: -3px;
+  --w-thumb: 24px;
+}
+
 input[type="range"].w--slider {
   -webkit-appearance: none;
   appearance: none;
@@ -1168,13 +1176,14 @@ input[type="range"].w--slider::-ms-track {
 
 input[type="range"].w--slider::-webkit-slider-thumb {
   appearance: none;
-  height: 24px;
-  width: 24px;
+  height: var(--w-thumb);
+  width: var(--w-thumb);
   border-radius: 50%;
   background: currentColor;
   border: var(--w-cfg-border) solid rgba(255, 255, 255, 1);
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
   transition: 0.12s ease-in;
+  transform: translateY(1px);
 }
 
 input[type="range"].w--slider:hover::-webkit-slider-thumb {
@@ -1192,13 +1201,14 @@ input[type="range"].w--slider:focus-visible::-webkit-slider-thumb {
 
 input[type="range"].w--slider::-moz-range-thumb {
   appearance: none;
-  height: 24px;
-  width: 24px;
+  height: var(--w-thumb);
+  width: var(--w-thumb);
   border-radius: 50%;
   background: currentColor;
   border: var(--w-cfg-border) solid rgba(255, 255, 255, 1);
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
   transition: 0.12s ease-in;
+  transform: translateY(1px);
 }
 
 input[type="range"].w--slider:hover::-moz-range-thumb {
@@ -1212,6 +1222,74 @@ input[type="range"].w--slider:active::-moz-range-thumb {
 
 input[type="range"].w--slider:focus-visible::-moz-range-thumb {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 0 4px currentColor;
+}
+
+.w__slider__track {
+  height: var(--w-track);
+  margin-top: var(--w-track-m);
+}
+
+.w__slider__value-track,
+.w__slider__value-track-bg {
+  height: var(--w-track-active);
+  margin-top: var(--w-track-active-m);
+}
+
+.w__slider.w__m-vertical {
+  transform: rotate(270deg);
+  --w-track: 6px;
+  --w-track-m: -3px;
+  --w-track-active: 6px;
+  --w-track-active-m: -3px;
+}
+
+.w__slider.w__m-small {
+  --w-thumb: 18px;
+  --w-track: 4px;
+  --w-track-m: -2px;
+  --w-track-active: 4px;
+  --w-track-active-m: -2px;
+}
+
+
+/* 
+ * ======================================================
+ * W.InputKnob
+ * ======================================================
+ */
+
+@layer components {
+  .w__knob {
+    @apply w--relative;
+
+    --size: 60px;
+
+    width: var(--size);
+    height: var(--size);
+
+    &::before {
+      display: block;
+      content: "";
+      
+      @apply w--absolute w--inset-0;
+      @apply w--bg-solid;
+      @apply w--border w--border-tint w--rounded-full;
+    }
+  }
+  
+  .w__knob__input {
+    @apply w--hidden;
+  }
+
+  .w__knob__input_bk {
+    @apply w--hidden;
+    @apply w--block w--appearance-none;
+    @apply w--bg-transparent;
+
+    width: var(--size);
+    height: var(--size);
+    transform: rotate(-45deg);
+  }
 }
 
 /* 
@@ -1496,14 +1574,21 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
 
     &.w__m-lg {
       height: var(--w-cfg-click-lg);
-      @apply w--px-lg w--text-base;
+      display: block;
+      content: "";
+      
+      @apply w--absolute w--inset-0;
     }
     &.w__m-sm {
-      height: var(--w-cfg-click-sm);
-      @apply w--px-sm w--text-xs;
+    }
+    @apply w--hidden;
+
+    
+    &.w__m-compact {
+      @apply w--rounded w--px-sm;
     }
 
-    &.w__m-compact {
+    &.w__m-compact_bk {
       @apply w--rounded w--px-sm;
     }
     &.w__m-compact.w__m-lg {

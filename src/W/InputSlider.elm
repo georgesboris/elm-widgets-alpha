@@ -2,6 +2,8 @@ module W.InputSlider exposing
     ( view, Attribute
     , disabled, readOnly
     , color
+    , small
+    , vertical
     )
 
 {-|
@@ -17,6 +19,7 @@ module W.InputSlider exposing
 # Styles
 
 @docs color
+@docs small
 
 -}
 
@@ -41,6 +44,8 @@ type alias Attribute msg =
 type alias Attributes msg =
     { disabled : Bool
     , readOnly : Bool
+    , small : Bool
+    , vertical : Bool
     , color : String
     , format : Float -> String
     , msg : Maybe msg
@@ -51,6 +56,8 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { disabled = False
     , readOnly = False
+    , small = False
+    , vertical = False
     , color = W.Theme.Color.primarySolid
     , format = String.fromFloat
     , msg = Nothing
@@ -65,6 +72,18 @@ defaultAttrs =
 color : String -> Attribute msg
 color v =
     Attr.attr (\attrs -> { attrs | color = v })
+
+
+{-| -}
+small : Attribute msg
+small =
+    Attr.attr (\attrs -> { attrs | small = True })
+
+
+{-| -}
+vertical : Attribute msg
+vertical =
+    Attr.attr (\attrs -> { attrs | vertical = True })
 
 
 {-| -}
@@ -113,41 +132,47 @@ view =
                         HA.style "color" attrs.color
             in
             H.div
-                [ HA.class "w--group w--relative w--full"
+                [ HA.class "w__slider"
+                , HA.class "w--group w--relative w--full"
+                , HA.classList
+                    [ ( "w__m-small", attrs.small )
+                    , ( "w__m-vertical", attrs.vertical )
+                    ]
                 , colorAttr
                 ]
                 [ H.div [ HA.class "w--absolute w--inset-y-0 w--inset-x-[12px]" ]
                     [ -- Track
                       H.div
-                        [ HA.class "w--absolute w--rounded"
+                        [ HA.class "w__slider__track"
+                        , HA.class "w--absolute w--rounded"
                         , HA.class "w--inset-x-0 w--top-1/2"
                         , HA.class "w--bg-tint"
-                        , HA.class "w--h-[0.25rem] -w--mt-[0.125rem]"
                         ]
                         []
                     , -- Value Track Background
                       H.div
-                        [ HA.class "w--absolute w--z-1 w--rounded"
+                        [ HA.class "w__slider__value-track-bg"
+                        , HA.class "w--absolute w--z-1 w--rounded"
                         , HA.class "w--left-0 w--top-1/2"
                         , HA.class "w--bg"
-                        , HA.class "w--h-[6px] -w--mt-[3px]"
                         , HA.style "width" valueString
                         ]
                         []
                     , -- Value Track
                       H.div
-                        [ HA.class "w--absolute w--z-0 w--rounded"
+                        [ HA.class "w__slider__value-track"
+                        , HA.class "w--absolute w--z-0 w--rounded"
                         , HA.class "w--left-0 w--top-1/2"
                         , HA.class "w--bg-current"
                         , HA.class "w--opacity-[0.60]"
-                        , HA.class "w--h-[6px] -w--mt-[3px]"
                         , HA.style "width" valueString
                         ]
                         []
                     ]
                 , -- Thumb
                   H.input
-                    [ HA.class "w--relative"
+                    [ HA.class "w__slider__input"
+                    , HA.class "w--relative"
                     , HA.class "w--slider w--appearance-none"
                     , HA.class "w--bg-transparent"
                     , HA.class "w--m-0"
