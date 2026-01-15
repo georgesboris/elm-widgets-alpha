@@ -2,8 +2,7 @@ module W.InputSlider exposing
     ( view, Attribute
     , disabled, readOnly
     , color
-    , small
-    , vertical
+    , vertical, small
     )
 
 {-|
@@ -19,7 +18,7 @@ module W.InputSlider exposing
 # Styles
 
 @docs color
-@docs small
+@docs vertical, small
 
 -}
 
