@@ -1561,17 +1561,19 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
     @apply w--px-md w--text-sm;
     height: var(--w-cfg-click);
 
-
     &.w__m-lg {
       height: var(--w-cfg-click-lg);
       @apply w--px-lg w--text-base;
     }
 
+    &.w__m-sm {
+      height: var(--w-cfg-click-sm);
+      @apply w--px-sm w--text-xs;
+    }
     
     &.w__m-compact {
       @apply w--rounded w--px-sm;
     }
-
     &.w__m-compact.w__m-lg {
       @apply w--px-sm;
     }
