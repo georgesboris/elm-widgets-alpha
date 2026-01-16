@@ -1280,16 +1280,6 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
   .w__knob__input {
     @apply w--hidden;
   }
-
-  .w__knob__input_bk {
-    @apply w--hidden;
-    @apply w--block w--appearance-none;
-    @apply w--bg-transparent;
-
-    width: var(--size);
-    height: var(--size);
-    transform: rotate(-45deg);
-  }
 }
 
 /* 
@@ -1574,23 +1564,14 @@ input[type="range"].w--slider:focus-visible::-moz-range-thumb {
 
     &.w__m-lg {
       height: var(--w-cfg-click-lg);
-      display: block;
-      content: "";
-      
-      @apply w--absolute w--inset-0;
+      @apply w--px-lg w--text-base;
     }
-    &.w__m-sm {
-    }
-    @apply w--hidden;
 
     
     &.w__m-compact {
       @apply w--rounded w--px-sm;
     }
 
-    &.w__m-compact_bk {
-      @apply w--rounded w--px-sm;
-    }
     &.w__m-compact.w__m-lg {
       @apply w--px-sm;
     }

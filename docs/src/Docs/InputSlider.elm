@@ -63,31 +63,31 @@ playground =
                     , value = value
                     , onInput = Book.sendMsg << UpdateValue
                     }
-                , H.div
-                    [ HA.class "w__knob" ]
-                    [ H.input
-                        [ HA.type_ "range"
-                        , HA.class "w__knob__input"
-                        , HA.value <| String.fromFloat value
-                        , HA.min <| String.fromFloat min
-                        , HA.max <| String.fromFloat max
-                        , HA.step <| String.fromFloat step
-                        , HE.on "input"
-                            (D.at [ "target", "value" ] D.string
-                                |> D.andThen
-                                    (\v ->
-                                        case String.toFloat v of
-                                            Just v_ ->
-                                                D.succeed v_
+                -- , H.div
+                --     [ HA.class "w__knob" ]
+                --     [ H.input
+                --         [ HA.type_ "range"
+                --         , HA.class "w__knob__input"
+                --         , HA.value <| String.fromFloat value
+                --         , HA.min <| String.fromFloat min
+                --         , HA.max <| String.fromFloat max
+                --         , HA.step <| String.fromFloat step
+                --         , HE.on "input"
+                --             (D.at [ "target", "value" ] D.string
+                --                 |> D.andThen
+                --                     (\v ->
+                --                         case String.toFloat v of
+                --                             Just v_ ->
+                --                                 D.succeed v_
 
-                                            Nothing ->
-                                                D.fail "Invalid value."
-                                    )
-                                -- |> D.map props.onInput
-                                |> D.map (Book.sendMsg << UpdateValue)
-                            )
-                        ]
-                        []
+                --                             Nothing ->
+                --                                 D.fail "Invalid value."
+                --                     )
+                --                 -- |> D.map props.onInput
+                --                 |> D.map (Book.sendMsg << UpdateValue)
+                --             )
+                --         ]
+                --         []
                     ]
                 ]
         )
